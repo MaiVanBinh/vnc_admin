@@ -122,11 +122,10 @@ section{
     margin-left: .2rem;
 }
 
-.nav-link:hover > a,
-.nav-link > a.active {
-    color: #000;
+.nav-link:hover > a{
     transform: scale(1.1);
 }
+
 .dropdown{
     position: absolute;
     top: 100%;
@@ -318,7 +317,7 @@ section{
 
     #check:checked ~ .nav-btn .nav-link,
     #check:checked ~ .nav-btn .log-sign{
-        animation: animation .5s ease forwards 0.5s;
+        animation: animation .5s ease forwards 1.2s;
     }
 
     .nav-links{

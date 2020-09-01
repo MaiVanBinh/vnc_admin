@@ -5,6 +5,9 @@ class Contact extends React.Component {
         return (
             <div>
                 <h1>Contact page</h1>
+                <ul>
+                    <li>sad</li>
+                </ul>
             </div>
         );
     }
