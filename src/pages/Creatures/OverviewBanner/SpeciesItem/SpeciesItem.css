@@ -1,0 +1,106 @@
+
+.container-species .card {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 100px 0;
+}
+.container-species .card.reverse {
+    flex-direction: row;
+}
+.container-species .card.row {
+    flex-direction: row-reverse;
+    text-align: center;
+}
+
+.container-species .card .imgBx {
+    position: relative;
+    left: 25px;
+    width: 500px;
+    height: 400px;
+    z-index: 1;
+}
+.container-species .card.row .imgBx {
+    left: -25px;
+} 
+.container-species .card .imgBx img {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.container-species .card .contentBx {
+    position: relative;
+    right: 25px;
+    width: 500px;
+    height: 400px;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 60px 20px 100px;
+}
+.container-species .card.row .contentBx {
+    padding: 10px 100px 20px 60px;
+    right: -25px;
+}
+.container-species .card .contentBx::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    bottom: -50px;
+    left: 0;
+    right: 0;
+    background: #000;
+    z-index: -1;
+}
+.container-species .card .contentBx h2 {
+    font-size: 30px;
+    color: #fff;
+}
+.container-species .card .contentBx p {
+    margin-top: 10px;
+    color: #fff;
+}
+.container-species .card .contentBx a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    border: 1px solid #fff;
+} 
+@media(max-width: 1120px) {
+    .container-species .card {
+        flex-direction: column;
+        max-width: 350px;
+        margin: 25px;
+    }
+    .container-species .card .imgBx {
+        width: 100%;
+        height: 250px;
+        left: 0;
+    }
+    .container-species .card .contentBx {
+        width: 100%;
+        height: auto;
+        right: 0;
+        padding: 30px;
+        text-align: center;
+    }
+    .container-species .card .contentBx::before {
+        top: 0;
+        bottom: 0;
+    }
+    .container-species .card:nth-child(even) .imgBx {
+        left: 0;
+    }
+    .container-species .card:nth-child(even) .contentBx {
+        right: 0;
+        padding: 30px;
+    }
+}

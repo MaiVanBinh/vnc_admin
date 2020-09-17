@@ -1,0 +1,12 @@
+.cd-main-content {
+  position: relative;
+  min-height: 100vh;
+  margin-bottom: 100px;
+  border-bottom: 1px solid #c0c0c0;
+}
+.cd-main-content:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+

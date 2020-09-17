@@ -1,7 +1,7 @@
 import React from 'react';
-
-const Loader = (props) => (
-    <div>Loading</div>
+import './Loader.css';
+const loader = () => (
+    <div className="loader" >Loading</div>
 );
 
-export default Loader;
+export default loader;

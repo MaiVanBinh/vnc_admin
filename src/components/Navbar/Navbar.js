@@ -18,24 +18,24 @@ const navbar =  () => {
                                 <NavLink exact to="/">Trang chủ</NavLink>
                             </li>
                             <li className="nav-link">
-                                <NavLink to="/tra-cuu">Tra Cứu<i className="fas fa-caret-down"></i></NavLink>
-                                <div className="dropdown">
+                                <NavLink to="/sinh-vat">Sinh Vật</NavLink>
+                                {/* <div className="dropdown">
                                     <ul>
                                         <li className="dropdown-link">
-                                            <NavLink to="#">Link 1</NavLink>
+                                            <NavLink to="/sinh-vat/tong-quan">Tổng quan</NavLink>
                                         </li>
                                         <li className="dropdown-link">
-                                            <NavLink to="#">Link 2</NavLink>
+                                            <NavLink to="/sinh-vat/tra-cuu">Tra Cứu</NavLink>
                                         </li>
                                         <li className="dropdown-link">
                                             <NavLink to="#">Link 4</NavLink>
                                         </li>
                                         <div className="arrow"></div>
                                     </ul>
-                                </div>
+                                </div> */}
                             </li>
                             <li className="nav-link">
-                                <NavLink to="/tai-lieu">Tài liệu tham khảo<i className="fas fa-caret-down"></i></NavLink>
+                                <NavLink to="/bai-viet">Bài viết<i className="fas fa-caret-down"></i></NavLink>
                                 <div className="dropdown">
                                     <ul>
                                         <li className="dropdown-link">

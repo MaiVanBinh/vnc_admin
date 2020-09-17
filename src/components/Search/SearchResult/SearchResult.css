@@ -1,78 +1,11 @@
-  .container {
-    position: relative;
-    /* width: 1400px; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    row-gap: 70px;
-    column-gap: 30px;
-    flex-wrap: wrap;
-    padding: 30px;
-  }
-  .container .card {
-    position: relative;
-    width: 330px;
-    height: 170px;
-    background: #fff;
-    margin: 30px 10px;
-    padding: 20px 15px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    transition: 0.3s ease-in-out;
-  }
-  .container .card:hover {
-    height: 250px;
-  }
-  .container .card .imgBox {
-    z-index: 1;
-    position: relative;
-    width: 260px;
-    height: 360px;
-    top: -60px;
-    left: 20px;
-    /* box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); */
-  }
-  .container .card .imgBox img {
-    height: 165px;
-    width: 100%;
-    border-radius: 4px;
-    object-fit: cover;
-  }
-  .container .card .content {
-    position: relative;
-    margin-top: -240px;
-    padding: 10px 15px;
-    text-align: center;
-    color: #111;
-    visibility: hidden;
-    opacity: 0;
-    transition: 0.3s ease-in-out;
-  }
-  .container .card .content p span:nth-child(0) {
-    text-align: left;
-  }
-  .container .card .content p span:nth-child(2) {
-    text-align: right;
-  }
-  .container .card:hover .content {
-    top: 20px;
-    visibility: visible;
-    opacity: 1;
-    margin-top: -140px;
-    transition-delay: 0.3s;
-  } 
-  .name {
-    position: relative;
-    text-align: center;
-    visibility: visible;
-    opacity: 1;
-    top:4px;
-    transition: 0.3s ease-in-out;
-  }
-  .container .card:hover .name {
-    top: 20px;
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.3s;
-  }
+.search-result {
+  position: relative;
+  /* width: 1400px; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  row-gap: 70px;
+  column-gap: 30px;
+  flex-wrap: wrap;
+  padding: 30px;
+}

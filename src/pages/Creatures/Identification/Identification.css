@@ -1,0 +1,9 @@
+.identification {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+    border-bottom: 1px solid #c0c0c0;
+}

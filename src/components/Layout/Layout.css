@@ -1,0 +1,13 @@
+.container-layout {
+    margin: 0 100px;
+}
+@media(max-width: 1000px) {
+    .container-layout {
+        margin: 0 50px;
+    }
+}
+@media(max-width: 500px) {
+    .container-layout {
+        margin: 0 10px;
+    }
+}

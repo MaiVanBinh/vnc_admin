@@ -1,0 +1,14 @@
+.hashtag-item {
+    padding: 2px 10px;
+    color: #777;
+    border: 1px solid #cecece;
+    border-radius: 20px;
+    text-transform: lowercase;
+    text-decoration: none;
+    margin: 0 10px 5px 0px;
+    transition: .2s;
+}
+.hashtag-item:hover {
+    color: #7ea04d;
+    border: 1px solid #7ea04d;
+}

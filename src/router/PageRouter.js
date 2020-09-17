@@ -13,23 +13,28 @@ const publicRoutes = [
         exact: true,
         component: lazy(() => import('./../pages/Home')),
     }, {
-        path: "/tra-cuu",
-        exact: false,
-        component: lazy(() => import('./../pages/Search/Search')),
-    }, {
         path: "/lien-he",
         exact: false,
         component: lazy(() => import('./../pages/Home')),
     },
     {
-        path: "/tai-lieu",
+        path: "/bai-viet/:id",
         exact: false,
-        component: lazy(() => import('./../pages/Documents')),
+        component: lazy(() => import('./../pages/PostDetail/PostDetail')),
     },
     {
         path: "/vuon-quoc-gia",
         exact: false,
         component: lazy(() => import('./../pages/NationalParks')),
+    },
+    {
+        path: '/sinh-vat/:id',
+        exact: false,
+        component: lazy(() => import('./../pages/CreaturesDetail/CreaturesDeail'))
+    },{
+        path: "/sinh-vat",
+        exact: false,
+        component: lazy(() => import('./../pages/Creatures/Creatures')),
     }
 ];
 
