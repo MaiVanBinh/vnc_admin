@@ -1,0 +1,39 @@
+.redbook-table {
+  
+  margin-bottom: 100px;
+}
+.red-table {
+    width: 100%;
+}
+.red-table th,
+.red-table td {
+border: 1px solid #c0c0c0;
+  text-align: left;
+  padding: 8px;
+}
+
+.red-table th {
+  background-color: #3B568D;
+  color: white;
+}
+.red-table td a {
+    color: #000;
+}
+.red-table td a:hover {
+    color: #3B568D;
+}
+.redbook-table > p {
+    margin-top: 10px;
+    text-align: end;
+}
+.redbook-table > p > a{
+    text-decoration: none;
+    color: #000;
+}
+.redbook-table > p:hover > a{
+    color: #78b16b;
+}
+.redbook-table > p > a > i {
+    margin-left: 5px;
+    transform: translate(-50%, 10%);
+}

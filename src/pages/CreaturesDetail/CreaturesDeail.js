@@ -4,7 +4,10 @@ import "./CreaturesDetail.css";
 import * as actions from "../../store/actions/index";
 import DetailHeader from "./DetailHeader/DetailHeader";
 import PostSideBar from "../../components/PostSideBar/PostSideBar";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
+import Left from "../../components/Layout/LayoutLR/Left/Left";
+import Right from "../../components/Layout/LayoutLR/Right/Right";
+import LayoutContainer from "../../components/Layout/LayoutContainer/LayoutContainer";
 
 const CreaturesDeail = (props) => {
   const onFetchCreatureById = props.onFetchCreatureById;
@@ -12,20 +15,22 @@ const CreaturesDeail = (props) => {
     onFetchCreatureById(props.match.params.id);
   }, [props.match.params.id, onFetchCreatureById]);
   return (
-      <div className="creature-detail">
-        <div className="content">
-          {props.creature ? <DetailHeader creature={props.creature} /> : null}
-          {props.creature ? (
-            <div
-              className="creatures-content content-detail"
-              dangerouslySetInnerHTML={{
-                __html: props.creature.description.replaceAll("<br />", ""),
-              }}
-            ></div>
-          ) : null}
-        </div>
-        <PostSideBar />
-      </div>
+    <LayoutContainer>
+      <Left>
+        {props.creature ? <DetailHeader creature={props.creature} /> : null}
+        {props.creature ? (
+          <div
+            className="creatures-content content-detail"
+            dangerouslySetInnerHTML={{
+              __html: props.creature.description.replaceAll("<br />", ""),
+            }}
+          ></div>
+        ) : null}
+      </Left>
+      <Right>
+        <PostSideBar image={true} mode="creatures" />
+      </Right>
+    </LayoutContainer>
   );
 };
 
@@ -43,4 +48,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CreaturesDeail));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(CreaturesDeail));

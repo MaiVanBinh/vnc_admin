@@ -15,8 +15,12 @@
     text-align: right;
     margin-right: 20px;
     cursor: pointer;
+    
 }
-.post .post-box p:hover {
+.post .post-box p a {
+    color: #000;
+}
+.post .post-box p:hover a {
     color: #24890d;
 }
 .post .post-box p i {

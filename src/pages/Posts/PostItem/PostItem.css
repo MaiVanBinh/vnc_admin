@@ -1,0 +1,114 @@
+ .post-card:hover{
+    transform: scale(1.03);
+    background-color: #fff;
+}
+
+ .post-card {
+    position: relative;
+    max-width: 850px;
+    margin: 10px;
+    margin-bottom: 100px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    /* border-bottom: 1px solid #ccbdbd; */
+    transition: 0.1s ease-in-out;
+}
+
+.post-card .img-bx {
+    max-width: 1000px;
+    flex: 0 0 150px;
+}
+.post-card .img-bx img{
+    max-width: 100%;
+}
+
+.post-card .post-content {
+    padding: 20px;
+    position: relative;
+    max-width: 500px;
+    height: 100px;
+    top: -100px;
+    background-color: #fff;
+}
+.post-card .post-content h3 {
+    margin-top: 10px;
+    line-height: 35px;
+    text-decoration: none;
+    font-size: 33px;
+    color: #3c3b37;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.post-card .post-content h3:hover {
+    color: #5cb448;
+}
+.post-card .post-content p {
+    font-size: 15px;
+    line-height: 20px;
+    color: #3c3b37;
+}
+@media(max-width: 900px){
+    .post-content {
+        height: 300px;
+        top: 0;
+    }
+}
+@media(max-width: 680px){ 
+    .post-card .post-content h3 {
+        line-height: 23px;
+        font-size: 18px;
+    }
+    .post-content p:nth-child(4) {
+        font-size: 13px;
+    }
+}
+@media(max-width: 580px){
+    .post-card {
+        height: 400px;
+        margin-bottom: 0px;
+    }
+    .post-content h3{
+        font-size: 24px;
+    }
+    .post-content {
+        padding: 0;
+        height: 100px;
+    }
+    .post-card .post-content h3 {
+        line-height: 26px;
+    }
+    .post-card .img-bx {
+        flex: 0 0 10px;
+    }
+    .post-content p:nth-child(4) {
+        display: none;
+    }
+}
+@media(max-width: 360px){
+    .post-content h3{
+        font-size: 16px;
+    }
+    .post-content {
+        padding: 0;
+        height: 100px;
+    }
+    .post-card .img-bx {
+        flex: 0 0 10px;
+    }
+}
+@media(max-width: 360px){
+    .post-content h3{
+        font-size: 16px;
+    }
+    .post-content {
+        padding: 0;
+        height: 100px;
+    }
+}
+
+
+

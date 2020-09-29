@@ -1,0 +1,26 @@
+.lr-container {
+    position: relative;
+    padding: 0 50px;
+    padding-top: 20px;
+}
+.lr-container::before {
+    content: '';
+    clear: both;
+    display: table;
+}
+
+@media(max-width: 1200px){
+    .lr-container {
+        padding: 0 30px;
+    }
+}
+@media(max-width: 900px){
+    .lr-container {
+        padding: 0 50px;
+    }
+}
+@media(max-width: 550px){
+    .lr-container {
+        padding: 0 10px;
+    }
+}

@@ -1,0 +1,9 @@
+.species-boxbtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.species-boxbtn button{
+    margin-bottom: 20px;
+    margin-left: 20px;
+}

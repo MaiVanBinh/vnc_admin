@@ -26,30 +26,30 @@ const Panigation = (props) => {
       case 'next': {
         const nextPage = parseInt(page) + 1;
         setPage(nextPage);
-        props.onFetchCreaturesHandler(nextPage);
+        props.onFetchData(nextPage);
         break;
       }
       case 'previous': {
         if(parseInt(page) > 1) {
           const nextPage = parseInt(page) - 1;
           setPage(nextPage);
-          props.onFetchCreaturesHandler(nextPage);
+          props.onFetchData(nextPage);
         } 
         break;
       }
       case 'max': {
         setPage(props.numberOfPages);
-        props.onFetchCreaturesHandler(props.numberOfPages);
+        props.onFetchData(props.numberOfPages);
         break;
       }
       case 'min': {
         setPage(1);
-        props.onFetchCreaturesHandler(1);
+        props.onFetchData(1);
         break;
       }
       case 'go': {
         setPage(page);
-        props.onFetchCreaturesHandler(parseInt(page));
+        props.onFetchData(parseInt(page));
         break;
       }
       default: 

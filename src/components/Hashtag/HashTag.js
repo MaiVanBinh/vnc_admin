@@ -4,7 +4,6 @@ import HeadingTitle from "../UI/HeadingTitle/HeadingTitle";
 import HashTagLink from "./HashTagLink/HashTagLink";
 
 const HashTag = (props) => {
-    console.log(props.hashTagContent)
   return (
     <div className="hashtag-box">
       <HeadingTitle mode="subHeading" title={props.title} />
@@ -15,6 +14,7 @@ const HashTag = (props) => {
                 key={htl.id}
                 url={htl.url}
                 title={htl.title}
+                id={htl.id}
               />
             ))
           : null}

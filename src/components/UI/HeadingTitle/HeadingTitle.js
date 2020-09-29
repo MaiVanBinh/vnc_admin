@@ -3,7 +3,7 @@ import './HeadingTitle.css';
 
 const HeadingTitle = (props) => {
     let style;
-    switch(props.mode) {
+    switch(props.styleHeading) {
         case 'heading':
             style = 'heading';
             break;

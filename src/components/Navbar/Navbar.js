@@ -18,34 +18,31 @@ const navbar =  () => {
                                 <NavLink exact to="/">Trang chủ</NavLink>
                             </li>
                             <li className="nav-link">
-                                <NavLink to="/sinh-vat">Sinh Vật</NavLink>
-                                {/* <div className="dropdown">
+                                <NavLink to="/sinh-vat">Sinh Vật<i className="fas fa-caret-down"></i></NavLink>
+                                <div className="dropdown">
                                     <ul>
                                         <li className="dropdown-link">
-                                            <NavLink to="/sinh-vat/tong-quan">Tổng quan</NavLink>
+                                            <NavLink to="/sinh-vat/sach-do?species=1">Sách đỏ</NavLink>
                                         </li>
                                         <li className="dropdown-link">
-                                            <NavLink to="/sinh-vat/tra-cuu">Tra Cứu</NavLink>
-                                        </li>
-                                        <li className="dropdown-link">
-                                            <NavLink to="#">Link 4</NavLink>
+                                            <NavLink to="/sinh-vat">Mẫu gỗ</NavLink>
                                         </li>
                                         <div className="arrow"></div>
                                     </ul>
-                                </div> */}
+                                </div>
                             </li>
                             <li className="nav-link">
                                 <NavLink to="/bai-viet">Bài viết<i className="fas fa-caret-down"></i></NavLink>
                                 <div className="dropdown">
                                     <ul>
                                         <li className="dropdown-link">
-                                            <NavLink to="#">Link 1</NavLink>
+                                            <NavLink to="/bai-viet/danh-phap">Danh Pháp</NavLink>
                                         </li>
                                         <li className="dropdown-link">
-                                            <NavLink to="#">Link 2</NavLink>
+                                            <NavLink to="/bai-viet/cach-viet-bao-cao-khoa-hoc">Cách viết báo cáo khoa học</NavLink>
                                         </li>
                                         <li className="dropdown-link">
-                                            <NavLink to="#">Link 4</NavLink>
+                                            <NavLink to="#">Bài viết</NavLink>
                                         </li>
                                         <div className="arrow"></div>
                                     </ul>

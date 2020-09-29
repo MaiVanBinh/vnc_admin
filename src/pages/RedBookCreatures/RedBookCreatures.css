@@ -1,0 +1,14 @@
+.creature-detail {
+    padding: 0 10px;
+    padding-top: 20px;
+}
+.creature-detail::before {
+    content: '';
+    clear: both;
+    display: table;
+}
+.creature-detail .content {
+    float: left;
+    width: 65%;
+    border-radius: 10px;
+}

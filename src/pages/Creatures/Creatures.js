@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import "./Creatures.css";
 import SearchResult from "../../components/Search/SearchResult/SearchResult";
@@ -7,26 +7,24 @@ import * as actions from "../../store/actions/index";
 import Loading from "../../components/UI/Loader/Loader";
 import Modal from "../../components/UI/Modal/Modal";
 import SimpleSlider from "./OverviewBanner/OverviewBanner";
-import Identification from './Identification/Identification';
+import Identification from "../../components/Identification/Identification";
+import RedBook from "./RedBook/RedBook";
 
 const Creatures = (props) => {
-  useEffect(() => {
-    props.onFetchFilterData();
-    props.onFetchCreatures();
-    props.onFetchHashTagId();
-  }, [props]);
-  
+
   const confirmError = () => {
     props.onDeleteError();
   };
+  
   return (
     <Aux>
-      <SimpleSlider />
-      {props.error ? (
+      {props.creaturesError && props.speciesError ? (
         <Modal show BackdropClicked={confirmError}>
-          {props.error}
+          {props.creaturesError}
+          {props.speciesError}
         </Modal>
       ) : null}
+      <SimpleSlider /> 
       {props.filterDataLoading ? (
         <Loading />
       ) : (
@@ -37,30 +35,25 @@ const Creatures = (props) => {
         </Aux>
       )}
       <Identification />
+      <RedBook />
     </Aux>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    error: state.creatures.error,
+    speciesLoading: state.species.loading,
+    speciesError: state.species.error,
+    creaturesError: state.creatures.error,
+    species: state.species.species,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onFetchFilterData: () => {
-      dispatch(actions.fetchFilterData());
-    },
-    onFetchCreatures: () => {
-      dispatch(actions.fetchCreatures());
-    },
     onDeleteError: () => {
       dispatch(actions.deleteError());
     },
-    onFetchHashTagId: () => {
-      dispatch(actions.fetchHashTagId())
-    }
   };
 };
 

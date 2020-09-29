@@ -27,6 +27,11 @@ const SearchResult = (props) => {
   const [formOption, setFormOption] = useState(null);
 
   const [pageInput, setPageInput] = useState(1);
+  const { onFetchFilterData, filterData, onFetchCreatures } = props;
+  useEffect(() => {
+    onFetchFilterData();
+    onFetchCreatures();
+  }, [onFetchFilterData, onFetchCreatures]);
 
   const initFormOption = useCallback(() => {
     let formInputUpdate = {
@@ -56,16 +61,16 @@ const SearchResult = (props) => {
     setFormOption(formInputUpdate);
   }, [props.filterData]);
   useEffect(() => {
-    if(props.filterData) {
+    if(filterData) {
       initFormOption();
     }
-  }, [initFormOption, props.filterData]);
+  }, [initFormOption, filterData]);
 
   useEffect(() => {
     props.history.push({
       search: ''
     });
-  }, []);
+  }, [props.history]);
 
   const onChangePageInput = (event) => {
     const pageInputUpdate = event.target.value.replace(/[^0-9]/g, "");
@@ -203,7 +208,7 @@ const SearchResult = (props) => {
       <Panigation
         page={pageInput}
         changePageHandler={onChangePageInput}
-        onFetchCreaturesHandler={onFetchCreaturesByPage}
+        onFetchData={onFetchCreaturesByPage}
         numberOfPages={props.numberOfPages}
       />
     </section>
@@ -225,6 +230,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onFetchCreatures: (queryArray) => {
       dispatch(actions.fetchCreatures(queryArray));
+    },
+    onFetchFilterData: () => {
+      dispatch(actions.fetchFilterData());
     },
   };
 };

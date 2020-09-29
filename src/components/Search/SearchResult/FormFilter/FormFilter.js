@@ -1,5 +1,6 @@
 import React from "react";
 import "./FormFilter.css";
+import ButtonCustom from '../../../UI/ButtonCustom/ButtonCustom';
 
 const FormFilter = (props) => {
   const onFormSubmit = (event) => {
@@ -98,16 +99,8 @@ const FormFilter = (props) => {
           />
         </div>
         <div className="btn-box">
-          <button
-            className="button"
-            type="reset"
-            onClick={props.onResetFormInput}
-          >
-            Làm mới<span></span>
-          </button>
-          <button className="button" type="submit">
-            Tìm<span></span>
-          </button>
+          <ButtonCustom title="Làm mới" typeBt="reset" onClickHandle={props.onResetFormInput} />
+          <ButtonCustom title="Tìm" typeBt="submit" />
         </div>
         {radioFilterBox}
         {checkBoxFilter}

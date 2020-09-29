@@ -6,7 +6,7 @@ const creaturesItem = (props) => {
     <div className="card">
       <div className="imgBox">
         <img
-          src={`https://vncreatures.net/pictures/${props.creature.species}/${props.creature.img}.JPG`}
+          src={`https://vncreatures.net/pictures/${props.creature.species}/${props.creature.avatar}.JPG`}
           alt=""
         />
       </div>

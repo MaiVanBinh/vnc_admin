@@ -1,6 +1,3 @@
-.creature-detail .post{
-    float: right;
-    width: 30%;
-    border-radius: 10px;
-    min-height: 400px;
+.panigation-box {
+    width: 100%;
 }

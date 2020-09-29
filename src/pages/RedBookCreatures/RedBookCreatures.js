@@ -1,0 +1,71 @@
+import React, { useEffect, useState } from "react";
+import "./RedBookCreatures.css";
+import { useHistory, useLocation } from "react-router-dom";
+import Table from "../../components/Table/Table";
+import PostSideBar from "../../components/PostSideBar/PostSideBar";
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
+import ButtonChangeSpecies from "./ButtonChangeSpecies/ButtonChangeSpecies";
+import LayoutContainer from "../../components/Layout/LayoutContainer/LayoutContainer";
+import Left from "../../components/Layout/LayoutLR/Left/Left";
+import Right from "../../components/Layout/LayoutLR/Right/Right";
+
+const RedBookCreatures = (props) => {
+  const [species, setSpecies] = useState(null);
+  const location = useLocation();
+  const history = useHistory();
+
+  const { onFetchCreaturesRedBook } = props;
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    let species = 1;
+    for (let param of query.entries()) {
+      if (param[0] === "loai") {
+        species = parseInt(param[1]);
+      }
+    }
+    setSpecies(species);
+    onFetchCreaturesRedBook(species, `species=${species}&all`);
+  }, [location, onFetchCreaturesRedBook, species]);
+
+  const changeSpeciesHandler = (id) => {
+    history.push({
+      search: "?loai=" + id,
+    });
+    setSpecies(id);
+  };
+  return (
+    <LayoutContainer>
+      <Left>
+        <ButtonChangeSpecies changeSpeciesHandler={changeSpeciesHandler} />
+        {species && props.redBook && props.redBook[species] ? (
+          <Table
+            species={species.toString()}
+            creatures={props.redBook[species]}
+          />
+        ) : null}
+      </Left>
+      <Right>
+        <PostSideBar image mode="creatures" />
+      </Right>
+    </LayoutContainer>
+  );
+};
+
+const mapStateToProps = (state) => {
+  return {
+    redBook: state.creatures.redBook,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onFetchCreaturesRedBook: (species, query) => {
+      dispatch(actions.fetchCreatureRedBook(species, query));
+    },
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RedBookCreatures);

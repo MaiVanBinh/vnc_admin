@@ -2,7 +2,8 @@ export {
     fetchCreatures,
     fetchFilterData,
     deleteError,
-    fetchCreatureById
+    fetchCreatureById,
+    fetchCreatureRedBook
 } from './creatures';
 
 export {
@@ -10,3 +11,11 @@ export {
     fetchPost,
     fetchPostDetail
 } from './posts';
+
+export {
+    fetchSpecies
+} from './species';
+
+export {
+    fetchCategory
+} from './category';

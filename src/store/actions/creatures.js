@@ -104,3 +104,27 @@ export const fetchCreatureById = (id) => {
             .catch(err => dispatch(fetchCreatureByIdError(err.message)));
     }
 }
+
+const fetchCreatureRedBookStart = () => {
+    return {
+        type: actionTypes.FETCH_CREATURES_REDBOOK_START
+    }
+}
+
+const fetchCreaturesRedBookSuccess = (species, data) => {
+    return {
+        type: actionTypes.FETCH_CREATURES_REDBOOK_SUCCESS,
+        species: species,
+        creatures: data,
+    }
+}
+
+export const fetchCreatureRedBook = (species ,query) => {
+    return dispatch => {
+        dispatch(fetchCreatureRedBookStart());
+        const url = getApi('GET', 'creatures', 'red-book', query);
+        axios.get(url)
+            .then(res => dispatch(fetchCreaturesRedBookSuccess(species, res.data.data)))
+            .catch(err => dispatch(fetchCreaturesError(err.message)));
+    }
+}

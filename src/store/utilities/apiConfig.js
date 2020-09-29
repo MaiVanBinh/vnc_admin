@@ -4,7 +4,9 @@ const apiName = {
     creatures: 'creatures',
     groups: 'groups',
     filterData: 'filterData',
-    posts: 'posts'
+    posts: 'posts',
+    species: 'species',
+    category: 'category'
 }
 
 /**

@@ -51,7 +51,10 @@ export const fetchPost = (payload) => {
         const query = getQuery(payload);
         const url = getApi('GET', 'posts', null, query);
         axios.get(url)
-            .then(res => dispatch(fetchPostSuccess(payload.category, res.data.data)))
+            .then(res => {
+                let category = payload && payload.category ? payload.category : 'all';
+                return dispatch(fetchPostSuccess(category, res.data.data));
+            })
             .catch(err => dispatch(fetchError(err.message)));
     };
 }
@@ -67,7 +70,6 @@ export const fetchPostDetail = (id) => {
     return dispatch => {
         dispatch(fetchStart());
         const url = getApi('GET', 'posts', id, null);
-        console.log(url);
         axios.get(url)
             .then(res => dispatch(fetchPostDetailSucces(res.data.data)))
             .catch(err => dispatch(fetchError(err.message)));

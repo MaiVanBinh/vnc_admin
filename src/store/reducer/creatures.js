@@ -1,6 +1,6 @@
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utilities/updateObject";
-import {NUMBER_PER_PAGE} from '../../constant';
+import { NUMBER_PER_PAGE } from "../../constant";
 const initState = {
   filterData: null,
   creatures: null,
@@ -8,8 +8,14 @@ const initState = {
   numberOfPages: null,
   loadingFilter: false,
   loadingCreatures: false,
+  redBook: {
+    1: null,
+    2: null,
+    3: null,
+  },
   error: null,
   page: 1,
+  redBookLoading: false
 };
 
 const fetchFilterDataStart = (state, action) => {
@@ -17,7 +23,10 @@ const fetchFilterDataStart = (state, action) => {
 };
 
 const fetchFilterDataSuccess = (state, action) => {
-  return updateObject(state, { filterData: action.filterData.data, loading: false });
+  return updateObject(state, {
+    filterData: action.filterData.data,
+    loadingFilter: false,
+  });
 };
 
 const fetchFilterDataError = (state, action) => {
@@ -36,18 +45,31 @@ const fetchCreaturesStart = (state, action) => {
 };
 
 const fetchCreaturesSuccess = (state, action) => {
-  return updateObject(state, { creatures: action.creatures.creatures, numberOfPages: Math.ceil(action.creatures.total/NUMBER_PER_PAGE)});
+  return updateObject(state, {
+    loadingCreatures: false,
+    creatures: action.creatures.creatures,
+    numberOfPages: Math.ceil(action.creatures.total / NUMBER_PER_PAGE),
+  });
 };
 
 const fetchCreaturesByIdSuccess = (state, action) => {
-  return updateObject(state, {creature: action.creature});
-}
+  return updateObject(state, { creature: action.creature });
+};
 
 const fetchCreaturesByIdError = (state, action) => {
-  return updateObject(state, {error: action.errMessage});
-} 
+  return updateObject(state, { error: action.errMessage });
+};
 
-
+const fetchCreaturesRedBookSucces = (state, action) => {
+  const redBookUpdate = {
+    ...state.redBook,
+    [action.species.toString()]: action.creatures
+  }
+  return updateObject(state, {redBook: redBookUpdate, redBookLoading: false});
+};
+const fetchCreaturesRedBookStart = (state, action) => {
+  return updateObject(state, {redBookLoading: true});
+}
 const reducer = (state = initState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_FILTER_DATA_START:
@@ -62,8 +84,14 @@ const reducer = (state = initState, action) => {
       return fetchCreaturesStart(state, action);
     case actionTypes.FETCH_CREATURES_SUCCESS:
       return fetchCreaturesSuccess(state, action);
-    case actionTypes.FETCH_CREATURES_BY_ID_SUCCESS: return fetchCreaturesByIdSuccess(state, action);
-    case actionTypes.FETCH_CREATURES_BY_ID_ERROR: return fetchCreaturesByIdError(state, action)
+    case actionTypes.FETCH_CREATURES_BY_ID_SUCCESS:
+      return fetchCreaturesByIdSuccess(state, action);
+    case actionTypes.FETCH_CREATURES_BY_ID_ERROR:
+      return fetchCreaturesByIdError(state, action);
+    case actionTypes.FETCH_CREATURES_REDBOOK_SUCCESS:
+      return fetchCreaturesRedBookSucces(state, action);
+    case actionTypes.FETCH_CREATURES_REDBOOK_START:
+      return fetchCreaturesRedBookStart(state, action);
     default:
       return state;
   }
