@@ -56,3 +56,9 @@ button.search-btn {
 .latin-result table td{
     padding: 10px;
 }
+@media (max-width: 550px) {
+    .search-txt {
+        font-size: .6rem;
+        width: 100px;
+    }
+}

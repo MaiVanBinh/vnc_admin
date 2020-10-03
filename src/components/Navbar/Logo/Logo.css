@@ -16,3 +16,8 @@
 .logo span{
     font-weight: 300;
 }
+@media (max-width: 550px) {
+    .logo {
+        font-size: .8rem;
+    }
+}

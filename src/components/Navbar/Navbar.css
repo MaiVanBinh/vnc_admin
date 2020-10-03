@@ -111,7 +111,7 @@ section{
 #check{
     position: absolute;
     top: 50%;
-    right: 0.5rem;
+    right: 30px;
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
@@ -177,6 +177,10 @@ section{
     #check:checked ~ .nav-btn .log-sign{
         animation: animation .5s ease forwards 0.5s;
     }
-
-    
+}
+@media (max-width: 450px){ 
+    .container-nav{
+        /* max-width: 65rem; */
+        padding: 0 1rem;
+    }
 }

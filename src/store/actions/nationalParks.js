@@ -42,8 +42,8 @@ const fetchNationalParkCoordsSuccess = (nationalParks) => {
 export const fetchNationalParkCoords = () => {
     return dispatch => {
         dispatch(nationalParkStart());
-        const url = getApi('GET', 'nationalPark',); 
-        axios.get(url)
+        const url = getApi('GET', 'nationalPark'); 
+        axios.get(url, { })
             .then(res => dispatch(fetchNationalParkCoordsSuccess(res.data.data)))
             .catch(err => dispatch(nationParkError(err.message)));
     }
