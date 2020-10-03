@@ -1,4 +1,4 @@
- .post-card:hover{
+.post-card:hover{
     transform: scale(1.03);
     background-color: #fff;
 }
@@ -76,6 +76,7 @@
     }
     .post-content {
         padding: 0;
+        top: 0 !important;
         height: 100px;
     }
     .post-card .post-content h3 {
@@ -109,6 +110,3 @@
         height: 100px;
     }
 }
-
-
-

@@ -181,6 +181,9 @@ section{
 @media (max-width: 450px){ 
     .container-nav{
         /* max-width: 65rem; */
-        padding: 0 1rem;
+       padding: 0 1rem;
+    }
+    #check {
+        right: 13px;
     }
 }

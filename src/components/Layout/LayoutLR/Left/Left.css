@@ -11,7 +11,7 @@
 .left div[align='right'] img{
   float: left;
   width: 100%;
-  max-width: 600px;
+  max-width: 600px !important;
   border-radius: 10px;
 }
 

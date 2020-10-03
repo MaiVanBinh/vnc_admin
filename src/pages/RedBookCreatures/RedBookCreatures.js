@@ -9,6 +9,7 @@ import ButtonChangeSpecies from "./ButtonChangeSpecies/ButtonChangeSpecies";
 import LayoutContainer from "../../components/Layout/LayoutContainer/LayoutContainer";
 import Left from "../../components/Layout/LayoutLR/Left/Left";
 import Right from "../../components/Layout/LayoutLR/Right/Right";
+import Loading from '../../components/UI/Loader/Loader';
 
 const RedBookCreatures = (props) => {
   const [species, setSpecies] = useState(null);
@@ -34,16 +35,18 @@ const RedBookCreatures = (props) => {
     });
     setSpecies(id);
   };
+  
   return (
     <LayoutContainer>
       <Left>
         <ButtonChangeSpecies changeSpeciesHandler={changeSpeciesHandler} />
-        {species && props.redBook && props.redBook[species] ? (
+        {props.loading ? <Loading /> : (species && props.redBook && props.redBook[species]) ? (
           <Table
             species={species.toString()}
             creatures={props.redBook[species]}
-          />
-        ) : null}
+          />) : null}
+        {/* {
+        ) : null} */}
       </Left>
       <Right>
         <PostSideBar image mode="creatures" />
@@ -55,6 +58,7 @@ const RedBookCreatures = (props) => {
 const mapStateToProps = (state) => {
   return {
     redBook: state.creatures.redBook,
+    loading: state.creatures.redBookLoading
   };
 };
 

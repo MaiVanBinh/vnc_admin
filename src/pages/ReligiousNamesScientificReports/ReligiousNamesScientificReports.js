@@ -31,12 +31,13 @@ const ReligiousNamesScientificReports = (props) => {
 
   return (
     <LayoutContainer>
-      <Left>
-        <CurrentPost />
-      </Left>
       <Right>
           <PostSideBar mode={ isReligiousNames ? "ReligiousNames" :  "ScientificReports"}/>
       </Right>
+      <Left>
+        <CurrentPost />
+      </Left>
+      
     </LayoutContainer>
   );
 };
