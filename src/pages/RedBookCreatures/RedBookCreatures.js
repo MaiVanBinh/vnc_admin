@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./RedBookCreatures.css";
 import { useHistory, useLocation } from "react-router-dom";
 import Table from "../../components/Table/Table";
-import PostSideBar from "../../components/PostSideBar/PostSideBar";
+import PostSideBar from "../../components/SideBar/SideBar";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 import ButtonChangeSpecies from "./ButtonChangeSpecies/ButtonChangeSpecies";

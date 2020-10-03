@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import "./CreaturesDetail.css";
 import * as actions from "../../store/actions/index";
 import DetailHeader from "./DetailHeader/DetailHeader";
-import PostSideBar from "../../components/PostSideBar/PostSideBar";
+import PostSideBar from "../../components/SideBar/SideBar";
 import { withRouter } from "react-router-dom";
 import Left from "../../components/Layout/LayoutLR/Left/Left";
 import Right from "../../components/Layout/LayoutLR/Right/Right";

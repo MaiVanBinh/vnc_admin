@@ -7,7 +7,7 @@ import * as actions from "../../store/actions/index";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import CurrentPost from "../../components/CurrentPost/CurrentPost";
-import PostSideBar from '../../components/PostSideBar/PostSideBar';
+import PostSideBar from '../../components/SideBar/SideBar';
 
 const ReligiousNamesScientificReports = (props) => {
   const [isReligiousNames, setIsReligiousNames] = useState(true);

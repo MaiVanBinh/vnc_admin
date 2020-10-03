@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./Posts.css";
 import { connect } from "react-redux";
 import PostItem from "./PostItem/PostItem";
-import PostSideBar from '../../components/PostSideBar/PostSideBar';
+import PostSideBar from '../../components/SideBar/SideBar';
 import * as actions from "../../store/actions/index";
 import Panigation from "../../components/Panigation/Panigation";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import LayoutContainer from "../../components/Layout/LayoutContainer/LayoutContainer";
 import Left from "../../components/Layout/LayoutLR/Left/Left";
 import Right from '../../components/Layout/LayoutLR/Right/Right';
@@ -13,9 +13,25 @@ import Right from '../../components/Layout/LayoutLR/Right/Right';
 const Posts = (props) => {
   const {onFetchPost} = props;
   const location = useLocation();
-  const [page, setPage] = useState(1);
+  const history = useHistory();
+
   useEffect(() => {
-    // window.addEventListener("scroll", infiniteScroll);
+    const query = new URLSearchParams(location.search);
+    let category = null;
+    let page = 1;
+    for(let param of query.entries()) {
+      if(param[0] === 'loai-bai-viet') {
+        category = param[1];
+      }
+      if(param[0] === 'page') {
+        page = param[1];
+      }
+    }
+    category ? onFetchPost({category: category, limit: 8, page: page }) : onFetchPost({ limit: 8, page: page });
+    console.log(category);
+  }, [onFetchPost, location]);
+
+  const fetchPostsByPageHandler = (page) => {
     const query = new URLSearchParams(location.search);
     let category = null;
     for(let param of query.entries()) {
@@ -23,15 +39,10 @@ const Posts = (props) => {
         category = param[1];
       }
     }
-    category ? onFetchPost({category: category, limit: 8, page: page }) : onFetchPost({ limit: 8, page: page });
-  }, [onFetchPost, page, location]);
-
-  const fetchPostsByPageHandler = (page) => {
-    props.history.push({
-      search: "?page=" + page,
+    const search = category ? `?loai-bai-viet=${category}&page=${page}` : null;
+    history.push({
+      search: search,
     });
-    setPage(page);
-    props.onFetchPost({ limit: 8, page: page });
   };
 
   let postsElement = null;

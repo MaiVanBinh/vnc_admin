@@ -19,3 +19,16 @@ export {
 export {
     fetchCategory
 } from './category';
+
+export {
+    fetchNationParkById,
+    fetchNationalParkCoords
+} from './nationalParks';
+
+export {
+    fetchAuthors
+} from './author';
+
+export {
+    searchLatinDic
+} from './latinDic';

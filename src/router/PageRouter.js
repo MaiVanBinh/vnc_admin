@@ -12,10 +12,6 @@ const publicRoutes = [
         path: "/",
         exact: true,
         component: lazy(() => import('./../pages/Home')),
-    }, {
-        path: "/lien-he",
-        exact: false,
-        component: lazy(() => import('./../pages/Home')),
     },
     {
         path: "/bai-viet/danh-phap",
@@ -40,7 +36,7 @@ const publicRoutes = [
     {
         path: "/vuon-quoc-gia",
         exact: false,
-        component: lazy(() => import('./../pages/NationalParks')),
+        component: lazy(() => import('./../pages/NationalParks/NationalParks')),
     },
     
     {
@@ -62,6 +58,11 @@ const publicRoutes = [
         path: "/sinh-vat",
         exact: false,
         component: lazy(() => import('./../pages/Creatures/Creatures')),
+    },
+    {
+        path: '/lien-he',
+        exact: false,
+        component: lazy(() => import('./../pages/Contact/Contact'))
     }
 ];
 

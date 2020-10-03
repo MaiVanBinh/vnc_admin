@@ -11,16 +11,16 @@
 
 @media(max-width: 1200px){
     .lr-container {
-        padding: 0 30px;
+        padding: 20px 30px;
     }
 }
 @media(max-width: 900px){
     .lr-container {
-        padding: 0 50px;
+        padding: 20px 50px;
     }
 }
 @media(max-width: 550px){
     .lr-container {
-        padding: 0 10px;
+        padding: 20px 10px;
     }
 }

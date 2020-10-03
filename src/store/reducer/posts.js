@@ -28,9 +28,9 @@ const fetchHashTagIdSuccess = (state, action) => {
 const fetchPostsSuccess = (state, action) => {
   switch (action.posts.type) {
     case "1":
-      return updateObject(state, { all_events: action.posts.posts });
+      return updateObject(state, { posts:action.posts.posts, all_events: action.posts.posts });
     case "2":
-      return updateObject(state, { all_species: action.posts.posts });
+      return updateObject(state, { posts:action.posts.posts, all_species: action.posts.posts });
     default:
       return updateObject(state, { posts: action.posts.posts });
   }

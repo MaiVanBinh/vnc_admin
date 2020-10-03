@@ -9,7 +9,7 @@ import * as actions from '../../../store/actions/index';
 const SimpleSlider = (props) => {
   const { onFetchPost } = props;
   useEffect(() => {
-    onFetchPost({category: 'overview'});
+    onFetchPost({category: 7});
   }, [onFetchPost]);
 
   const settings = {

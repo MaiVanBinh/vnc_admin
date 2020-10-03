@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import "./Creatures.css";
-import SearchResult from "../../components/Search/SearchResult/SearchResult";
+import SearchCreatures from "../../components/SearchCreatures/SearchResult/SearchResult";
 import Aux from "../../hoc/Auxiliary";
 import * as actions from "../../store/actions/index";
 import Loading from "../../components/UI/Loader/Loader";
@@ -30,7 +30,7 @@ const Creatures = (props) => {
       ) : (
         <Aux>
           <main className="cd-main-content">
-            <SearchResult />
+            <SearchCreatures />
           </main>
         </Aux>
       )}

@@ -11,7 +11,7 @@ const postItem = (props) => {
         </div>
         <div className="post-content">
           <p>
-            {props.post.category === "all_events"
+            {props.post.category === "2"
               ? "THÔNG TIN MỚI"
               : "TỰ NHIÊN BÍ ẨN"}
           </p>

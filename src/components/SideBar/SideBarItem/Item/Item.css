@@ -1,0 +1,36 @@
+.profile {
+    margin-left: 20px;
+}
+.member-item {
+    clear: both;
+    overflow: hidden;
+    font-size: 16px;
+}
+.profile .name {
+    font-size: 18px;
+    padding-top: 0;
+    display: inline-block;
+    max-width: 130px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+}
+.member-profile .profile .stats {
+    font-size: 15px;
+    color: #9e9e9e;
+    overflow: hidden;
+}
+.stats-item {
+    text-transform: lowercase;
+    font-size: 15px;
+    color: #b2b2b2;
+    padding-right: 4px;
+}
+.post .post-box .list-post li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 20px 0;
+    border-bottom: 1px solid #ccbdbd;
+}

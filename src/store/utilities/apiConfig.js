@@ -1,4 +1,4 @@
-const APP_ROOT = 'http://localhost:8080/';
+const APP_ROOT = 'https://api.vncreatures.net/';
 
 const apiName = {
     creatures: 'creatures',
@@ -6,7 +6,10 @@ const apiName = {
     filterData: 'filterData',
     posts: 'posts',
     species: 'species',
-    category: 'category'
+    category: 'category',
+    nationalPark: 'national-parks',
+    author: 'author',
+    latinDic: 'latin-dic'
 }
 
 /**

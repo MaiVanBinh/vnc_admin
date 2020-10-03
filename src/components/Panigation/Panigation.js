@@ -1,26 +1,27 @@
 import React, {useEffect, useState} from "react";
-import { withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import "./Panigation.css";
 
 const Panigation = (props) => {
   const [page, setPage] = useState(1);
+  const location = useLocation();
 
   const onChangePageHandler = (event) => {
     const page = event.target.value;
     setPage(page.replace(/\D/g, ''));
   }
-  useEffect(() => {
-    const query = new URLSearchParams(props.location.search);
-    for(let param of query.entries()) {
-      if(param[0] === 'page') {
-        setPage(parseInt(param[1]));
-      }
-    }
-  }, [props]);
 
   useEffect(() => {
-    setPage(1)
-  }, []);
+    const query = new URLSearchParams(location.search);
+    let page = 1;
+    for(let param of query.entries()) {
+      if(param[0] === 'page') {
+        page = parseInt(param[1]);
+      }
+    }
+    setPage(page);
+  }, [location]);
+
   const fetchdDataByPageHandler = (mode) => {
     switch(mode) {
       case 'next': {
@@ -88,4 +89,4 @@ const Panigation = (props) => {
   );
 };
 
-export default withRouter(Panigation);
+export default Panigation;

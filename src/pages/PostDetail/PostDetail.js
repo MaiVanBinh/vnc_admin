@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import PostSideBar from "../../components/PostSideBar/PostSideBar";
+import PostSideBar from "../../components/SideBar/SideBar";
 import { useRouteMatch } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";

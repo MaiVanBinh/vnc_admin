@@ -6,7 +6,7 @@ import { getQuery } from '../../../store/utilities/updateObject';
 import Introduction from "./Introduction/Introduction";
 import FormSearch from "./FormFilter/FormFilter";
 import Panigation from "../../Panigation/Panigation";
-import CreaturesItems from "./CreaturesItems/CreaturesItems";
+import CreaturesItems from "../CreaturesItems/CreaturesItems";
 import * as actions from "../../../store/actions/index";
 
 
