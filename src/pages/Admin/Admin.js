@@ -1,27 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import { withRouter } from 'react-router-dom';
-import "./SearchResult.css";
-import { getQuery } from '../../../store/utilities/updateObject';
-import Introduction from "./Introduction/Introduction";
-import FormSearch from "./FormFilter/FormFilter";
-import Panigation from "../../Panigation/Panigation";
-import CreaturesItems from "../CreaturesItems/CreaturesItems";
-import * as actions from "../../../store/actions/index";
+import { withRouter } from "react-router-dom";
+import "../../components/SearchCreatures/SearchResult/SearchResult.css";
+import "./Admin.css";
+import { getQuery } from "../../store/utilities/updateObject";
+import FormSearch from "../../components/SearchCreatures/SearchResult/FormFilter/FormFilter";
+import Panigation from "../../components/Panigation/Panigation";
+import Table from "./Table/Table";
+import * as actions from "../../store/actions/index";
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 const SearchResult = (props) => {
-  const [introduction] = useState({
-    creatureNum: 2000,
-    lastUpdated: "10-10-2020",
-  });
-
   const [formInput, setFormInput] = useState({
     species: 0,
     group: [],
     order: [],
     family: [],
-    name: ''
+    name: "",
   });
 
   const [formOption, setFormOption] = useState(null);
@@ -37,7 +34,7 @@ const SearchResult = (props) => {
     let formInputUpdate = {
       species: {
         label: "Loài",
-        options:  [
+        options: [
           {
             id: "0",
             name_vn: "Tất cả",
@@ -60,16 +57,16 @@ const SearchResult = (props) => {
     };
     setFormOption(formInputUpdate);
   }, [props.filterData]);
-  
+
   useEffect(() => {
-    if(filterData) {
+    if (filterData) {
       initFormOption();
     }
   }, [initFormOption, filterData]);
 
   useEffect(() => {
     props.history.push({
-      search: ''
+      search: "",
     });
   }, [props.history]);
 
@@ -84,15 +81,15 @@ const SearchResult = (props) => {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    console.log('change1')
+    console.log("change1");
     if (name === "species") {
-      console.log('change')
+      console.log("change");
       formInputUpdate.species = parseInt(value);
       formInputUpdate.group = [];
       formInputUpdate.order = [];
       formInputUpdate.family = [];
       formOptionUpdate = updateOptionFollowInput(formInputUpdate);
-    } else if(name === 'creatureName') {
+    } else if (name === "creatureName") {
       formInputUpdate.name = value;
     } else {
       let checked = target.checked;
@@ -123,9 +120,9 @@ const SearchResult = (props) => {
       group: [],
       order: [],
       family: [],
-      name: ''
+      name: "",
     });
-    if(props.filterData) {
+    if (props.filterData) {
       initFormOption();
     }
   };
@@ -182,20 +179,20 @@ const SearchResult = (props) => {
     let queryString = getQuery({ ...formInput, page: 1 });
     props.onFetchCreatures(queryString);
     props.history.push({
-      search: queryString
+      search: queryString,
     });
   };
+
   const onFetchCreaturesByPage = (page) => {
-    let queryString = getQuery({ ...formInput, page: page })
+    let queryString = getQuery({ ...formInput, page: page });
     props.onFetchCreatures(queryString);
     props.history.push({
-      search: queryString
+      search: queryString,
     });
   };
 
   return (
     <section className="cd-gallery">
-      <Introduction introduction={introduction} />
       {formOption ? (
         <FormSearch
           formInput={formInput}
@@ -205,7 +202,28 @@ const SearchResult = (props) => {
           fetchCreaturesHandler={fetchCreaturesHandler}
         />
       ) : null}
-      {props.creatures ? <CreaturesItems creatures={props.creatures} /> : null}
+
+      <div className="admin-container">
+        <Table />
+      </div>
+      <CKEditor
+                    editor={ ClassicEditor.creater }
+                    data="<p>Hello from CKEditor 5!</p>"
+                    onInit={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    onChange={ ( event, editor ) => {
+                        const data = editor.getData();
+                        console.log( { event, editor, data } );
+                    } }
+                    onBlur={ ( event, editor ) => {
+                        console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ ( event, editor ) => {
+                        console.log( 'Focus.', editor );
+                    } }
+                />
       <Panigation
         page={pageInput}
         changePageHandler={onChangePageInput}
@@ -238,4 +256,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SearchResult));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(SearchResult));

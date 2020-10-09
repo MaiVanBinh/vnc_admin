@@ -3,8 +3,13 @@
     justify-content: center;
     align-items: center;
     flex: 1;
+    max-width: 150px;
 }
-
+.log-sign button {
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
 @media (max-width: 920px){
     .log-sign{
         flex: initial;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import './ReligiousNamesScientificReports.css';
+import "./ReligiousNamesScientificReports.css";
 import LayoutContainer from "../../components/Layout/LayoutContainer/LayoutContainer";
 import Left from "../../components/Layout/LayoutLR/Left/Left";
 import Right from "../../components/Layout/LayoutLR/Right/Right";
@@ -7,11 +7,11 @@ import * as actions from "../../store/actions/index";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import CurrentPost from "../../components/CurrentPost/CurrentPost";
-import PostSideBar from '../../components/SideBar/SideBar';
+import PostSideBar from "../../components/SideBar/SideBar";
 
 const ReligiousNamesScientificReports = (props) => {
   const [isReligiousNames, setIsReligiousNames] = useState(true);
-  
+
   const location = useLocation();
   const { onFecthPostDetail, onFetchCategory } = props;
 
@@ -32,12 +32,13 @@ const ReligiousNamesScientificReports = (props) => {
   return (
     <LayoutContainer>
       <Right>
-          <PostSideBar mode={ isReligiousNames ? "ReligiousNames" :  "ScientificReports"}/>
+        <PostSideBar
+          mode={isReligiousNames ? "ReligiousNames" : "ScientificReports"}
+        />
       </Right>
       <Left>
         <CurrentPost />
       </Left>
-      
     </LayoutContainer>
   );
 };
@@ -45,8 +46,11 @@ const ReligiousNamesScientificReports = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onFecthPostDetail: (id) => dispatch(actions.fetchPostDetail(id)),
-    onFetchCategory: (id) => dispatch(actions.fetchCategory())
+    onFetchCategory: (id) => dispatch(actions.fetchCategory()),
   };
 };
 
-export default connect(null, mapDispatchToProps)(ReligiousNamesScientificReports);
+export default connect(
+  null,
+  mapDispatchToProps
+)(ReligiousNamesScientificReports);

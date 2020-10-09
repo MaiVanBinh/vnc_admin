@@ -61,7 +61,7 @@ const PostSideBar = (props) => {
         <SideBarItem
           linkPath="/danh-phap"
           title="Danh Pháp"
-          posts={props.posts}
+          posts={props.religiousNames}
           image={props.image}
           mode={mode}
         />
@@ -74,7 +74,7 @@ const PostSideBar = (props) => {
         <SideBarItem
           linkPath="/cach-viet-bao-cao-khoa-hoc"
           title="Cách viết báo cáo khoa học"
-          posts={props.posts}
+          posts={props.scientificReports}
           image={props.image}
           mode={mode}
         />

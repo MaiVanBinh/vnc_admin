@@ -3,7 +3,7 @@ import SpeciesItem from "./SpeciesItem/SpeciesItem";
 import "./OverviewBanner.css";
 import React, { useEffect } from "react";
 import Slider from "react-slick";
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import * as actions from '../../../store/actions/index';
 
 const SimpleSlider = (props) => {
@@ -11,6 +11,8 @@ const SimpleSlider = (props) => {
   useEffect(() => {
     onFetchPost({category: 7});
   }, [onFetchPost]);
+  
+  const overviewPost = useSelector(state => state.posts.overview);
 
   const settings = {
     dots: true,
@@ -19,12 +21,21 @@ const SimpleSlider = (props) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 300000,
     responsive: [
       {
-        breakpoint: 1120,
+        breakpoint: 1180,
         settings: {
           slidesToShow: 2,
+          slidesToScroll: 2,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 750,
+        settings: {
+          slidesToShow: 1,
           slidesToScroll: 1,
           infinite: true,
           dots: true,
@@ -34,7 +45,7 @@ const SimpleSlider = (props) => {
   };
   return (
     <Slider {...settings} className="container-species">
-      {props.overviews ? props.overviews.map((overview, index) => {
+      {overviewPost ? overviewPost.map((overview, index) => {
         return <SpeciesItem isReverse={index % 2 === 0} key={overview.id} overview={overview} />;
       }) : null}
     </Slider>

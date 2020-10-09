@@ -1,0 +1,86 @@
+.select-box {
+    position: relative;
+    display: flex;
+    width: 200px;
+    flex-direction: column;
+    font-size: 13px;
+    margin-right: 10px;
+  }
+  
+  .select-box .options-container {
+      position: absolute;
+    background: white;
+    color: #000;
+    max-height: 0;
+    width: 100%;
+    opacity: 0;
+    transition: all 0.4s;
+    border-radius: 8px;
+    overflow: hidden;
+    order: 1;
+    top: 30px;
+    z-index: 10;
+    box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .selected {
+    background: white;
+    color: #000;
+    border-radius: 8px;
+    position: relative;
+    order: 0;
+    border: 1px solid #525861;
+  }
+  
+  .selected::after {
+    content: "";
+    background: url("../../../assets/icons/arrow-down.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    right: 10px;
+    top: 6px;
+    transition: all 0.4s;
+  }
+  
+  .select-box .options-container.active {
+    max-height: 240px;
+    opacity: 1;
+    overflow-y: scroll;
+  }
+  
+  .select-box .options-container.active + .selected::after {
+    transform: rotateZ(180deg);
+  }
+  
+  .select-box .options-container::-webkit-scrollbar {
+    width: 8px;
+    background: #fff;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .select-box .options-container::-webkit-scrollbar-thumb {
+    background: #525861;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .select-box .option,
+  .selected {
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  
+  .select-box .option:hover {
+    background: #77cc6d;
+  }
+  
+  .select-box label {
+    cursor: pointer;
+  }
+  
+  .select-box .option .radio {
+    display: none;
+  }
+  

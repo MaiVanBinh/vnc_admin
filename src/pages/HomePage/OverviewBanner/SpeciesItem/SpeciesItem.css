@@ -19,8 +19,8 @@
 .container-species .card .imgBx {
     position: relative;
     left: 25px;
-    width: 500px;
-    height: 400px;
+    width: 700px;
+    height: 600px;
     z-index: 1;
 }
 .container-species .card.row .imgBx {
@@ -37,8 +37,8 @@
 .container-species .card .contentBx {
     position: relative;
     right: 25px;
-    width: 500px;
-    height: 400px;
+    width: 700px;
+    height: 600px;
     background: #fcdab7;
     display: flex;
     justify-content: center;
@@ -78,7 +78,7 @@
     padding: 10px;
     border: 1px solid #000;
 } 
-@media(max-width: 1120px) {
+@media(max-width: 1180px) {
     .container-species .card {
         flex-direction: column;
         max-width: 350px;

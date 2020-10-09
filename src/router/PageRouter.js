@@ -11,7 +11,7 @@ const publicRoutes = [
     {
         path: "/",
         exact: true,
-        component: lazy(() => import('./../pages/Home')),
+        component: lazy(() => import('./../pages/Posts/Posts')),
     },
     {
         path: "/bai-viet/danh-phap",
@@ -63,6 +63,10 @@ const publicRoutes = [
         path: '/lien-he',
         exact: false,
         component: lazy(() => import('./../pages/Contact/Contact'))
+    }, {
+        path: '/admin',
+        exact: false,
+        component: lazy(() => import('./../pages/Admin/Admin'))
     }
 ];
 

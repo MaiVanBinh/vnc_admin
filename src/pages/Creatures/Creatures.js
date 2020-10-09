@@ -6,7 +6,6 @@ import Aux from "../../hoc/Auxiliary";
 import * as actions from "../../store/actions/index";
 import Loading from "../../components/UI/Loader/Loader";
 import Modal from "../../components/UI/Modal/Modal";
-import SimpleSlider from "./OverviewBanner/OverviewBanner";
 import Identification from "../../components/Identification/Identification";
 import RedBook from "./RedBook/RedBook";
 
@@ -24,7 +23,6 @@ const Creatures = (props) => {
           {props.speciesError}
         </Modal>
       ) : null}
-      <SimpleSlider /> 
       {props.filterDataLoading ? (
         <Loading />
       ) : (

@@ -1,62 +1,63 @@
 import React from "react";
 import "./NavigationItems.css";
-import { NavLink } from "react-router-dom";
 
 const navigationItem = (props) => {
   return (
     <div className="nav-links">
       <ul>
         <li className="nav-link">
-          <NavLink exact to="/">
+          <a href="/">
             Trang chủ
-          </NavLink>
+          </a>
         </li>
         <li className="nav-link">
-          <NavLink to="/sinh-vat">
+          <a href="/sinh-vat">
             Sinh Vật<i className="fas fa-caret-down"></i>
-          </NavLink>
+          </a>
           <div className="dropdown">
             <ul>
               <li className="dropdown-link">
-                <NavLink to="/sinh-vat/sach-do?species=1">Sách đỏ</NavLink>
+                <a href="/sinh-vat/sach-do?species=1">Sách đỏ</a>
               </li>
               <li className="dropdown-link">
-                <NavLink to="/sinh-vat">Mẫu gỗ</NavLink>
+                <a href="/sinh-vat">Mẫu gỗ</a>
               </li>
               <div className="arrow"></div>
             </ul>
           </div>
         </li>
-        <li className="nav-link">
-          <NavLink to="/bai-viet">
+        {/* <li className="nav-link">
+          <a href="/bai-viet">
             Bài viết<i className="fas fa-caret-down"></i>
-          </NavLink>
+          </a>
           <div className="dropdown">
             <ul>
               <li className="dropdown-link">
-                <NavLink to="/bai-viet/danh-phap">Danh Pháp</NavLink>
+                <a href="/bai-viet/danh-phap">Danh Pháp</a>
               </li>
               <li className="dropdown-link">
-                <NavLink to="/bai-viet/cach-viet-bao-cao-khoa-hoc">
+                <a href="/bai-viet/cach-viet-bao-cao-khoa-hoc">
                   Cách viết báo cáo khoa học
-                </NavLink>
-              </li>
-              <li className="dropdown-link">
-                <NavLink to="#">Bài viết</NavLink>
+                </a>
               </li>
               <div className="arrow"></div>
             </ul>
           </div>
-        </li>
+        </li> */}
         <li className="nav-link">
-          <NavLink exact to="/vuon-quoc-gia">
+          <a href="/vuon-quoc-gia">
             Vườn quốc gia
-          </NavLink>
+          </a>
         </li>
         <li className="nav-link">
-          <NavLink exact to="/lien-he">
+          <a href="/lien-he">
             Liên hệ
-          </NavLink>
+          </a>
+        </li>
+        <li className="nav-link">
+          <a href="/admin">
+            Admin
+          </a>
         </li>
       </ul>
     </div>

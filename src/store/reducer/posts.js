@@ -28,9 +28,30 @@ const fetchHashTagIdSuccess = (state, action) => {
 const fetchPostsSuccess = (state, action) => {
   switch (action.posts.type) {
     case "1":
-      return updateObject(state, { posts:action.posts.posts, all_events: action.posts.posts });
+      return updateObject(state, {
+        posts: action.posts.posts,
+        all_events: action.posts.posts,
+      });
     case "2":
-      return updateObject(state, { posts:action.posts.posts, all_species: action.posts.posts });
+      return updateObject(state, {
+        posts: action.posts.posts,
+        all_species: action.posts.posts,
+      });
+    case 7:
+      return updateObject(state, {
+        loading: false,
+        overview: action.posts.posts,
+      });
+    case "6":
+      return updateObject(state, {
+        loading: false,
+        religiousNames: action.posts.posts,
+      });
+    case "8":
+      return updateObject(state, {
+        loading: false,
+        scientificReports: action.posts.posts,
+      });
     default:
       return updateObject(state, { posts: action.posts.posts });
   }
