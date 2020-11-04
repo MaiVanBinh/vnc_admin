@@ -63,11 +63,21 @@ const publicRoutes = [
         path: '/lien-he',
         exact: false,
         component: lazy(() => import('./../pages/Contact/Contact'))
+    },{
+        path: '/admin/sinh-vat/:id',
+        exact: false,
+        component: lazy(() => import('./../pages/Admin/AdminCreatureDetail/AdminCreatureDetail'))
     }, {
-        path: '/admin',
+        path: '/admin/sinh-vat',
         exact: false,
         component: lazy(() => import('./../pages/Admin/Admin'))
+    },
+    {
+        path: '/admin/sinh-vat-phan-loai',
+        exact: false,
+        component: lazy(() => import('./../pages/Admin/CreaturesCategories/CreaturesCategories'))
     }
+    
 ];
 
 function PageRouter() {

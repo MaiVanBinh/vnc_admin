@@ -15,6 +15,7 @@ import categoryReducer from './store/reducer/category';
 import nationalParkReducer from './store/reducer/nationalParks';
 import authorReducer from './store/reducer/author';
 import latinDicReducer from './store/reducer/latinDic';
+import authReducer from './store/reducer/auth';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   nationalPark: nationalParkReducer,
   author: authorReducer,
-  latinDic: latinDicReducer
+  latinDic: latinDicReducer,
+  auth: authReducer
 });
 
 const store = createStore(

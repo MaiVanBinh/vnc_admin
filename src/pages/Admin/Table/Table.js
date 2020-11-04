@@ -3,13 +3,19 @@ import "./Table.css";
 import Filter from "./Filter/Filter";
 import { CREATURES } from "../../../models/creatures";
 import { connect } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 const Table = (props) => {
+  const history = useHistory();
+  const clickRowHandler = (id) => {
+    history.push('/admin/sinh-vat/' + id);
+  }
+
   let tabelBody = null;
   if (props.creatures) {
     console.log(props.creatures)
     tabelBody = props.creatures.map((c) => (
-      <tr key={c.id}>
+      <tr key={c.id} onClick={() => clickRowHandler(c.id)}>
         <td>{c.id}</td>
         <td>{c.name_vn}</td>
         <td>{c.name_latin}</td>
@@ -25,6 +31,9 @@ const Table = (props) => {
   }
   return (
     <div className="admin-table">
+      <div className="add-row-button">
+        <button>Thêm mới</button>
+      </div>
       {/* <Filter /> */}
       <table id="customers">
         <thead>

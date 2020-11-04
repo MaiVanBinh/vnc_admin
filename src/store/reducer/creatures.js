@@ -67,9 +67,11 @@ const fetchCreaturesRedBookSucces = (state, action) => {
   }
   return updateObject(state, {redBook: redBookUpdate, redBookLoading: false});
 };
+
 const fetchCreaturesRedBookStart = (state, action) => {
   return updateObject(state, {redBookLoading: true});
-}
+};
+
 const reducer = (state = initState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_FILTER_DATA_START:

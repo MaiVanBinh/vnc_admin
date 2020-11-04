@@ -1,7 +1,11 @@
 import React from "react";
 import "./NavigationItems.css";
+import { useSelector } from 'react-redux';
 
-const navigationItem = (props) => {
+const NavigationItem = (props) => {
+
+  const token = useSelector(state => state.auth.token);
+
   return (
     <div className="nav-links">
       <ul>
@@ -54,14 +58,26 @@ const navigationItem = (props) => {
             Liên hệ
           </a>
         </li>
-        <li className="nav-link">
+        {token ? <li className="nav-link">
           <a href="/admin">
-            Admin
+            Admin<i className="fas fa-caret-down"></i>
           </a>
-        </li>
+          <div className="dropdown">
+            <ul>
+              <li className="dropdown-link">
+                <a href="/admin/sinh-vat">Quản lý sinh vật</a>
+              </li>
+              <li className="dropdown-link">
+                <a href="/admin/sinh-vat-phan-loai">Loài - Lớp - Bộ - Họ</a>
+              </li>
+              <div className="arrow"></div>
+            </ul>
+          </div>
+        </li> : null}
+        
       </ul>
     </div>
   );
 };
 
-export default navigationItem;
+export default NavigationItem;

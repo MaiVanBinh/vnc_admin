@@ -1,0 +1,36 @@
+.ButtonCustom {
+  width: 70px;
+  margin-right: 10px;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+.ButtonCustom i {
+  margin-right: 5px;
+}
+.ButtonCustom.edit {
+  background-color: #008cba;
+}
+.ButtonCustom.delete {
+  background-color: #f44336;
+}
+.ButtonCustom.edit:hover {
+  background-color: #63b7d3;
+}
+.ButtonCustom.delete:hover {
+  background-color: #e0918b;
+}
+.save {
+    background-color: #f783ac;
+}
+.save:hover {
+    background-color: #f5a2bf;
+}
+.cancel {
+    background-color: #15aabf;
+}
+.cancel:hover {
+    background-color: #69d4e2;
+}

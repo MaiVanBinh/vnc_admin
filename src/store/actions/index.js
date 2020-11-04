@@ -3,7 +3,8 @@ export {
     fetchFilterData,
     deleteError,
     fetchCreatureById,
-    fetchCreatureRedBook
+    fetchCreatureRedBook,
+    editCreatureStart
 } from './creatures';
 
 export {
@@ -32,3 +33,9 @@ export {
 export {
     searchLatinDic
 } from './latinDic';
+
+export {
+    login,
+    authCheckState,
+    logout
+} from './Authentication';

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import  * as actionTypes from "./actionTypes";
-import { getApi } from '../utilities/apiConfig';
+import { getApi, baseUrl, headerAuthConfig } from '../utilities/apiConfig';
 
 const fetchFilterDataSuccess = (data) => {
     return {
@@ -126,5 +126,16 @@ export const fetchCreatureRedBook = (species ,query) => {
         axios.get(url)
             .then(res => dispatch(fetchCreaturesRedBookSuccess(species, res.data.data)))
             .catch(err => dispatch(fetchCreaturesError(err.message)));
+    }
+}
+
+export const editCreatureStart = (id, payload, token) => {
+    return dispatch => {
+        dispatch(fetchCreatureByIdStart());
+        const headerCofig = headerAuthConfig(token);
+        console.log(payload);
+        axios.post(`${baseUrl}auth/creatures/${id}`, payload, headerCofig)
+        .then(res => dispatch(fetchCreatureByIdSuccess(res.data.data)))
+        .catch(err => dispatch(fetchCreatureByIdError(err.message)));
     }
 }

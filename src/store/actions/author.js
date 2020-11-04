@@ -22,11 +22,11 @@ const authorError = errMessage => {
     }
 }
 
-export const fetchAuthors = (page) => {
+export const fetchAuthors = (page, isAll) => {
     return dispatch => {
         dispatch(authorStart());
         const cpage = page ? page : 1;
-        const url = getApi('GET', 'author', null, `page=${cpage}`);
+        const url = getApi('GET', 'author', null, `page=${cpage}&` + isAll);
         axios.get(url) 
             .then(res => dispatch(fetchAuthorsSuccess(res.data.data)))
             .catch(err => dispatch(authorError(err.message)));

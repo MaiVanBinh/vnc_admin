@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import "../../components/SearchCreatures/SearchResult/SearchResult.css";
 import "./Admin.css";
 import { getQuery } from "../../store/utilities/updateObject";
@@ -8,8 +8,6 @@ import FormSearch from "../../components/SearchCreatures/SearchResult/FormFilter
 import Panigation from "../../components/Panigation/Panigation";
 import Table from "./Table/Table";
 import * as actions from "../../store/actions/index";
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 const SearchResult = (props) => {
@@ -24,7 +22,7 @@ const SearchResult = (props) => {
   const [formOption, setFormOption] = useState(null);
 
   const [pageInput, setPageInput] = useState(1);
-  const { onFetchFilterData, filterData, onFetchCreatures } = props;
+  const { onFetchFilterData, filterData, onFetchCreatures, token } = props;
   useEffect(() => {
     onFetchFilterData();
     onFetchCreatures();
@@ -193,6 +191,7 @@ const SearchResult = (props) => {
 
   return (
     <section className="cd-gallery">
+      { token ? null : <Redirect to="/" />}
       {formOption ? (
         <FormSearch
           formInput={formInput}
@@ -206,24 +205,6 @@ const SearchResult = (props) => {
       <div className="admin-container">
         <Table />
       </div>
-      <CKEditor
-                    editor={ ClassicEditor.creater }
-                    data="<p>Hello from CKEditor 5!</p>"
-                    onInit={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
-                    } }
-                    onChange={ ( event, editor ) => {
-                        const data = editor.getData();
-                        console.log( { event, editor, data } );
-                    } }
-                    onBlur={ ( event, editor ) => {
-                        console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ ( event, editor ) => {
-                        console.log( 'Focus.', editor );
-                    } }
-                />
       <Panigation
         page={pageInput}
         changePageHandler={onChangePageInput}
@@ -242,6 +223,7 @@ const mapStateToProps = (state) => {
     loadFilterDataErr: state.creatures.error,
     creatures: state.creatures.creatures,
     numberOfPages: state.creatures.numberOfPages,
+    token: state.auth.token
   };
 };
 
