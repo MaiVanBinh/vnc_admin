@@ -3,8 +3,4 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  row-gap: 70px;
-  column-gap: 30px;
-  flex-wrap: wrap;
-  padding: 30px;
 }

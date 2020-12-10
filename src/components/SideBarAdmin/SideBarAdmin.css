@@ -1,0 +1,24 @@
+.main-menu-container  {
+    width: 300px;
+}
+.main-menu-container .menu-item.active {
+    background-color: rgb(245, 245, 245);
+    border-color: rgb(0, 167, 220);
+}
+.main-menu-container .menu-item {
+    padding: 10px;
+    border: 1px solid rgb(217, 217, 217);
+    transition: all 0.2s ease 0s;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.main-menu-container .menu-item .icon {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+}
+.main-menu-container .menu-item span {
+    font-size: 20px;
+}

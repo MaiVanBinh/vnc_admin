@@ -8,33 +8,40 @@ import Loading from "../../components/UI/Loader/Loader";
 import Modal from "../../components/UI/Modal/Modal";
 import Identification from "../../components/Identification/Identification";
 import RedBook from "./RedBook/RedBook";
+import HeadingTitle from "../../components/UI/HeadingTitle/HeadingTitle";
 
 const Creatures = (props) => {
-
   const confirmError = () => {
     props.onDeleteError();
   };
-  
+
   return (
-    <Aux>
-      {props.creaturesError && props.speciesError ? (
-        <Modal show BackdropClicked={confirmError}>
-          {props.creaturesError}
-          {props.speciesError}
-        </Modal>
-      ) : null}
-      {props.filterDataLoading ? (
-        <Loading />
-      ) : (
-        <Aux>
-          <main className="cd-main-content">
-            <SearchCreatures />
-          </main>
-        </Aux>
-      )}
-      <Identification />
-      <RedBook />
-    </Aux>
+    <div style={{ margin: "100px" }}>
+      <div>
+        <HeadingTitle mode="heading" title="Sinh vật rừng Việt Nam" filter />
+        <div>
+          {props.creaturesError && props.speciesError ? (
+            <Modal show BackdropClicked={confirmError}>
+              {props.creaturesError}
+              {props.speciesError}
+            </Modal>
+          ) : null}
+          {props.filterDataLoading ? (
+            <Loading />
+          ) : (
+            <Aux>
+              <main className="cd-main-content">
+                <SearchCreatures />
+              </main>
+            </Aux>
+          )}
+        </div>
+      </div>
+      <div>
+        <RedBook />
+        <Identification />
+      </div>
+    </div>
   );
 };
 

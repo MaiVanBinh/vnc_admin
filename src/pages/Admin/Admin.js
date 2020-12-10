@@ -6,10 +6,21 @@ import "./Admin.css";
 import { getQuery } from "../../store/utilities/updateObject";
 import FormSearch from "../../components/SearchCreatures/SearchResult/FormFilter/FormFilter";
 import Panigation from "../../components/Panigation/Panigation";
-import Table from "./Table/Table";
+import TableAdminvV1 from "../../components/UI/TableAdminvV1/TableAdminvV1";
+
 import * as actions from "../../store/actions/index";
 
-
+const TABLE_CONFIG = {
+  id: 'Id',
+  name_vn: 'Tên tiếng việt',
+  name_latin: 'Tên Latin',
+  species_vn: 'Loài',
+  group_vn: 'Lớp',
+  order_vn: 'Bộ',
+  family_vn: 'Họ',
+  created_at: 'Ngày tạo',
+  created_by: 'Sửa'
+}
 const SearchResult = (props) => {
   const [formInput, setFormInput] = useState({
     species: 0,
@@ -42,15 +53,15 @@ const SearchResult = (props) => {
       },
       group: {
         label: "Nhóm",
-        options: [...props.filterData.group],
+        options: [...props.filterData.groups],
       },
       order: {
         label: "Bộ",
-        options: [...props.filterData.order],
+        options: [...props.filterData.orders],
       },
       family: {
         label: "Họ",
-        options: [...props.filterData.family],
+        options: [...props.filterData.families],
       },
     };
     setFormOption(formInputUpdate);
@@ -192,25 +203,18 @@ const SearchResult = (props) => {
   return (
     <section className="cd-gallery">
       { token ? null : <Redirect to="/" />}
-      {formOption ? (
-        <FormSearch
-          formInput={formInput}
-          formOption={formOption}
-          changeInput={changeInput}
-          onResetFormInput={onResetFormInput}
-          fetchCreaturesHandler={fetchCreaturesHandler}
-        />
-      ) : null}
-
-      <div className="admin-container">
-        <Table />
-      </div>
-      <Panigation
-        page={pageInput}
-        changePageHandler={onChangePageInput}
-        onFetchData={onFetchCreaturesByPage}
-        numberOfPages={props.numberOfPages}
-      />
+      {props.creatures ? <TableAdminvV1
+        tableConfig={TABLE_CONFIG}
+        data={props.creatures}
+        // onViewDetail={onViewDetailHandler}
+        // onEdit={editHandler}
+        // createClick={createNewPost}
+        // deleteClick={deletePost}
+        // fetchData={onFetchDataByPage}
+        numberPage={props.numberOfPages}
+      /> : null}
+      
+      
     </section>
   );
 };

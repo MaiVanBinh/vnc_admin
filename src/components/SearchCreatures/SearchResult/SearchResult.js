@@ -47,15 +47,15 @@ const SearchResult = (props) => {
       },
       group: {
         label: "Nhóm",
-        options: [...props.filterData.group],
+        options: [...props.filterData.groups],
       },
       order: {
         label: "Bộ",
-        options: [...props.filterData.order],
+        options: [...props.filterData.orders],
       },
       family: {
         label: "Họ",
-        options: [...props.filterData.family],
+        options: [...props.filterData.families],
       },
     };
     setFormOption(formInputUpdate);
@@ -133,21 +133,21 @@ const SearchResult = (props) => {
   const updateOptionFollowInput = (formInputUpdate) => {
     let groupUpdateOption;
     if (formInputUpdate.species > 0) {
-      groupUpdateOption = props.filterData.group.filter(
+      groupUpdateOption = props.filterData.groups.filter(
         (g) => parseInt(g.species) === formInputUpdate.species
       );
     } else {
-      groupUpdateOption = [...props.filterData.group];
+      groupUpdateOption = [...props.filterData.groups];
     }
 
     let orderUpdateOption;
     if (formInputUpdate.group.length === 0) {
       const setGroupId = groupUpdateOption.map((g) => g.id);
-      orderUpdateOption = props.filterData.order.filter((o) => {
+      orderUpdateOption = props.filterData.orders.filter((o) => {
         return setGroupId.findIndex((gId) => gId === o.group) > -1;
       });
     } else {
-      orderUpdateOption = props.filterData.order.filter((o) => {
+      orderUpdateOption = props.filterData.orders.filter((o) => {
         return (
           formInputUpdate.group.findIndex((gId) => gId === parseInt(o.group)) >
           -1
@@ -158,11 +158,11 @@ const SearchResult = (props) => {
     let familyUpdateOption;
     if (formInputUpdate.order.length === 0) {
       const setOrderId = orderUpdateOption.map((g) => g.id);
-      familyUpdateOption = props.filterData.family.filter((f) => {
+      familyUpdateOption = props.filterData.families.filter((f) => {
         return setOrderId.findIndex((oId) => oId === f.order) > -1;
       });
     } else {
-      familyUpdateOption = props.filterData.family.filter((f) => {
+      familyUpdateOption = props.filterData.families.filter((f) => {
         return (
           formInputUpdate.order.findIndex((oId) => oId === parseInt(f.order)) >
           -1
@@ -195,7 +195,7 @@ const SearchResult = (props) => {
 
   return (
     <section className="cd-gallery">
-      <Introduction introduction={introduction} />
+      {/* <Introduction introduction={introduction} /> */}
       {formOption ? (
         <FormSearch
           formInput={formInput}

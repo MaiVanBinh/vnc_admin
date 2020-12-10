@@ -22,8 +22,8 @@ const table = (props) => {
   }
   return (
     <div className="redbook-table">
-      <div style={{ textAlign: "center" }}>
-        <Heading styleHeading="heading" title={title} />
+      <div>
+        <Heading styleHeading="heading" title={title} filter/>
       </div>
       <table className="red-table">
         <thead>

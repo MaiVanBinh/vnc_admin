@@ -1,41 +1,62 @@
 export {
-    fetchCreatures,
-    fetchFilterData,
-    deleteError,
-    fetchCreatureById,
-    fetchCreatureRedBook,
-    editCreatureStart
-} from './creatures';
+  fetchCreatures,
+  fetchFilterData,
+  deleteError,
+  fetchCreatureById,
+  fetchCreatureRedBook,
+  editCreatureStart,
+} from "./creatures";
 
 export {
-    fetchHashTagId,
-    fetchPost,
-    fetchPostDetail
-} from './posts';
+  fetchHashTagId,
+  fetchPost,
+  fetchPostDetail,
+  updatePost,
+  postEndForm,
+  createPost,
+  deletePost,
+} from "./posts";
 
 export {
-    fetchSpecies
-} from './species';
+  fetchSpecies,
+  createSpecies,
+  deleteSpecies,
+  endFormSpecies,
+  updateSpecies,
+} from "./species";
+
+export { fetchCategory } from "./category";
+
+export { fetchNationParkById, fetchNationalParkCoords } from "./nationalParks";
+
+export { fetchAuthors } from "./author";
+
+export { searchLatinDic } from "./latinDic";
+
+export { login, authCheckState, logout } from "./Authentication";
 
 export {
-    fetchCategory
-} from './category';
+  fetchGroups,
+  createGroups,
+  endFormGroups,
+  deleteGroup,
+  updateGroup,
+} from "./groups";
 
 export {
-    fetchNationParkById,
-    fetchNationalParkCoords
-} from './nationalParks';
+  fetchOrders,
+  createOrder,
+  endFormOrders,
+  deleteOrder,
+  updateOrder,
+} from "./orders";
 
 export {
-    fetchAuthors
-} from './author';
+  fetchFamilies,
+  createFamily,
+  deleteFamily,
+  updateFamily,
+  endFormFamily,
+} from "./families";
 
-export {
-    searchLatinDic
-} from './latinDic';
-
-export {
-    login,
-    authCheckState,
-    logout
-} from './Authentication';
+export { fetchAssets, createAsset } from "./assets";

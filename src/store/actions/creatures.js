@@ -133,7 +133,6 @@ export const editCreatureStart = (id, payload, token) => {
     return dispatch => {
         dispatch(fetchCreatureByIdStart());
         const headerCofig = headerAuthConfig(token);
-        console.log(payload);
         axios.post(`${baseUrl}auth/creatures/${id}`, payload, headerCofig)
         .then(res => dispatch(fetchCreatureByIdSuccess(res.data.data)))
         .catch(err => dispatch(fetchCreatureByIdError(err.message)));

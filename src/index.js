@@ -16,6 +16,10 @@ import nationalParkReducer from './store/reducer/nationalParks';
 import authorReducer from './store/reducer/author';
 import latinDicReducer from './store/reducer/latinDic';
 import authReducer from './store/reducer/auth';
+import groupsReducer from './store/reducer/groups';
+import ordersReducer from './store/reducer/orders';
+import familiesReducer from './store/reducer/families';
+import assetsReducer from './store/reducer/assets';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -27,7 +31,11 @@ const rootReducer = combineReducers({
   nationalPark: nationalParkReducer,
   author: authorReducer,
   latinDic: latinDicReducer,
-  auth: authReducer
+  auth: authReducer,
+  groups: groupsReducer,
+  orders: ordersReducer,
+  families: familiesReducer,
+  assets: assetsReducer
 });
 
 const store = createStore(

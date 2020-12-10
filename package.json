@@ -14,6 +14,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@tinymce/tinymce-react": "^3.8.0",
     "axios": "^0.20.0",
+    "bootstrap": "^4.5.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-id-swiper": "^4.0.0",

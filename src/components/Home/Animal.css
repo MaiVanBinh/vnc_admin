@@ -1,0 +1,7 @@
+.card-describe {
+    height: 175px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}

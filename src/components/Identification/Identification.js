@@ -12,7 +12,7 @@ const Identification = (props) => {
     }, [onFetchHashTagId])
     return (
         <div className="hashtag">
-            <HeadingTitle title="Hình thái phân loại" center="center"/>
+            <HeadingTitle mode="heading" title="Hình thái phân loại" center="center"/>
             { props.hashTagContent ? 
             <div className="identification">
                 <HashTag title="Động vât" hashTagContent={props.hashTagContent.animal} />

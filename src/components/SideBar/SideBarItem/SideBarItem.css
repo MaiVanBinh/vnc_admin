@@ -5,11 +5,8 @@
     margin-bottom: 100px;
 }
 .post .post-box .post-catagory {
-    border-top: 5px solid #000 ;
-    padding-top: 5px;
-}
-.post .post-box .list-post {
-    padding: 0 20px;
+    border-bottom: 5px solid #000 ;
+    /* padding-top: 5px; */
 }
 .post .post-box > p {
     text-align: right;
@@ -40,7 +37,7 @@
     width: 100px;
 }
 .post .post-box .list-post li .title-post {
-    padding-left: 20px;
+    /* padding-left: 20px; */
     min-width: 200px;
 }
 .post .post-box .list-post li .title-post p{

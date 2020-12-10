@@ -1,0 +1,75 @@
+.admin-post input[type="text"],
+.admin-post select,
+.admin-post textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+.admin-post {
+  padding: 10px;
+}
+.admin-post label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+.admin-post input[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+.admin-post input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.admin-post .container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.admin-post .col-25 {
+  float: left;
+  width: 15%;
+  margin-top: 6px;
+}
+
+.admin-post .col-75 {
+  float: left;
+  width: 85%;
+  margin-top: 6px;
+}
+.admin-post .row {
+  margin-bottom: 50px;
+}
+/* Clear floats after the columns */
+.admin-post .row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .admin-post .col-25,
+  .admin-post .col-75,
+  .admin-post input[type="submit"] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}

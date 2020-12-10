@@ -1,0 +1,43 @@
+.footer{
+	margin-top: 80px;
+	padding: 20px;
+	background-color: #ebebeb;
+}
+.container-footer{
+	display: flex;
+
+}
+.footer-left{
+	flex: 0 0 40%;
+	align-items: center
+}
+.footer-left h4{
+	margin: 0;
+	padding: 10px 0;
+	font-size: 20px;
+	color: #777777;
+}
+.footer-left p, .footer-right p{
+	margin: 0;
+	font-size: 14pt;
+	color: #777777;
+}
+.footer-right{
+	position: relative;
+	flex: 0 0 60%;
+}
+.footer-right p{
+	padding-top: 20px;
+}
+.footer-right span{
+	color: #005826
+}
+@media (max-width: 992px)
+{
+	.footer-left, .footer-right{
+		flex: 0 0 100%;
+	}
+	.container-footer{
+		flex-flow: column;
+	}
+}

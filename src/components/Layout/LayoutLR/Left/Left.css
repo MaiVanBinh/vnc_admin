@@ -6,7 +6,6 @@
 .left img{
   float: left;
   max-width: 600px;
-  border-radius: 10px;
 }
 .left div[align='right'] img{
   float: left;

@@ -1,0 +1,120 @@
+.categories-list-tables {
+    width: 1350px;
+}
+.boxTable {
+    max-height: 1047px;
+    overflow: auto;
+    position: relative;
+    border-radius: 3px;
+    background: #ffffff;
+    border-top: 3px solid #d2d6de;
+    padding-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.boxTable h1 {
+    font-size: 1.2em;
+}
+
+.filterOpt {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.filterOpt div {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}
+.filterOpt div span {
+    margin-right: 20px;
+}
+.filterOpt div input,
+.filterOpt div select {
+    margin-right: 10px;
+    padding: 5px;
+}
+.filterOpt div label {
+    padding: 5px;
+    margin-right: 10px;
+}
+.styled-table {
+    height: 400px;
+    overflow: auto;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    width: 100%;
+}
+.styled-table thead tr {
+    color: rgb(0, 167, 220);;
+    text-align: left;
+    font-weight: 400;
+    border-bottom: 1px solid rgb(217, 217, 217);
+}
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+.tablefooter {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;  
+    margin: 10px 0;
+}
+.tableNavigation {
+    /* margin-top: 10px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.tableNavigation ul{
+    list-style: none;
+    display: inline-block;
+    padding-left: 0;
+
+}
+.tableNavigation ul li {
+    width: 100%;
+    display: inline;
+}
+.tableNavigation ul li a {
+    cursor: pointer;
+    position: relative;
+    float: left;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.42857143;
+}
+.tableNavigation ul li a.active {
+    color: #009879;
+    border: 1px solid #009879;
+}
+.tabelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}

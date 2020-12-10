@@ -1,10 +1,10 @@
 import React from 'react';
 import './HomePage.css';
-import OverviewBanner from './OverviewBanner/OverviewBanner';
+import HomePageV from '../../components/Home/Homepage';
 
 const HomePage = (props) => {
     return (
-        <OverviewBanner />
+        <HomePageV />
     );    
 }
 

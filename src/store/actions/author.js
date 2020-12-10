@@ -27,6 +27,7 @@ export const fetchAuthors = (page, isAll) => {
         dispatch(authorStart());
         const cpage = page ? page : 1;
         const url = getApi('GET', 'author', null, `page=${cpage}&` + isAll);
+        console.log(url)
         axios.get(url) 
             .then(res => dispatch(fetchAuthorsSuccess(res.data.data)))
             .catch(err => dispatch(authorError(err.message)));

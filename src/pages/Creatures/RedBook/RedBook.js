@@ -37,7 +37,7 @@ const RedBook = (props) => {
       ]);
     }
   }
-  return <div>{tables}</div>;
+  return <div className="red-book-main">{tables}</div>;
 };
 
 const mapStateToProps = (state) => {

@@ -54,9 +54,10 @@ const Posts = (props) => {
       <PostItem post={post} key={post.id} />
     ));
   }
+
   return (
     <div>
-      <OverviewBanner />
+      {/* <OverviewBanner /> */}
       <LayoutContainer>
         <Right>
           <PostSideBar mode="category" />
@@ -70,8 +71,8 @@ const Posts = (props) => {
           </div>
         </Left>
         <Right>
-        <PostSideBar mode="ReligiousNames"/>
-        <PostSideBar mode="ScientificReports"/>
+          <PostSideBar mode="ReligiousNames" />
+          <PostSideBar mode="ScientificReports" />
         </Right>
       </LayoutContainer>
     </div>

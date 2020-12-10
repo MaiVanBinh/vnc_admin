@@ -10,7 +10,9 @@ const apiName = {
     category: 'category',
     nationalPark: 'national-parks',
     author: 'author',
-    latinDic: 'latin-dic'
+    latinDic: 'latin-dic',
+    orders: 'orders',
+    families: 'families'
 }
 
 /**

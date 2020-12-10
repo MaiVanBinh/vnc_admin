@@ -11,7 +11,7 @@ const publicRoutes = [
     {
         path: "/",
         exact: true,
-        component: lazy(() => import('./../pages/Posts/Posts')),
+        component: lazy(() => import('./../pages/HomePage/HomePage')),
     },
     {
         path: "/bai-viet/danh-phap",
@@ -76,6 +76,22 @@ const publicRoutes = [
         path: '/admin/sinh-vat-phan-loai',
         exact: false,
         component: lazy(() => import('./../pages/Admin/CreaturesCategories/CreaturesCategories'))
+    },
+    // {
+    //     path: '/admin/bai-viet',
+    //     exact: false,
+    //     component: lazy(() => import('./../pages/Admin/Post/PostDetail/PostDetail'))
+    // },
+    {
+        path: '/admin/bai-viet',
+        exact: false,
+        component: lazy(() => import('./../pages/Admin/Post/Post'))
+    },
+    
+    {
+        path: '/admin/hinh-anh',
+        exact: false,
+        component: lazy(() => import('./../pages/Admin/Asset/Asset'))
     }
     
 ];

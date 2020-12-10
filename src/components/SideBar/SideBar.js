@@ -82,7 +82,7 @@ const PostSideBar = (props) => {
     );
   } else if (mode === "category" && props.category) {
     content = <div>
-      <SideBarItem title="Loại bài viết" posts={props.category} image={props.image} mode={mode} />
+      <SideBarItem title="Loại bài viết" posts={props.category.filter(item => parseInt(item.id) === 1 || parseInt(item.id) === 2)} image={props.image} mode={mode} />
     </div>
   } else if(mode === "nationalParks" && props.nationalParks) {
     const locations = [

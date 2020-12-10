@@ -1,0 +1,14 @@
+.asset-detail-view {
+  padding: 10px 0px;
+}
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.title-asseet {
+  font-weight: 500;
+  color: rgb(51, 51, 51);
+}

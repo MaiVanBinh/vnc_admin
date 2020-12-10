@@ -30,7 +30,7 @@ const NavigationItem = (props) => {
             </ul>
           </div>
         </li>
-        {/* <li className="nav-link">
+        <li className="nav-link">
           <a href="/bai-viet">
             Bài viết<i className="fas fa-caret-down"></i>
           </a>
@@ -47,7 +47,7 @@ const NavigationItem = (props) => {
               <div className="arrow"></div>
             </ul>
           </div>
-        </li> */}
+        </li>
         <li className="nav-link">
           <a href="/vuon-quoc-gia">
             Vườn quốc gia
@@ -69,6 +69,12 @@ const NavigationItem = (props) => {
               </li>
               <li className="dropdown-link">
                 <a href="/admin/sinh-vat-phan-loai">Loài - Lớp - Bộ - Họ</a>
+              </li>
+              <li className="dropdown-link">
+                <a href="/admin/bai-viet">Bài viết</a>
+              </li>
+              <li className="dropdown-link">
+                <a href="/admin/hinh-anh">Hinh anh</a>
               </li>
               <div className="arrow"></div>
             </ul>

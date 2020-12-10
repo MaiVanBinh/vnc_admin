@@ -1,19 +1,22 @@
 .button-custom {
-    outline: none;
-    border: none;
-    /* display: block; */
-    position: relative;
-    padding: 10px 10px;
-    font-size: 100%;
-    background: transparent;
-    cursor: pointer;
-    user-select: none;
-    color: #000;
-    overflow: hidden;
-    border-radius: 11px;
-  
-  }
-.button-custom span {
+  background-color: rgb(0, 167, 220);
+  color: rgb(255, 255, 255);
+  border: 1px solid transparent;
+  transition: all 0.2s ease 0s;
+  padding: 10px 15px;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+.button-custom:hover {
+  color: rgb(0, 167, 220);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(0, 167, 220);
+}
+/* .button-custom span {
     position: absolute;
     left: 0;
     top: 0;
@@ -48,4 +51,4 @@
 .button-custom:active {
     
     transform: scale(1.1);
-  }
+  } */
