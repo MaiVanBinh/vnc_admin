@@ -6,9 +6,12 @@ import { Link } from "react-router-dom";
 
 const TableAdminvV1 = (props) => {
   const [numberOfPage, setNumberOfPage] = useState(0);
+  const [isSearch, setIsSearch] = useState(false);
+  const [keyword, setKeyword] = useState(null);
+
   const [panigation, setPanigation] = useState({
     pageMin: 1,
-    pageItem: 15,
+    pageItem: 5,
   });
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -28,7 +31,6 @@ const TableAdminvV1 = (props) => {
   }, [currentPage]);
 
   const onPanigationHandler = (pageNumber) => {
-    const totalPage = Math.floor(props.totalAssets / 15) + 1;
     const pageMax = panigation.pageMin + panigation.pageItem - 1;
     let currentPageUpdate = pageNumber;
     if (pageNumber === currentPage && pageNumber === 1) {
@@ -37,7 +39,7 @@ const TableAdminvV1 = (props) => {
         pageItem: 10,
         pageMin: pageNumber,
       });
-    } else if (pageNumber === pageMax && pageMax < totalPage) {
+    } else if (pageNumber === pageMax && pageMax < props.numberOfPages) {
       setPanigation({
         pageItem: 10,
         pageMin: pageNumber,
@@ -53,11 +55,8 @@ const TableAdminvV1 = (props) => {
       });
     }
     if (pageNumber === -1) {
-      let pageMin = 1;
-      if (numberOfPage > panigation.pageItem) {
-        pageMin = numberOfPage - 9;
-      }
-      currentPageUpdate = numberOfPage - 1;
+      let pageMin = props.numberOfPages - 5;
+      currentPageUpdate = props.numberOfPages - 1;
       setPanigation({
         pageItem: 10,
         pageMin: pageMin,
@@ -68,13 +67,13 @@ const TableAdminvV1 = (props) => {
   };
 
   let pageContent = [];
-  if (numberOfPage) {
+  if (props.numberOfPages) {
     for (
       let i = panigation.pageMin;
       i < panigation.pageMin + panigation.pageItem;
       i++
     ) {
-      if (i >= numberOfPage) {
+      if (i >= props.numberOfPages) {
         break;
       }
       pageContent.push(
@@ -147,44 +146,73 @@ const TableAdminvV1 = (props) => {
       </tr>
     ));
   }
-  const [marginLeft, setMarginLeft] = useState('300px')
+
+  const searchClickHanler = () => {
+    setIsSearch((prev) => !prev);
+  };
+
+  const onChangeInputHandler = (event) => {
+    setKeyword(event.target.value);
+  };
+
+  const searchHandler = (event) => {
+    event.preventDefault();
+    props.onSearchData(keyword);
+  };
+
   return (
-    <div style={{marginLeft: marginLeft, transition: '0.5s ease-in-out'}}>
+    <div>
       <div className="group-icon-table">
         <div>
           <i
             class="fas fa-bars icon"
             style={{ padding: "5px", borderRadius: "2px" }}
-            onClick={() => {
-              if(marginLeft === '300px') {
-                setMarginLeft('0px')
-              } else {
-                setMarginLeft('300px')
-              }
-            }}
+            onClick={props.sideBarClick}
           ></i>
           <span>|</span>
           <i
             class="fas fa-filter icon"
             style={{ padding: "5px", borderRadius: "2px" }}
+            onClick={props.filterHandler}
           ></i>
         </div>
-        <div>
-          <i
-            class="fas fa-search icon"
-            style={{ padding: "5px", borderRadius: "2px" }}
-          ></i>
-          <i
-            class="fas fa-redo icon"
-            style={{ padding: "5px", borderRadius: "2px" }}
-            onClick={() => props.onFetchAsset(props.token, 1)}
-          ></i>
-          <i
-            class="fas fa-plus icon"
-            style={{ padding: "5px", borderRadius: "2px" }}
-            onClick={() => props.createClick()}
-          ></i>
-        </div>
+
+        {isSearch ? (
+          <div class="search-container">
+            <form onSubmit={searchHandler}>
+              <i class="fa fa-angle-right icon" aria-hidden="true" onClick={() => setIsSearch(false)}></i>
+
+              <input
+                type="text"
+                placeholder="Search.."
+                name="search"
+                onChange={onChangeInputHandler}
+              />
+              <button type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+            </form>
+          </div>
+        ) : (
+          <div>
+            <i
+              class="fas fa-search icon"
+              style={{ padding: "5px", borderRadius: "2px" }}
+              onClick={searchClickHanler}
+            ></i>
+            <i
+              class="fas fa-redo icon"
+              style={{ padding: "5px", borderRadius: "2px" }}
+              // onClick={() => props.onFetchAsset(props.token, 1)}
+              onClick={() => props.resetClick()}
+            ></i>
+            <i
+              class="fas fa-plus icon"
+              style={{ padding: "5px", borderRadius: "2px" }}
+              onClick={() => props.createClick()}
+            ></i>
+          </div>
+        )}
       </div>
       <table className="styled-table">
         <thead>

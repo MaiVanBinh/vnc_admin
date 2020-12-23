@@ -1,7 +1,20 @@
 .main-menu-container  {
+    position: absolute;
+    float: left;
     width: 300px;
+    padding: 0 20px;
+    z-index: 1;
 }
-.main-menu-container .menu-item.active {
+.logo-admin {
+    height: 72px;
+    padding: 10px;
+}
+.logo-admin img {
+    height: 100%;
+    width: 200px;
+}
+.main-menu-container .menu-item.active,
+.main-menu-container .menu-item:hover {
     background-color: rgb(245, 245, 245);
     border-color: rgb(0, 167, 220);
 }

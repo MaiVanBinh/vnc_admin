@@ -70,7 +70,7 @@ const publicRoutes = [
     }, {
         path: '/admin/sinh-vat',
         exact: false,
-        component: lazy(() => import('./../pages/Admin/Admin'))
+        component: lazy(() => import('./../pages/Admin/AdminPage'))
     },
     {
         path: '/admin/sinh-vat-phan-loai',
