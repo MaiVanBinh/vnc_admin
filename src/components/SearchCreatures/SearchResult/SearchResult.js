@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import "./SearchResult.css";
-import { getQuery } from '../../../store/utilities/updateObject';
+import { getQuery } from "../../../store/utilities/updateObject";
 import Introduction from "./Introduction/Introduction";
 import FormSearch from "./FormFilter/FormFilter";
 import Panigation from "../../Panigation/Panigation";
 import CreaturesItems from "../CreaturesItems/CreaturesItems";
 import * as actions from "../../../store/actions/index";
-
+import { useLocation } from "react-router-dom";
 
 const SearchResult = (props) => {
   const [introduction] = useState({
@@ -21,23 +21,52 @@ const SearchResult = (props) => {
     group: [],
     order: [],
     family: [],
-    name: ''
+    name: "",
   });
 
   const [formOption, setFormOption] = useState(null);
 
   const [pageInput, setPageInput] = useState(1);
   const { onFetchFilterData, filterData, onFetchCreatures } = props;
+  const location = useLocation();
+
+  useEffect(() => {
+    let queryString = getQuery({ ...formInput, page: 1 });
+    props.onFetchCreatures(queryString);
+  }, [formInput]);
+
   useEffect(() => {
     onFetchFilterData();
-    onFetchCreatures();
-  }, [onFetchFilterData, onFetchCreatures]);
+    const query = new URLSearchParams(location.search);
+    let name = "";
+    for (let param of query.entries()) {
+      if (param[0] === "name") {
+        name = param[1];
+      }
+    }
+    const formInputUpdate = {
+      species: 0,
+      group: [],
+      order: [],
+      family: [],
+      name: name,
+    };
+    if (name) {
+      const queryString = getQuery({ ...formInputUpdate, page: 1 });
+      onFetchCreatures(queryString);
+    } else {
+      onFetchCreatures();
+    }
+    setFormInput(formInputUpdate);
+  }, [location, onFetchFilterData, onFetchCreatures]);
+
+  useEffect(() => {}, [,]);
 
   const initFormOption = useCallback(() => {
     let formInputUpdate = {
       species: {
         label: "Loài",
-        options:  [
+        options: [
           {
             id: "0",
             name_vn: "Tất cả",
@@ -60,18 +89,12 @@ const SearchResult = (props) => {
     };
     setFormOption(formInputUpdate);
   }, [props.filterData]);
-  
+
   useEffect(() => {
-    if(filterData) {
+    if (filterData) {
       initFormOption();
     }
   }, [initFormOption, filterData]);
-
-  useEffect(() => {
-    props.history.push({
-      search: ''
-    });
-  }, [props.history]);
 
   const onChangePageInput = (event) => {
     const pageInputUpdate = event.target.value.replace(/[^0-9]/g, "");
@@ -84,15 +107,15 @@ const SearchResult = (props) => {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    console.log('change1')
+    console.log("change1");
     if (name === "species") {
-      console.log('change')
+      console.log("change");
       formInputUpdate.species = parseInt(value);
       formInputUpdate.group = [];
       formInputUpdate.order = [];
       formInputUpdate.family = [];
       formOptionUpdate = updateOptionFollowInput(formInputUpdate);
-    } else if(name === 'creatureName') {
+    } else if (name === "creatureName") {
       formInputUpdate.name = value;
     } else {
       let checked = target.checked;
@@ -123,9 +146,9 @@ const SearchResult = (props) => {
       group: [],
       order: [],
       family: [],
-      name: ''
+      name: "",
     });
-    if(props.filterData) {
+    if (props.filterData) {
       initFormOption();
     }
   };
@@ -182,14 +205,14 @@ const SearchResult = (props) => {
     let queryString = getQuery({ ...formInput, page: 1 });
     props.onFetchCreatures(queryString);
     props.history.push({
-      search: queryString
+      search: queryString,
     });
   };
   const onFetchCreaturesByPage = (page) => {
-    let queryString = getQuery({ ...formInput, page: page })
+    let queryString = getQuery({ ...formInput, page: page });
     props.onFetchCreatures(queryString);
     props.history.push({
-      search: queryString
+      search: queryString,
     });
   };
 
@@ -203,15 +226,20 @@ const SearchResult = (props) => {
           changeInput={changeInput}
           onResetFormInput={onResetFormInput}
           fetchCreaturesHandler={fetchCreaturesHandler}
+          showFilter={props.showFilter}
         />
       ) : null}
-      {props.creatures ? <CreaturesItems creatures={props.creatures} /> : null}
-      <Panigation
-        page={pageInput}
-        changePageHandler={onChangePageInput}
-        onFetchData={onFetchCreaturesByPage}
-        numberOfPages={props.numberOfPages}
-      />
+      {props.creatures ? (
+        <div class="main-creatures">
+          <CreaturesItems creatures={props.creatures} />
+          <Panigation
+            page={pageInput}
+            changePageHandler={onChangePageInput}
+            onFetchData={onFetchCreaturesByPage}
+            numberOfPages={props.numberOfPages}
+          />
+        </div>
+      ) : null}
     </section>
   );
 };
@@ -238,4 +266,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SearchResult));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(SearchResult));

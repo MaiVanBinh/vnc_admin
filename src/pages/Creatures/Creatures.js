@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import "./Creatures.css";
 import SearchCreatures from "../../components/SearchCreatures/SearchResult/SearchResult";
@@ -11,14 +11,20 @@ import RedBook from "./RedBook/RedBook";
 import HeadingTitle from "../../components/UI/HeadingTitle/HeadingTitle";
 
 const Creatures = (props) => {
+  const [showFilter, setShowFilter] = useState(false);
+
   const confirmError = () => {
     props.onDeleteError();
   };
 
+  const clickShowFilter = () => {
+    setShowFilter(prev => !prev);
+  }
+
   return (
-    <div style={{ margin: "100px" }}>
+    <div>
       <div>
-        <HeadingTitle mode="heading" title="Sinh vật rừng Việt Nam" filter />
+        <HeadingTitle mode="heading" title="Sinh vật rừng Việt Nam" filter clickShowFilter={clickShowFilter} />
         <div>
           {props.creaturesError && props.speciesError ? (
             <Modal show BackdropClicked={confirmError}>
@@ -31,7 +37,7 @@ const Creatures = (props) => {
           ) : (
             <Aux>
               <main className="cd-main-content">
-                <SearchCreatures />
+                <SearchCreatures showFilter={showFilter}/>
               </main>
             </Aux>
           )}

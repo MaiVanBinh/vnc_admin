@@ -1,5 +1,7 @@
-/* .container-layout {
+.container-layout {
     margin: 0 100px;
+    background-color: #fff;
+    padding: 0 10px;
 }
 @media(max-width: 1000px) {
     .container-layout {
@@ -10,4 +12,5 @@
     .container-layout {
         margin: 0 10px;
     }
-} */
+}
+

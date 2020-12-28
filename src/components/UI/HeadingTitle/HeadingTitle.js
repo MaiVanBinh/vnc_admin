@@ -1,6 +1,7 @@
 import React from "react";
 import "./HeadingTitle.css";
 import Button from "../ButtonCustom/ButtonCustom";
+import Filter from './filter-results-button.svg';
 
 const HeadingTitle = (props) => {
   let style;
@@ -26,7 +27,7 @@ const HeadingTitle = (props) => {
             marginBottom: "10px",
           }}
         >
-          <Button title="Lọc" />
+          <Button title="Lọc" icon={Filter} click={props.clickShowFilter}/>
           <p style={{ fontWeight: "bold", fontSize: "16px" }}>6555 kết quả</p>
         </div>
       ) : null}

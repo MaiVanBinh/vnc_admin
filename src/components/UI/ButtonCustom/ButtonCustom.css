@@ -16,6 +16,12 @@
   background-color: rgb(255, 255, 255);
   border-color: rgb(0, 167, 220);
 }
+.filter-icon {
+  height: 11px;
+  width: 11px;
+  color: #fff;
+  margin-right: 5px;
+}
 /* .button-custom span {
     position: absolute;
     left: 0;

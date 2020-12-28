@@ -10,7 +10,7 @@ const Home = (props) => {
   const [plants, setPlants] = useState(null);
   const [postsNatural, setPostsNatural] = useState(null);
   const [postsNew, setPostsNew] = useState(null);
-
+  const [name, setName] = useState(null);
   useEffect(() => {
     fetch(`${baseUrl}creatures?species=1&page=1&limit=3`)
       .then((res) => res.json())
@@ -36,6 +36,11 @@ const Home = (props) => {
       .then((data) => setPostsNatural(data.data.posts))
       .catch((err) => console.log(err));
   }, []);
+
+  const searchCreatures = () => {
+    window.location.href=`/sinh-vat?name=${name}`;
+  }
+
   return (
     <div>
       <head>
@@ -54,10 +59,11 @@ const Home = (props) => {
               type="text"
               className="input-search"
               placeholder="Tìm kiếm..."
+              onChange={event =>  setName(event.target.value)}
             />
           </div>
           <div className="banner-button">
-            <button className="btn btn-primary">Khám phá</button>
+            <button className="btn btn-primary" onClick={searchCreatures}>Khám phá</button>
           </div>
         </div>
       </div>
@@ -95,5 +101,6 @@ const Home = (props) => {
     </div>
   );
 };
+
 
 export default Home;

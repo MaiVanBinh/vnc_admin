@@ -9,7 +9,7 @@ const SideBarAdmin = (props) => {
       <div className="logo-admin">
         <img src={Logo} />
       </div>
-      <div className="menu-item active">
+      <div className={props.type ===1 ? "menu-item active" : "menu-item"} onClick={() => props.changeType(1)}>
         <span className="icon">
           <svg viewBox="0 0 480 480" width="20" height="20">
             <path
@@ -20,7 +20,7 @@ const SideBarAdmin = (props) => {
         </span>
         <span>Creatures</span>
       </div>
-      <div className="menu-item">
+      <div className={props.type === "species" || props.type === 'orders' ? "menu-item active" : "menu-item"} onClick={() => props.changeType(2)}>
         <span className="icon">
           <svg viewBox="0 0 480 480" width="20" height="20">
             <path
@@ -30,6 +30,18 @@ const SideBarAdmin = (props) => {
           </svg>
         </span>
         <span>Categories</span>
+      </div>
+      <div className={props.type === "species" ? "sup-menu-item active" : "sup-menu-item"} onClick={() => props.changeType("species")}>
+        <span>Species</span>
+      </div>
+      <div className={props.type === "groups" ? "sup-menu-item active" : "sup-menu-item"} onClick={() => props.changeType("groups")}>
+        <span>Groups</span>
+      </div>
+      <div className={props.type === "orders" ? "sup-menu-item active" : "sup-menu-item"} onClick={() => props.changeType("orders")}>
+        <span>Orders</span>
+      </div>
+      <div className={props.type === "families" ? "sup-menu-item active" : "sup-menu-item"} onClick={() => props.changeType("families")}>
+        <span>Family</span>
       </div>
       <div className="menu-item">
         <span className="icon">

@@ -5,6 +5,7 @@ export {
   fetchCreatureById,
   fetchCreatureRedBook,
   editCreatureStart,
+  createCreature
 } from "./creatures";
 
 export {

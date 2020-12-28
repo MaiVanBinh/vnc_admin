@@ -1,6 +1,6 @@
 import React from "react";
 const ThucVat = (props) => {
-    console.log(props.plants)
+  
   const plants = [];
   for (let i = 0; i < props.plants.length; i += 2) {
     plants.push(

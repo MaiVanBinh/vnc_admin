@@ -216,7 +216,7 @@ const AdminCreatureDetail = (props) => {
                 name="family"
                 defaultValue={creature.family}
               >
-                {filterData.family.map((f) => (
+                {filterData.families.map((f) => (
                   <option value={f.id} key={f.id}>
                     {f.name_vn}
                   </option>
@@ -235,7 +235,7 @@ const AdminCreatureDetail = (props) => {
                 name="order"
                 onChange={onChangeInfoHandler}
               >
-                {filterData.order.map((o) => (
+                {filterData.orders.map((o) => (
                   <option value={o.id} key={o.id}>
                     {o.name_vn}
                   </option>
@@ -254,7 +254,7 @@ const AdminCreatureDetail = (props) => {
                 name="group"
                 onChange={onChangeInfoHandler}
               >
-                {filterData.group.map((g) => (
+                {filterData.groups.map((g) => (
                   <option value={g.id} key={g.id}>
                     {g.name_vn}
                   </option>

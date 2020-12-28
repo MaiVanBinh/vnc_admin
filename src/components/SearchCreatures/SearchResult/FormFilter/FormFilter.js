@@ -88,16 +88,16 @@ const FormFilter = (props) => {
   }
 
   return (
-    <div className="cd-filter">
+    <div className="cd-filter" style={props.showFilter ? {transform: 'translateX(-300px)', transition: '0.3s ease-in-out', width: '0px'} : null}>
       <form onSubmit={onFormSubmit}>
-        <div className="btn-box">
+        {/* <div className="btn-box">
           <ButtonCustom
             title="Làm mới"
             typeBt="reset"
             onClickHandle={props.onResetFormInput}
           />
           <ButtonCustom title="Tìm" typeBt="submit" />
-        </div>
+        </div> */}
         <div className="input-name">
           <input
             name="creatureName"

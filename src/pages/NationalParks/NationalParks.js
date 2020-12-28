@@ -67,6 +67,9 @@ const NationalParks = (props) => {
 
   return (
     <LayoutContainer>
+      <Right>
+        <PostSideBar mode="nationalParks" mapImage={isDetail} />
+      </Right>
       <Left>
         <div>
           <HeadingTitle
@@ -76,9 +79,7 @@ const NationalParks = (props) => {
           <div className="np-center">{content}</div>
         </div>
       </Left>
-      <Right>
-        <PostSideBar mode="nationalParks" mapImage={isDetail} />
-      </Right>
+      
     </LayoutContainer>
   );
 };

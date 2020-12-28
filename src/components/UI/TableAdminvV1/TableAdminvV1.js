@@ -11,7 +11,7 @@ const TableAdminvV1 = (props) => {
 
   const [panigation, setPanigation] = useState({
     pageMin: 1,
-    pageItem: 5,
+    pageItem: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -22,10 +22,11 @@ const TableAdminvV1 = (props) => {
   }, [props.onFetchAsset, currentPage]);
 
   useEffect(() => {
-    if (props.totalAssets > 0) {
-      setNumberOfPage(props.numberPage);
+    if (props.total > 0) {
+      setNumberOfPage(Math.floor(props.total/10));
     }
-  }, [props.numberPage]);
+  }, [props.total]);
+  
   useEffect(() => {
     props.onFetchAsset(props.token, currentPage);
   }, [currentPage]);
@@ -67,13 +68,13 @@ const TableAdminvV1 = (props) => {
   };
 
   let pageContent = [];
-  if (props.numberOfPages) {
+  if (numberOfPage) {
     for (
       let i = panigation.pageMin;
       i < panigation.pageMin + panigation.pageItem;
       i++
     ) {
-      if (i >= props.numberOfPages) {
+      if (i >= numberOfPage) {
         break;
       }
       pageContent.push(
@@ -88,7 +89,7 @@ const TableAdminvV1 = (props) => {
       );
     }
   }
-
+  console.log(numberOfPage);
   let tabelHeader = [];
   if (props.tableConfig) {
     for (const property in props.tableConfig) {
@@ -264,8 +265,8 @@ const TableAdminvV1 = (props) => {
 const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
-    assets: state.assets.assets,
-    totalAssets: state.assets.total,
+    // assets: state.assets.assets,
+    // totalAssets: state.assets.total,
   };
 };
 

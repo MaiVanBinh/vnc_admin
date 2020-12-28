@@ -102,6 +102,10 @@ const Creatures = (props) => {
     });
   };
 
+  const createCreatures = () => {
+    window.location.href = '/admin/sinh-vat/create';
+  }
+  
   return (
     <section className="cd-gallery">
       <Modal show={showModal} modalClosed={modelShowHandler}>
@@ -117,7 +121,7 @@ const Creatures = (props) => {
           onViewDetail={onViewDetailHandler}
           onEdit={onViewDetailHandler}
           resetClick={onResetFormInput}
-          // createClick={createNewPost}
+          createClick={createCreatures}
           // deleteClick={deletePost}
           onSearchData={fetchCreaturesHandler}
           fetchData={onFetchCreaturesByPage}

@@ -1,0 +1,8 @@
+.formDelete p,
+.formDelete div{
+    margin: 15px;
+    text-align: center;
+}
+.formDelete p {
+    font-size: 16px;
+}

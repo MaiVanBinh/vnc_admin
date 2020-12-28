@@ -40,6 +40,7 @@ const TableAdmin = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentEdit, setCurrentEdit] = useState(null);
   const [filter, setFilter] = useState(null);
+  
   useEffect(() => {
     switch (label) {
       case "species": {
@@ -62,6 +63,7 @@ const TableAdmin = (props) => {
         break;
     }
   }, [currentPage, entires]);
+  
   useEffect(() => {
     switch (label) {
       case "groups":

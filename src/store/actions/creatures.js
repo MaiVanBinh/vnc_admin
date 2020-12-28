@@ -138,3 +138,13 @@ export const editCreatureStart = (id, payload, token) => {
         .catch(err => dispatch(fetchCreatureByIdError(err.message)));
     }
 }
+
+export const createCreature = (payload, token) => {
+    return dispatch => {
+        dispatch(fetchCreatureByIdStart());
+        const headerCofig = headerAuthConfig(token);
+        axios.post(`${baseUrl}auth/creatures`, payload, headerCofig)
+        .then(res => dispatch(fetchCreatureByIdSuccess(res.data.data)))
+        .catch(err => dispatch(fetchCreatureByIdError(err.message)));
+    }
+}

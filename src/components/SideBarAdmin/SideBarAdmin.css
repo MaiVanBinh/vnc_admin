@@ -35,3 +35,14 @@
 .main-menu-container .menu-item span {
     font-size: 20px;
 }
+.sup-menu-item {
+    padding: 10px;
+    transition: all 0.2s ease 0s;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.sup-menu-item.active,
+.sup-menu-item:hover {
+    color: rgb(0, 167, 220);;
+}

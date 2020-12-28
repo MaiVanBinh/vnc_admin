@@ -61,6 +61,8 @@ const Posts = (props) => {
       <LayoutContainer>
         <Right>
           <PostSideBar mode="category" />
+          <PostSideBar mode="ReligiousNames" />
+          <PostSideBar mode="ScientificReports" />
         </Right>
         <Left>
           <div className="post-list-box">
@@ -71,8 +73,7 @@ const Posts = (props) => {
           </div>
         </Left>
         <Right>
-          <PostSideBar mode="ReligiousNames" />
-          <PostSideBar mode="ScientificReports" />
+          
         </Right>
       </LayoutContainer>
     </div>
