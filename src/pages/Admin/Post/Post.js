@@ -18,25 +18,31 @@ const TABLE_CONFIG = {
 };
 
 const Post = (props) => {
-  const [entries, setEntries] = useState(15);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editPost, setEditPost] = useState(null);
   const [isDelete, setIsDelete] = useState(false);
   const [postDelete, setPostDelete] = useState(null);
-  const [numberPage, setNumberPage] = useState(0);
-  useEffect(() => {
-    if (props.totalPost > 0) {
-      setNumberPage(Math.floor(props.totalPost / entries) + 2);
-    }
-  }, [props.totalPost]);
+  const [searchKey, setSearchKey] = useState(null);
+
+  const changeSearchKeyHandler = (key) => {
+    console.log(key);
+    setSearchKey(key);
+  }
 
   useEffect(() => {
-    props.onFetchPost({ categories: "", limit: 15, page: 1 });
-  }, []);
-  const onFetchDataByPage = (page) => {
-    props.onFetchPost({ categories: "", limit: 15, page: page })
+    if(searchKey) {
+      props.onFetchPost({ categories: "", limit: 10, page: currentPage, title: searchKey});
+    } else {
+      props.onFetchPost({ categories: "", limit: 10, page: currentPage });
+    }
+    
+  }, [searchKey, currentPage]);
+
+  const onChangeCurrentPage = (page) => {
+    setCurrentPage(page);  
   }
+
   const onViewDetailHandler = (item) => {
     const link = window.location.origin + "/bai-viet/" + item.id;
     window.open(link, "_blank");
@@ -88,6 +94,7 @@ const Post = (props) => {
           deleteSuccess={props.formSubmit}
         />
       </Modal>
+
       <TableAdminvV1
         tableConfig={TABLE_CONFIG}
         data={props.posts}
@@ -95,8 +102,9 @@ const Post = (props) => {
         onEdit={editHandler}
         createClick={createNewPost}
         deleteClick={deletePost}
-        fetchData={onFetchDataByPage}
-        numberPage={numberPage}
+        fetchData={onChangeCurrentPage}
+        total={props.totalPost}
+        onSearchData={changeSearchKeyHandler}
       />
     </div>
   );

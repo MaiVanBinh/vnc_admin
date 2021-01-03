@@ -19,7 +19,7 @@ const AssetDetail = (props) => {
       </div>
       <div class="asset-detail">
         <div class="asset-info-com asset-img">
-          <img src={props.asset && props.asset.url ? props.asset.url : null} />
+          <img src={props.asset && props.asset.url ? props.asset.url : null} alt="" />
         </div>
         <div class="asset-info-com">
           <div class="group-info">

@@ -1,16 +1,15 @@
 import React, { useEffect, useCallback } from "react";
 import "./RedBook.css";
 import { connect } from "react-redux";
-import Table from "../../../components/Table/Table";
 import * as actions from "../../../store/actions/index";
+import RedBookItem from "./RedBookItem/RedBookItem";
 
 const RedBook = (props) => {
-
-    const { onFetchCreaturesRedBook, redBook } = props;
+  const { onFetchCreaturesRedBook, redBook } = props;
 
   const fetchData = useCallback(() => {
     if (!redBook["1"]) {
-        onFetchCreaturesRedBook(1, "species=1");
+      onFetchCreaturesRedBook(1, "species=1");
     }
     if (!redBook["2"]) {
       onFetchCreaturesRedBook(2, "species=2");
@@ -24,20 +23,26 @@ const RedBook = (props) => {
     fetchData();
   }, [fetchData, props.species]);
 
-  let tables = [];
+  let mainContent = [];
   if (props.redBook["1"] && props.redBook["2"] && props.redBook["3"]) {
-    for (let key in props.redBook) {
-      tables.push([
-        <Table
-          key={key}
-          species={key}
-          creatures={props.redBook[key]}
-          showMore
+    for (const key in props.redBook) {
+      mainContent.push([
+        <RedBookItem
+          title={
+            key === "1"
+              ? "Động vật sách đỏ"
+              : key === "2"
+              ? "Thực vật sách đỏ"
+              : "Côn Trùng sách đỏ"
+          }
+          data={props.redBook[key]}
+          mode={key}
         />,
       ]);
     }
   }
-  return <div className="red-book-main">{tables}</div>;
+  // return <div classNameName="">{tables}</div>;
+  return <div className="red-book-main">{mainContent}</div>;
 };
 
 const mapStateToProps = (state) => {

@@ -21,7 +21,7 @@ const ButtonChangeSpecies = (props) => {
     ]
     return(
         <div className="species-boxbtn">
-            {btnContent.map(btn => <ButtonCustom title={btn.title} key={btn.id} onClickHandle={() => {props.changeSpeciesHandler(btn.id)}} />)}
+            {btnContent.map(btn => <ButtonCustom title={btn.title} key={btn.id} click={() => {props.changeSpeciesHandler(btn.id)}} />)}
         </div>
     );
 }

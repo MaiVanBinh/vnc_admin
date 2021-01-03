@@ -9,7 +9,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import LayoutContainer from "../../components/Layout/LayoutContainer/LayoutContainer";
 import Left from "../../components/Layout/LayoutLR/Left/Left";
 import Right from "../../components/Layout/LayoutLR/Right/Right";
-import OverviewBanner from "../HomePage/OverviewBanner/OverviewBanner";
+// import OverviewBanner from "../HomePage/OverviewBanner/OverviewBanner";
 
 const Posts = (props) => {
   const { onFetchPost } = props;

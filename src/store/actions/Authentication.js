@@ -1,4 +1,3 @@
-import Axios from "axios";
 import {
   LOGIN_ERROR,
   LOGIN_START,

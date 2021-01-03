@@ -16,13 +16,13 @@ const ordersError = (errMessage) => {
     error: errMessage,
   };
 };
-export const fetchOrders = (entires, page) => {
+export const fetchOrders = (entires, page, filter) => {
   return (dispatch) => {
     const api = getApi(
       "GET",
       "orders",
       null,
-      `entires=${entires}&page=${page}`
+      `entires=${entires}&page=${page}&${filter}`
     );
     axios
       .get(api)

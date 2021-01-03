@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import "./FormCreateUpdate.css";
 
 const FormCreateUpdate = (props) => {
   return (
-    <div class="asset-detail-view">
-      <div class="detail-header">
-        <h3 class="title-asseet">{props.titleForm}</h3>
+    <div className="asset-detail-view">
+      <div className="detail-header">
+        <h3 className="title-asseet">{props.titleForm}</h3>
         <div onClick={props.onCloseHandler} style={{ cursor: "pointer" }}>
           <svg viewBox="0 0 31.112 31.112" width="20" height="20">
             <path

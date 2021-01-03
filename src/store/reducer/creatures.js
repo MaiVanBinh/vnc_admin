@@ -15,6 +15,7 @@ const initState = {
   },
   error: null,
   page: 1,
+  total: 0,
   redBookLoading: false
 };
 
@@ -48,6 +49,7 @@ const fetchCreaturesSuccess = (state, action) => {
   return updateObject(state, {
     loadingCreatures: false,
     creatures: action.creatures.creatures,
+    total: action.creatures.total,
     numberOfPages: Math.ceil(action.creatures.total / NUMBER_PER_PAGE),
   });
 };

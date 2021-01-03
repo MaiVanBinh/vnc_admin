@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./PostDetail.css";
 import { Editor } from "@tinymce/tinymce-react";
-import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../../../store/actions/index";
 import FormCreateUpdate from "../../../../components/FormCreateUpdate/FormCreateUpdate";
@@ -37,7 +36,7 @@ const PostDetail = (props) => {
     }
     props.onFetchAuthor();
     props.onFetchCategory();
-  }, []);
+  }, [props]);
   useEffect(() => {
     if (props.editPost) {
       setFormInput({
@@ -203,9 +202,7 @@ const PostDetail = (props) => {
                     "insertdatetime media table paste code help wordcount",
                   ],
                   toolbar1:
-                    "undo redo | formatselect | bold italic backcolor | \
-             alignleft aligncenter alignright alignjustify | \
-             bullist numlist outdent indent | removeformat | help",
+                    "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
                   toolbar2: "forecolor backcolor emoticons",
                 }}
                 value={formInput.content}

@@ -23,8 +23,8 @@ const Creatures = (props) => {
 
   return (
     <div>
-      <div>
-        <HeadingTitle mode="heading" title="Sinh vật rừng Việt Nam" filter clickShowFilter={clickShowFilter} />
+      <div style={{margin: '0 100px'}}>
+        <HeadingTitle mode="heading" title="Sinh vật rừng Việt Nam" filter clickShowFilter={clickShowFilter} total={props.totalCreatures}/>
         <div>
           {props.creaturesError && props.speciesError ? (
             <Modal show BackdropClicked={confirmError}>
@@ -43,9 +43,10 @@ const Creatures = (props) => {
           )}
         </div>
       </div>
-      <div>
+
+      <div style={{margin: '0 100px'}}> 
+      <Identification />
         <RedBook />
-        <Identification />
       </div>
     </div>
   );
@@ -57,6 +58,7 @@ const mapStateToProps = (state) => {
     speciesError: state.species.error,
     creaturesError: state.creatures.error,
     species: state.species.species,
+    totalCreatures: state.creatures.total
   };
 };
 

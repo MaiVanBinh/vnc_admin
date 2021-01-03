@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter, Redirect } from "react-router-dom";
 import "../../../components/SearchCreatures/SearchResult/SearchResult.css";
@@ -117,7 +117,7 @@ const Creatures = (props) => {
           filterHandler={modelShowHandler}
           tableConfig={TABLE_CONFIG}
           data={props.creatures}
-          sideBarClick={props.sideBarClick}
+          sideBarClick={props.sideBarHanlder}
           onViewDetail={onViewDetailHandler}
           onEdit={onViewDetailHandler}
           resetClick={onResetFormInput}
@@ -125,6 +125,7 @@ const Creatures = (props) => {
           // deleteClick={deletePost}
           onSearchData={fetchCreaturesHandler}
           fetchData={onFetchCreaturesByPage}
+          total={props.total}
           numberOfPages={props.numberOfPages}
         />
       ) : null}
@@ -141,6 +142,7 @@ const mapStateToProps = (state) => {
     creatures: state.creatures.creatures,
     numberOfPages: state.creatures.numberOfPages,
     token: state.auth.token,
+    total: state.creatures.total
   };
 };
 

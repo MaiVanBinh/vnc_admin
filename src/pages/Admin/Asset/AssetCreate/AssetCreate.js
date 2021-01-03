@@ -19,7 +19,7 @@ const AssetCreate = (props) => {
     <div class="asset-detail-view">
       <div class="detail-header">
         <h3 class="title-asseet">Tạo mới</h3>
-        <div onClick={props.onCloseHandler} style={{ cursor: "pointer" }}>
+        <div onClick={props.cancleCreate} style={{ cursor: "pointer" }}>
           <svg viewBox="0 0 31.112 31.112" width="20" height="20">
             <path
               fill="#333333"

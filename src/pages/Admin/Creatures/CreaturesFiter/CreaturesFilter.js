@@ -166,7 +166,7 @@ const CreaturesFilter = (props) => {
               >
                 {formOption && formOption.species
                   ? formOption.species.map((item) => (
-                      <option value={item.id}>{item.name_vn}</option>
+                      <option value={item.id} key={item.id}>{item.name_vn}</option>
                     ))
                   : null}
               </select>
@@ -180,12 +180,13 @@ const CreaturesFilter = (props) => {
               <select
                 id="group"
                 name="group"
-                value={formInput.group}
+                value={formInput.group ? formInput.group[0] : null}
                 onChange={changeInput}
+                multiple={false}
               >
                 {formOption && formOption.group
                   ? formOption.group.map((item) => (
-                      <option value={item.id}>{item.name_vn}</option>
+                      <option value={item.id} key={item.id}>{item.name_vn}</option>
                     ))
                   : null}
               </select>
@@ -199,12 +200,12 @@ const CreaturesFilter = (props) => {
               <select
                 id="order"
                 name="order"
-                value={formInput.order}
+                value={formInput.order ? formInput.order[0] : null}
                 onChange={changeInput}
               >
                 {formOption && formOption.order
                   ? formOption.order.map((item) => (
-                      <option value={item.id}>{item.name_vn}</option>
+                      <option value={item.id} key={item.id}>{item.name_vn}</option>
                     ))
                   : null}
               </select>
@@ -218,12 +219,12 @@ const CreaturesFilter = (props) => {
               <select
                 id="family"
                 name="family"
-                value={formInput.family}
+                value={formInput.family ? formInput.family[0] : null}
                 onChange={changeInput}
               >
                 {formOption && formOption.family
                   ? formOption.family.map((item) => (
-                      <option value={item.id}>{item.name_vn}</option>
+                      <option value={item.id} key={item.id}>{item.name_vn}</option>
                     ))
                   : null}
               </select>

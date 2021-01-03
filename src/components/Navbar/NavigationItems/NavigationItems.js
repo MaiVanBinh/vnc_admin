@@ -60,25 +60,8 @@ const NavigationItem = (props) => {
         </li>
         {token ? <li className="nav-link">
           <a href="/admin">
-            Admin<i className="fas fa-caret-down"></i>
+            Admin
           </a>
-          <div className="dropdown">
-            <ul>
-              <li className="dropdown-link">
-                <a href="/admin/sinh-vat">Quản lý sinh vật</a>
-              </li>
-              <li className="dropdown-link">
-                <a href="/admin/sinh-vat-phan-loai">Loài - Lớp - Bộ - Họ</a>
-              </li>
-              <li className="dropdown-link">
-                <a href="/admin/bai-viet">Bài viết</a>
-              </li>
-              <li className="dropdown-link">
-                <a href="/admin/hinh-anh">Hinh anh</a>
-              </li>
-              <div className="arrow"></div>
-            </ul>
-          </div>
         </li> : null}
         
       </ul>

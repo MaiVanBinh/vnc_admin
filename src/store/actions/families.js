@@ -16,13 +16,13 @@ const familiesError = (errMessage) => {
     error: errMessage,
   };
 };
-export const fetchFamilies = (entires, page) => {
+export const fetchFamilies = (entires, page, filter) => {
   return (dispatch) => {
     const api = getApi(
       "GET",
       "families",
       null,
-      `entires=${entires}&page=${page}`
+      `entires=${entires}&page=${page}&${filter}`
     );
     axios
       .get(api)

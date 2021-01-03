@@ -3,8 +3,9 @@ import "./AdminPage.css";
 import Creatures from "./Creatures/Creatures";
 import SideBarAdmin from "../../components/SideBarAdmin/SideBarAdmin";
 import CreaturesCategories from './CreaturesCategories/CreaturesCategories';
-import Families from "./CreaturesCategories/Families/Families";
 import Posts from './Post/Post';
+import Assets from './Asset/Asset';
+import Users from './Users/Users';
 
 const AdminPage = (props) => {
   // type 1: show page creatures
@@ -26,7 +27,7 @@ const AdminPage = (props) => {
   let adminContent = null;
   switch(type) {
     case 1: {
-      adminContent = <Creatures sideBarClick={sideBarHanlder}/>
+      adminContent = <Creatures sideBarHanlder={sideBarHanlder}/>
       break;
     }
     case 2: {
@@ -38,18 +39,26 @@ const AdminPage = (props) => {
       break;
     }
     case "groups": {
-      adminContent = <CreaturesCategories type="groups"/>;
+      adminContent = <CreaturesCategories type="groups" sideBarHanlder={sideBarHanlder}/>;
       break;
     }
     case "orders": {
-      adminContent = <CreaturesCategories type="orders"/>;
+      adminContent = <CreaturesCategories type="orders" sideBarHanlder={sideBarHanlder}/>;
       break;
     }
     case "families": 
-      adminContent = <CreaturesCategories type="families"/>;
+      adminContent = <CreaturesCategories type="families" sideBarHanlder={sideBarHanlder}/>;
       break;
     case 3: {
-      adminContent = <Posts />
+      adminContent = <Posts sideBarHanlder={sideBarHanlder}/>
+      break;
+    }
+    case 4: {
+      adminContent = <Assets sideBarHanlder={sideBarHanlder}/>
+      break;
+    }
+    case 5: {
+      adminContent = <Users sideBarHanlder={sideBarHanlder}/>
       break;
     }
     default: break;

@@ -1,5 +1,4 @@
 import {LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_START, LOG_OUT} from '../actions/actionTypes';
-import { updateObject } from '../utilities/updateObject';
 
 const initState = {
     token: null,

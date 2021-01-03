@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./FormCreate.css";
 import { connect } from "react-redux";
 import * as actions from "../../../../store/actions/index";
-import Loading from "../../Loader/Loader";
+// import Loading from "../../Loader/Loader";
 
 const titleForm = {
   species: "Loài",

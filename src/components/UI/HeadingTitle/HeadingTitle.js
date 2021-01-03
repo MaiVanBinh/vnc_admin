@@ -18,7 +18,7 @@ const HeadingTitle = (props) => {
   return (
     <div className={style}>
       <h3>{props.title}</h3>
-      {props.filter ? (
+      {props.filter && props.total ? (
         <div
           style={{
             display: "flex",
@@ -28,7 +28,7 @@ const HeadingTitle = (props) => {
           }}
         >
           <Button title="Lọc" icon={Filter} click={props.clickShowFilter}/>
-          <p style={{ fontWeight: "bold", fontSize: "16px" }}>6555 kết quả</p>
+          <p style={{ fontWeight: "bold", fontSize: "16px" }}>{props.total} kết quả</p>
         </div>
       ) : null}
     </div>

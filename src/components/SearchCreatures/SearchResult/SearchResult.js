@@ -31,7 +31,7 @@ const SearchResult = (props) => {
   const location = useLocation();
 
   useEffect(() => {
-    let queryString = getQuery({ ...formInput, page: 1 });
+    let queryString = getQuery({ ...formInput, page: pageInput });
     props.onFetchCreatures(queryString);
   }, [formInput]);
 
@@ -52,7 +52,7 @@ const SearchResult = (props) => {
       name: name,
     };
     if (name) {
-      const queryString = getQuery({ ...formInputUpdate, page: 1 });
+      const queryString = getQuery({ ...formInputUpdate, page: pageInput });
       onFetchCreatures(queryString);
     } else {
       onFetchCreatures();
@@ -208,12 +208,14 @@ const SearchResult = (props) => {
       search: queryString,
     });
   };
+
   const onFetchCreaturesByPage = (page) => {
     let queryString = getQuery({ ...formInput, page: page });
-    props.onFetchCreatures(queryString);
+    // props.onFetchCreatures(queryString);
     props.history.push({
       search: queryString,
     });
+    setPageInput(page);
   };
 
   return (

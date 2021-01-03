@@ -3,7 +3,6 @@ import * as actions from "../../../../store/actions/index";
 import { connect } from "react-redux";
 import FormCreate from "../FormCreate/FormCreate";
 import Modal from "../../../../components/UI/Modal/Modal";
-import { FAMILIES_END_FORM } from "../../../../store/actions/actionTypes";
 import Loading from "../../../../components/UI/Loader/Loader";
 import DeleteConfirm from "../DeleteConfirm/DeleteConfirm";
 import TableAdminvV1 from "../../../../components/UI/TableAdminvV1/TableAdminvV1";
@@ -20,20 +19,37 @@ const TABLE_CONFIG = {
 
 const Families = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [entires, setEntires] = useState(10);
+  const [entires, ] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [currentEdit, setCurrentEdit] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
+  const [searchKey, setSearchKey] = useState(null);
+  const resetClickHandler = () => {
+    setSearchKey(null);
+    setCurrentPage(1);
+    props.onFetchFamilies(entires, currentPage);
+  }
+
+  const changeSearchKeyHandler = (key) => {
+    setSearchKey(key);
+  }
 
   useEffect(() => {
-    props.onFetchFamilies(entires, currentPage);
-  }, [currentPage, entires]);
+    if(searchKey) {
+      console.log(searchKey);
+      props.onFetchFamilies(entires, currentPage, `name_vn=${searchKey}`);
+    } else {
+      props.onFetchFamilies(entires, currentPage);
+    }
+    
+  }, [currentPage, entires, searchKey]);
 
   const fetchData = (page) => {
     setCurrentPage(page);
   };
+
   const onShowFormHandler = (mode, isEditing, itemEdit) => {
     setIsEditing(isEditing);
     setShowForm((prev) => !prev);
@@ -107,6 +123,8 @@ const Families = (props) => {
         deleteClick={onDeleteHandler}
         sideBarClick={props.sideBarHanlder}
         createClick={onShowFormHandler}
+        onSearchData={changeSearchKeyHandler}
+        resetClick={resetClickHandler}
       />
     </div>
   );

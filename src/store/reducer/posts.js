@@ -64,6 +64,7 @@ const fetchPostsSuccess = (state, action) => {
       return updateObject(state, { posts: action.posts.posts.posts, total: action.posts.posts.total });
   }
 };
+
 const fetchPostDetailSuccess = (state, action) => {
   return updateObject(state, { currentPost: action.post, loading: false });
 };

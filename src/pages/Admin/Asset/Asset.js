@@ -82,13 +82,13 @@ const Asset = (props) => {
   const onCloseViewDetail = () => {
     setViewDetail(null);
     setShowModal(false);
-    console.log('close');
   };
 
   const onCreateHandler = () => {
     setShowModal(true);
     setIsCreate(true);
   };
+
   let tableContent = null;
   if (props.assets) {
     tableContent = props.assets.map((item) => (
@@ -151,12 +151,16 @@ const Asset = (props) => {
     }
   }
 
+  const cancleCreate = () => {
+    setShowModal(false);
+  }
+
   return (
     <div>
       {props.token ? null : <Redirect to="/" />}
       <Modal show={viewDetail || showModal}>
         {isCreate ? (
-          <AssetCreate />
+          <AssetCreate cancleCreate={cancleCreate} />
         ) : (
           <AssetDetail onCloseHandler={onCloseViewDetail} asset={viewDetail} />
         )}
@@ -166,6 +170,7 @@ const Asset = (props) => {
           <i
             class="fas fa-bars icon"
             style={{ padding: "5px", borderRadius: "2px" }}
+            onClick={props.sideBarHanlder}
           ></i>
           <span>|</span>
           <i

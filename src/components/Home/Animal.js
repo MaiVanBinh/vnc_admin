@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react";
+import React from "react";
 import "./Animal.css";
 
 const Animal = (props) => {
@@ -9,7 +9,7 @@ const Animal = (props) => {
         <a href={`/sinh-vat/${props.animals[i].id}`}>
           <div class="card-left">
             <div class="img-fluid dv-img">
-              <img src={props.animals[i].avatar} />
+              <img src={props.animals[i].avatar} alt=""/>
             </div>
             <div class="card-describe">
               <ul>
@@ -38,7 +38,7 @@ const Animal = (props) => {
         <a href={`/sinh-vat/${props.animals[i + 1].id}`}>
           <div class="card-mid">
             <div class="img-fluid dv-img">
-              <img src={props.animals[i + 1].avatar} />
+              <img src={props.animals[i + 1].avatar} alt=""/>
             </div>
             <div class="card-describe">
               <ul>
@@ -67,7 +67,7 @@ const Animal = (props) => {
         <a href={`/sinh-vat/${props.animals[i + 2].id}`}>
           <div class="card-right">
             <div class="img-fluid dv-img">
-              <img src={props.animals[i + 2].avatar} />
+              <img src={props.animals[i + 2].avatar} alt=""/>
             </div>
             <div class="card-describe">
               <ul>
@@ -107,7 +107,7 @@ const Animal = (props) => {
           </h2>
         </div>
         <div class="wrapper-dongvat-cards">{animals}</div>
-        <a href="#" class="btn-main btn-main-dongvat">
+        <a href="/#" class="btn-main btn-main-dongvat">
           <span>Tra cứu động vật</span>
         </a>
       </div>

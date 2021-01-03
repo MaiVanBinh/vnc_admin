@@ -30,6 +30,7 @@ const RedBookCreatures = (props) => {
   }, [location, onFetchCreaturesRedBook, species]);
 
   const changeSpeciesHandler = (id) => {
+    console.log(id);
     history.push({
       search: "?loai=" + id,
     });
@@ -39,7 +40,7 @@ const RedBookCreatures = (props) => {
   return (
     <LayoutContainer>
       <Left>
-        {/* <ButtonChangeSpecies changeSpeciesHandler={changeSpeciesHandler} /> */}
+        <ButtonChangeSpecies changeSpeciesHandler={changeSpeciesHandler} />
         {props.loading ? <Loading /> : (species && props.redBook && props.redBook[species]) ? (
           <Table
             species={species.toString()}

@@ -1,12 +1,12 @@
 .hashtag {
-    width: 250px;
-    float: right;
+    /* width: 300px;
+    float: right; */
     margin-bottom: 100px;
 }
 .identification {
     position: relative;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     margin-bottom: 50px;

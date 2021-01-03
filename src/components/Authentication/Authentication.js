@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Authentication.css";
 import bg from "./bg.jpg";
 import { login } from "../../store/actions/index";

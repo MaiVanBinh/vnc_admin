@@ -2,9 +2,9 @@
     width: 350px;
     /* border: 1px solid #c0c0c0; */
     border-radius: 20px;
-    padding: 10px;
-    margin-bottom: 20px;
-    margin-left: 20px;
+    padding: 10px 0;
+    /* margin-bottom: 20px;
+    margin-left: 20px; */
     min-height: 150px;
 }
 .hashtag-box .hashtag-catagory {

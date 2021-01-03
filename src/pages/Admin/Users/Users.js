@@ -1,40 +1,48 @@
 import React, { useState, useEffect } from "react";
-import TableAdminvV1 from "../../../../components/UI/TableAdminvV1/TableAdminvV1";
+import TableAdminvV1 from "../../../components/UI/TableAdminvV1/TableAdminvV1";
 import { connect } from "react-redux";
-import * as actions from "../../../../store/actions/index";
-import FormCreate from "../FormCreate/FormCreate";
-import Modal from "../../../../components/UI/Modal/Modal";
-import Loading from "../../../../components/UI/Loader/Loader";
-import DeleteConfirm from "../DeleteConfirm/DeleteConfirm";
+import * as actions from "../../../store/actions/index";
+import FormCreate from "./FormCreate/FormCreate";
+import Modal from "../../../components/UI/Modal/Modal";
+import Loading from "../../../components/UI/Loader/Loader";
+import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 
 const TABLE_CONFIG = {
   id: "Id",
-  name_vn: "Name VN",
-  name_en: "Name En",
-  created_by_name: "OwnerId",
+  username: "Username",
+  email: "Email",
+  role: "Role",
+  created_by: "Created by",
   created_at: "Created Day",
   updated_at: "Last Update",
 };
 
-const Species = (props) => {
+const Users = (props) => {
   const [currentPage, ] = useState(1);
-  const [entires, ] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [currentEdit, setCurrentEdit] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
 
   useEffect(() => {
-    props.onFetchSpecies(entires, currentPage);
-  }, [currentPage, entires, props]);
+    props.onFetchUsers(props.token);
+  }, [currentPage]);
+
   const onShowFormHandler = (mode, isEditing, itemEdit) => {
-    setIsEditing(isEditing);
+    // setIsEditing(isEditing);
+
     setShowForm((prev) => !prev);
     if (isEditing) {
       setCurrentEdit(itemEdit);
     }
   };
+
+  const onCreaeHandler = () => {
+    setShowForm((prev) => !prev);
+    setCurrentEdit(null);
+  }
+
   const deleteConfirmHandler = () => {
     props.onDeleteSpecies(deleteItem.id, props.token);
     setDeleteItem(null);
@@ -62,7 +70,7 @@ const Species = (props) => {
 
   const onEditCreature = (item) => {
     setCurrentEdit(item);
-    setIsEditing(true);
+    // setIsEditing(true);
   }
 
   return (
@@ -81,9 +89,8 @@ const Species = (props) => {
         ) : (
           <FormCreate
             click={onShowFormHandler}
-            type="species"
-            isEditing={isEditing}
-            itemEdit={currentEdit}
+            // isEditing={isEditing}
+            // itemEdit={currentEdit}
           />
         )}
       </Modal>
@@ -97,11 +104,11 @@ const Species = (props) => {
       </Modal>
       <TableAdminvV1
         tableConfig={TABLE_CONFIG}
-        data={props.speciesData}
+        data={props.users}
         onEdit={onEditCreature}
         deleteClick={onDeleteHandler}
         sideBarClick={props.sideBarHanlder}
-        createClick={onShowFormHandler}
+        createClick={onCreaeHandler}
         hiddenFilter={true}
       />
     </div>
@@ -110,17 +117,17 @@ const Species = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    speciesData: state.species.species,
+    loading: state.users.loading,
+    users: state.users.users,
     token: state.auth.token,
-    speciesLoading: state.species.loading,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onFetchSpecies: () => dispatch(actions.fetchSpecies()),
-    onDeleteSpecies: (id, token) => dispatch(actions.deleteSpecies(id, token)),
+    onFetchUsers: (token) => dispatch(actions.fetchUsers(token)),
+    
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Species);
+export default connect(mapStateToProps, mapDispatchToProps)(Users);

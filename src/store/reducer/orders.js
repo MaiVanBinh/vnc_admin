@@ -10,9 +10,9 @@ const initState = {
     submitError: null,
 }
 
-const orderStart = (state, action) => {
-    return updateObject(state, {loading: true});
-}
+// const orderStart = (state, action) => {
+//     return updateObject(state, {loading: true});
+// }
 
 const fetchOrdersSuccess = (state, action) => {
     return updateObject(state, {

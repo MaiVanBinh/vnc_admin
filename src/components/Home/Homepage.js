@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Homepage.css";
 import DongVat from "./Animal";
 import ThucVat from "./ThucVat";
@@ -18,7 +18,7 @@ const Home = (props) => {
       .catch((err) => console.log(err));
   }, []);
   useEffect(() => {
-    fetch(`${baseUrl}creatures?species=2&page=1&limit=2`)
+    fetch(`${baseUrl}creatures?species=2&page=6&limit=2`)
       .then((res) => res.json())
       .then((data) => setPlants(data.data.creatures))
       .catch((err) => console.log(err));
@@ -71,7 +71,7 @@ const Home = (props) => {
       <div className="intro">
         <div className="container container-intro">
           <div className="img-fluid intro-img">
-            <img src="https://vncreatures.net/forumpic/bird.jpg" />
+            <img src="https://vncreatures.net/forumpic/bird.jpg" alt=""/>
           </div>
           <div className="intro-para">
             <h3>LỜI NÓI ĐẦU</h3>

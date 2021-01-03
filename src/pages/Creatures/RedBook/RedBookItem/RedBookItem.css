@@ -1,0 +1,15 @@
+.show-more {
+    margin-top: 10px;
+    text-align: end;
+}
+.show-more > a{
+    text-decoration: none;
+    color: #000;
+}
+.show-more:hover > a{
+    color: #78b16b;
+}
+.show-more > a > i {
+    margin-left: 5px;
+    transform: translate(-50%, 10%);
+}

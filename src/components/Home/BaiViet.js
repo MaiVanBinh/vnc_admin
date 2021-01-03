@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 const ThucVat = (props) => {
   return (
     <div class="baiviet">
@@ -11,7 +11,7 @@ const ThucVat = (props) => {
         <div class="container-news">
           <div class="news-left">
             <a href={`/bai-viet/${props.postsNew[0].id}`}>
-              <img src={props.postsNew[0].image} />
+              <img src={props.postsNew[0].image} alt=""/>
             </a>
             <a href={`/bai-viet/${props.postsNew[0].id}`}>
               <p>{props.postsNew[0].title}</p>
@@ -20,7 +20,7 @@ const ThucVat = (props) => {
           <div class="news-right">
             <div class="sub-right news-upper">
               <a href={`/bai-viet/${props.postsNew[1].id}`}>
-                <img src={props.postsNew[1].image} />
+                <img src={props.postsNew[1].image} alt=""/>
               </a>
               <a href={`/bai-viet/${props.postsNew[1].id}`}>
                 <p>{props.postsNew[1].title}</p>
@@ -28,7 +28,7 @@ const ThucVat = (props) => {
             </div>
             <div class="sub-right news-mid">
               <a href={`/bai-viet/${props.postsNew[2].id}`}>
-                <img src={props.postsNew[2].image} />
+                <img src={props.postsNew[2].image} alt=""/>
               </a>
               <a href={`/bai-viet/${props.postsNew[2].id}`}>
                 <p>{props.postsNew[2].title}</p>
@@ -36,7 +36,7 @@ const ThucVat = (props) => {
             </div>
             <div class="sub-right news-under">
               <a href={`/bai-viet/${props.postsNew[3].id}`}>
-                <img src={props.postsNew[3].image} />
+                <img src={props.postsNew[3].image} alt=""/>
               </a>
               <a href={`/bai-viet/${props.postsNew[3].id}`}>
                 <p>{props.postsNew[3].title}</p>
@@ -50,7 +50,7 @@ const ThucVat = (props) => {
         <div class="container-nature">
           <div class="sub-nature nature-left">
             <a href={`/bai-viet/${props.postsNatural[0].id}`}>
-              <img src={props.postsNatural[0].image} />
+              <img src={props.postsNatural[0].image} alt=""/>
             </a>
             <a href={`/bai-viet/${props.postsNatural[0].id}`}>
               <p>{props.postsNatural[0].title}</p>
@@ -58,7 +58,7 @@ const ThucVat = (props) => {
           </div>
           <div class="sub-nature nature-mid">
             <a href={`/bai-viet/${props.postsNatural[1].id}`}>
-              <img src={props.postsNatural[1].image} />
+              <img src={props.postsNatural[1].image} alt=""/>
             </a>
             <a href={`/bai-viet/${props.postsNatural[1].id}`}>
               <p>{props.postsNatural[1].title}</p>
@@ -66,7 +66,7 @@ const ThucVat = (props) => {
           </div>
           <div class="sub-nature nature-right">
             <a href={`/bai-viet/${props.postsNatural[2].id}`}>
-              <img src={props.postsNatural[2].image} />
+              <img src={props.postsNatural[2].image} alt=""/>
             </a>
             <a href={`/bai-viet/${props.postsNatural[2].id}`}>
               <p>{props.postsNatural[2].title}</p>

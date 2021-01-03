@@ -61,3 +61,5 @@ export {
 } from "./families";
 
 export { fetchAssets, createAsset } from "./assets";
+
+export { fetchUsers, createUser } from './Users';

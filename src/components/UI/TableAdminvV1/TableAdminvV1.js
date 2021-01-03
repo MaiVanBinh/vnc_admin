@@ -23,7 +23,7 @@ const TableAdminvV1 = (props) => {
 
   useEffect(() => {
     if (props.total > 0) {
-      setNumberOfPage(Math.floor(props.total/10));
+      setNumberOfPage(Math.floor(props.total/10) + 1);
     }
   }, [props.total]);
   
@@ -40,7 +40,7 @@ const TableAdminvV1 = (props) => {
         pageItem: 10,
         pageMin: pageNumber,
       });
-    } else if (pageNumber === pageMax && pageMax < props.numberOfPages) {
+    } else if (pageNumber === pageMax && pageMax < numberOfPage) {
       setPanigation({
         pageItem: 10,
         pageMin: pageNumber,
@@ -56,8 +56,8 @@ const TableAdminvV1 = (props) => {
       });
     }
     if (pageNumber === -1) {
-      let pageMin = props.numberOfPages - 5;
-      currentPageUpdate = props.numberOfPages - 1;
+      let pageMin = numberOfPage > 5 ? numberOfPage - 5 : 1;
+      currentPageUpdate = parseInt(numberOfPage);
       setPanigation({
         pageItem: 10,
         pageMin: pageMin,
@@ -78,7 +78,7 @@ const TableAdminvV1 = (props) => {
         break;
       }
       pageContent.push(
-        <li>
+        <li key={i}>
           <a
             onClick={() => onPanigationHandler(i)}
             className={i === currentPage ? "active" : ""}
@@ -89,7 +89,7 @@ const TableAdminvV1 = (props) => {
       );
     }
   }
-  console.log(numberOfPage);
+
   let tabelHeader = [];
   if (props.tableConfig) {
     for (const property in props.tableConfig) {
@@ -116,7 +116,7 @@ const TableAdminvV1 = (props) => {
   if (props.data) {
     tableContent = props.data.map((item) => (
       <tr key={item.id}>
-        {renderRowContent(item)}{" "}
+        {renderRowContent(item)}
         <td
           style={{
             display: "flex",
@@ -127,19 +127,19 @@ const TableAdminvV1 = (props) => {
           }}
         >
           <i
-            class="far fa-eye icon"
+            className="far fa-eye icon"
             style={{ padding: "5px" }}
             onClick={() => props.onViewDetail(item)}
           ></i>
 
           <i
-            class="fas fa-edit icon"
+            className="fas fa-edit icon"
             style={{ padding: "5px" }}
             onClick={() => props.onEdit(item)}
           ></i>
 
           <i
-            class="fas fa-trash icon"
+            className="fas fa-trash icon"
             style={{ padding: "5px" }}
             onClick={() => props.deleteClick(item)}
           ></i>
@@ -159,6 +159,7 @@ const TableAdminvV1 = (props) => {
   const searchHandler = (event) => {
     event.preventDefault();
     props.onSearchData(keyword);
+    // props.changeSearchKeyHandler(event.target.value)
   };
 
   return (
@@ -166,22 +167,26 @@ const TableAdminvV1 = (props) => {
       <div className="group-icon-table">
         <div>
           <i
-            class="fas fa-bars icon"
+            className="fas fa-bars icon"
             style={{ padding: "5px", borderRadius: "2px" }}
             onClick={props.sideBarClick}
           ></i>
           <span>|</span>
           <i
-            class="fas fa-filter icon"
+            className="fas fa-filter icon"
             style={{ padding: "5px", borderRadius: "2px" }}
             onClick={props.filterHandler}
           ></i>
         </div>
 
-        {isSearch ? (
-          <div class="search-container">
+        {props.hiddenFilter ? <i
+              className="fas fa-plus icon"
+              style={{ padding: "5px", borderRadius: "2px" }}
+              onClick={() => props.createClick()}
+            ></i> : isSearch ? (
+          <div className="search-container">
             <form onSubmit={searchHandler}>
-              <i class="fa fa-angle-right icon" aria-hidden="true" onClick={() => setIsSearch(false)}></i>
+              <i className="fa fa-angle-right icon" aria-hidden="true" onClick={() => setIsSearch(false)}></i>
 
               <input
                 type="text"
@@ -190,25 +195,25 @@ const TableAdminvV1 = (props) => {
                 onChange={onChangeInputHandler}
               />
               <button type="submit">
-                <i class="fa fa-search"></i>
+                <i className="fa fa-search"></i>
               </button>
             </form>
           </div>
         ) : (
           <div>
             <i
-              class="fas fa-search icon"
+              className="fas fa-search icon"
               style={{ padding: "5px", borderRadius: "2px" }}
               onClick={searchClickHanler}
             ></i>
             <i
-              class="fas fa-redo icon"
+              className="fas fa-redo icon"
               style={{ padding: "5px", borderRadius: "2px" }}
               // onClick={() => props.onFetchAsset(props.token, 1)}
               onClick={() => props.resetClick()}
             ></i>
             <i
-              class="fas fa-plus icon"
+              className="fas fa-plus icon"
               style={{ padding: "5px", borderRadius: "2px" }}
               onClick={() => props.createClick()}
             ></i>
@@ -239,19 +244,19 @@ const TableAdminvV1 = (props) => {
           </div>
         )}
       </table>
-      {props.label !== "species" ? (
-        <div class="tablefooter">
-          <div class="tableNavigation">
+      {!props.hiddenFilter ? (
+        <div className="tablefooter">
+          <div className="tableNavigation">
             <ul>
               <li>
                 <a onClick={() => onPanigationHandler(1)}>
-                  <i class="fas fa-angle-double-left"></i>
+                  <i className="fas fa-angle-double-left"></i>
                 </a>
               </li>
               {pageContent}
               <li>
                 <a onClick={() => onPanigationHandler(-1)}>
-                  <i class="fas fa-angle-double-right"></i>
+                  <i className="fas fa-angle-double-right"></i>
                 </a>
               </li>
             </ul>

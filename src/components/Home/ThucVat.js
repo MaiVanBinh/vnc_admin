@@ -8,7 +8,7 @@ const ThucVat = (props) => {
         <a href={`/sinh-vat/${props.plants[i].id}`}>
         <div class="card-leftside">
           <div class="img-fluid tv-img">
-            <img src={props.plants[i].avatar} />
+            <img src={props.plants[i].avatar} alt={props.plants[i].name_vn} />
           </div>
           <div class="tv-card card-describe-tv1">
             <ul>
@@ -56,7 +56,7 @@ const ThucVat = (props) => {
             </ul>
           </div>
           <div class="img-fluid tv-img">
-            <img src={props.plants[i + 1].avatar} />
+            <img src={props.plants[i + 1].avatar} alt={props.plants[i+1].name_vn} />
           </div>
         </div>
         </a>
@@ -73,14 +73,14 @@ const ThucVat = (props) => {
         </div>
         <div class="wrapper-thucvat-cards">
             {plants}
-          <a href="#" class="btn-slide btn-prev">
+          {/* <a href="#" class="btn-slide btn-prev">
             <i class="fas fa-chevron-left"></i>
           </a>
           <a href="#" class="btn-slide btn-next">
             <i class="fas fa-chevron-right"></i>
-          </a>
+          </a> */}
         </div>
-        <a href="#" class="btn-main btn-main-thucvat">
+        <a href="/#" class="btn-main btn-main-thucvat">
           <span>Tra cứu thực vật</span>
         </a>
       </div>
