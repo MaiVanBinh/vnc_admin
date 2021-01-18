@@ -42,7 +42,11 @@ const publicRoutes = [
     exact: false,
     component: lazy(() => import("./../pages/NationalParks/NationalParks")),
   },
-
+  {
+    path: "/sinh-vat/mau-go",
+    exact: false,
+    component: lazy(() => import("../pages/Wood/Wood"))
+  },
   {
     path: "/sinh-vat/sach-do",
     exact: false,

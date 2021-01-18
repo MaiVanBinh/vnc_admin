@@ -49,3 +49,21 @@ export const createAsset = (token, payload) => {
     .catch(err => dispatch(assetError(err.message)));
   };
 };
+
+const deleteAssetSuccess = (id) => {
+  return {
+    type: actionsType.DELETE_ASSET_SUCCESS,
+    id: id
+  }
+}
+
+
+export const deleteAsset = (id, token) => {
+  return (dispatch) => {
+    dispatch(assetStart());
+    const config = headerAuthConfig(token);
+    axios.delete(`${baseUrl}auth/assets/${id}`, config)
+    .then(res => dispatch(deleteAssetSuccess(id)))
+    .catch(err => dispatch(assetError(err.message)));
+  };
+}

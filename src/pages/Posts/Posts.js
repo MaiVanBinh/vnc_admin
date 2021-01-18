@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Posts.css";
 import { connect } from "react-redux";
 import PostItem from "./PostItem/PostItem";
@@ -15,6 +15,8 @@ const Posts = (props) => {
   const { onFetchPost } = props;
   const location = useLocation();
   const history = useHistory();
+
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -54,7 +56,10 @@ const Posts = (props) => {
       <PostItem post={post} key={post.id} />
     ));
   }
-
+  const onChangePageInput = (page) => {
+    setPage(page);
+  }
+  
   return (
     <div>
       {/* <OverviewBanner /> */}
@@ -68,13 +73,16 @@ const Posts = (props) => {
           <div className="post-list-box">
             {postsElement}
             <div className="panigation-box">
-              <Panigation onFetchData={fetchPostsByPageHandler} />
+              <Panigation
+                onFetchData={fetchPostsByPageHandler}
+                page={page}
+                changePageHandler={onChangePageInput}
+                // onFetchData={onFetchCreaturesByPage}
+                numberOfPages={props.total}
+              />
             </div>
           </div>
         </Left>
-        <Right>
-          
-        </Right>
       </LayoutContainer>
     </div>
   );
@@ -83,6 +91,7 @@ const Posts = (props) => {
 const mapStateToProps = (state) => {
   return {
     posts: state.posts.posts,
+    total: state.posts.total
   };
 };
 

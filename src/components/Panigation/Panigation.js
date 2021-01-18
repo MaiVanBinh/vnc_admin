@@ -4,30 +4,20 @@ import "./Panigation.css";
 
 const Panigation = (props) => {
   const [page, setPage] = useState(1);
-  const location = useLocation();
 
   const onChangePageHandler = (event) => {
     const page = event.target.value;
     setPage(page.replace(/\D/g, ''));
   }
 
-  useEffect(() => {
-    const query = new URLSearchParams(location.search);
-    let page = 1;
-    for(let param of query.entries()) {
-      if(param[0] === 'page') {
-        page = parseInt(param[1]);
-      }
-    }
-    setPage(page);
-  }, [location]);
-
   const fetchdDataByPageHandler = (mode) => {
     switch(mode) {
       case 'next': {
-        const nextPage = parseInt(page) + 1;
-        setPage(nextPage);
-        props.onFetchData(nextPage);
+        if(props.numberOfPages >= parseInt(page) + 1) {
+          const nextPage = parseInt(page) + 1;
+          setPage(nextPage);
+          props.onFetchData(nextPage);
+        }
         break;
       }
       case 'previous': {
@@ -69,7 +59,7 @@ const Panigation = (props) => {
         </li>
         <li>
           <input
-            value={page}
+            value={props.page}
             name="page"
             onChange={onChangePageHandler}
           />

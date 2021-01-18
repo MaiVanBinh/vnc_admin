@@ -1,12 +1,12 @@
 import React from "react";
-import "./AssetDetail.css";
+import "./AssetDelete.css";
 
-const AssetDetail = (props) => {
+const AssetDelete = (props) => {
   return (
     <div class="asset-detail-view">
       <div class="detail-header">
         <h3 class="title-asseet">
-          {props.asset && props.asset.name ? props.asset.name : "Name"}
+          Delete
         </h3>
         <div onClick={props.onCloseHandler} style={{ cursor: "pointer" }}>
           <svg viewBox="0 0 31.112 31.112" width="20" height="20">
@@ -73,6 +73,7 @@ const AssetDetail = (props) => {
       </div>
       <div class="asset-footer">
         <div>
+          <button onClick={() => props.deleteClick(props.asset)}>Delete</button>
           <button onClick={props.onCloseHandler}>Cancle</button>
         </div>
       </div>
@@ -80,4 +81,4 @@ const AssetDetail = (props) => {
   );
 };
 
-export default AssetDetail;
+export default AssetDelete;

@@ -10,7 +10,7 @@ import Families from "./Families/Families";
 
 const CreaturesCategories = (props) => {
 
-  const [labelTables, setLableTable] = useState(['species', 'groups', 'orders', 'families']);
+  // const [labelTables, setLableTable] = useState(['species', 'groups', 'orders', 'families']);
   useEffect(() => {
     props.onFetchFilterData();
   }, [props.onFetchFilterData])

@@ -5,7 +5,7 @@ import NavigationItems from "./NavigationItems/NavigationItems";
 import AuthenticationButton from "./loginBtn/loginBtn";
 import SearchLatin from "./SearchLatin/SearchLatin";
 
-const navbar = (props) => {
+const Navbar = (props) => {
   return (
     <header>
       <div className="container-nav">
@@ -27,4 +27,4 @@ const navbar = (props) => {
   );
 };
 
-export default navbar;
+export default Navbar;

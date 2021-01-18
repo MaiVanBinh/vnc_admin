@@ -18,7 +18,7 @@ const CreaturesFilter = (props) => {
     props.loadData(null, formInput);
     props.formClosed()
   };
-  const { onFetchFilterData, filterData, onFetchCreatures, token } = props;
+  const {filterData} = props;
 
   const initFormOption = useCallback(() => {
     let formInputUpdate = {
@@ -39,7 +39,6 @@ const CreaturesFilter = (props) => {
   useEffect(() => {
     if (filterData) {
       initFormOption();
-      console.log(filterData);
     }
   }, [initFormOption, filterData]);
 

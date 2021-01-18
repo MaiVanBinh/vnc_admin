@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./DeleteConfirm.css";
 import Button from "../../../../components/UI/Button/Button";
 
@@ -19,17 +19,17 @@ const DeleteConfirm = (props) => {
   } else if (props.mode === "families") {
     title = "Họ";
   }
-  const deleteConfirm = () => {
-    if (props.mode === "species") {
-      title = "Loài";
-    } else if (props.mode === "groups") {
-      title = "Lớp";
-    } else if (props.mode === "orders") {
-      title = "Bộ";
-    } else if (props.mode === "families") {
-      title = "Họ";
-    }
-  };
+  // const deleteConfirm = () => {
+  //   if (props.mode === "species") {
+  //     title = "Loài";
+  //   } else if (props.mode === "groups") {
+  //     title = "Lớp";
+  //   } else if (props.mode === "orders") {
+  //     title = "Bộ";
+  //   } else if (props.mode === "families") {
+  //     title = "Họ";
+  //   }
+  // };
   return (
     <div className="formDelete">
       <p style={{ color: "#3B568D", fontSize: "24px", fontWeight: "bold" }}>

@@ -58,7 +58,7 @@ const Orders = (props) => {
     }
   };
   const deleteConfirmHandler = () => {
-    props.onDeleteSpecies(deleteItem.id, props.token);
+    props.onDeleteOrder(deleteItem.id, props.token);
     setDeleteItem(null);
   };
   const cancelDelete = () => {

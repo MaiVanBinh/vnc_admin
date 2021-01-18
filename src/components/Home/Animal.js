@@ -5,13 +5,13 @@ const Animal = (props) => {
   let animals = [];
   for (let i = 0; i < props.animals.length; i += 3) {
     animals.push(
-      <div class="dongvat-cards" key={i}>
+      <div className="dongvat-cards" key={i}>
         <a href={`/sinh-vat/${props.animals[i].id}`}>
-          <div class="card-left">
-            <div class="img-fluid dv-img">
+          <div className="card-left">
+            <div className="img-fluid dv-img">
               <img src={props.animals[i].avatar} alt=""/>
             </div>
-            <div class="card-describe">
+            <div className="card-describe">
               <ul>
                 <li>
                   Tên Việt Nam:{" "}
@@ -36,11 +36,11 @@ const Animal = (props) => {
           </div>
         </a>
         <a href={`/sinh-vat/${props.animals[i + 1].id}`}>
-          <div class="card-mid">
-            <div class="img-fluid dv-img">
+          <div className="card-mid">
+            <div className="img-fluid dv-img">
               <img src={props.animals[i + 1].avatar} alt=""/>
             </div>
-            <div class="card-describe">
+            <div className="card-describe">
               <ul>
                 <li>
                   Tên Việt Nam:{" "}
@@ -65,11 +65,11 @@ const Animal = (props) => {
           </div>
         </a>
         <a href={`/sinh-vat/${props.animals[i + 2].id}`}>
-          <div class="card-right">
-            <div class="img-fluid dv-img">
+          <div className="card-right">
+            <div className="img-fluid dv-img">
               <img src={props.animals[i + 2].avatar} alt=""/>
             </div>
-            <div class="card-describe">
+            <div className="card-describe">
               <ul>
                 <li>
                   Tên Việt Nam:{" "}
@@ -93,21 +93,21 @@ const Animal = (props) => {
             </div>
           </div>
         </a>
-        {/* <a href="#" class="btn-slide btn-prev"><i class="fas fa-chevron-left"></i></a>
-				      <a href="#" class="btn-slide btn-next"><i class="fas fa-chevron-right"></i></a> */}
+        {/* <a href="#" className="btn-slide btn-prev"><i className="fas fa-chevron-left"></i></a>
+				      <a href="#" className="btn-slide btn-next"><i className="fas fa-chevron-right"></i></a> */}
       </div>
     );
   }
   return (
-    <div class="dongvat">
-      <div class="container container-dongvat">
-        <div class="caption caption-dongvat">
+    <div className="dongvat">
+      <div className="container container-dongvat">
+        <div className="caption caption-dongvat">
           <h2>
             <span>Động vật</span>
           </h2>
         </div>
-        <div class="wrapper-dongvat-cards">{animals}</div>
-        <a href="/#" class="btn-main btn-main-dongvat">
+        <div className="wrapper-dongvat-cards">{animals}</div>
+        <a href="/sinh-vat?species=1" className="btn-main btn-main-dongvat">
           <span>Tra cứu động vật</span>
         </a>
       </div>

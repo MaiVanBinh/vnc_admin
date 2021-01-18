@@ -36,7 +36,7 @@ const PostDetail = (props) => {
     }
     props.onFetchAuthor();
     props.onFetchCategory();
-  }, [props]);
+  }, []);
   useEffect(() => {
     if (props.editPost) {
       setFormInput({

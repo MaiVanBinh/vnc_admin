@@ -7,6 +7,7 @@ import Loader from "../../../components/UI/Loader/Loader";
 import Modal from "../../../components/UI/Modal/Modal";
 import AssetDetail from "./AssetDetail/AssetDetail";
 import AssetCreate from "./AssetCreate/AssetCreate";
+import AssetDelete from './AssetDelete/AssetDelete';
 
 const NUMBER_ENTRIES = 15;
 
@@ -15,6 +16,8 @@ const Asset = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [isCreate, setIsCreate] = useState(false);
   const [numberOfPage, setNumberOfPage] = useState(0);
+  const [deleteAsset, setDeleteAsset] = useState(null);
+
   const [panigation, setPanigation] = useState({
     pageMin: 1,
     pageItem: 15,
@@ -123,7 +126,7 @@ const Asset = (props) => {
             <i class="fas fa-download icon" style={{ padding: "5px"}}></i>
           </a>
 
-          <i class="fas fa-trash icon" style={{ padding: "5px" }}></i>
+          <i class="fas fa-trash icon" style={{ padding: "5px" }} onClick={() => setDeleteAsset(item)}></i>
         </td>
       </tr>
     ));
@@ -154,7 +157,11 @@ const Asset = (props) => {
   const cancleCreate = () => {
     setShowModal(false);
   }
-
+  const deleteClick = (asset) => {
+    // console.log(asset);
+    props.onDeleteAsset(asset.id, props.token)
+    setDeleteAsset(null);
+  }
   return (
     <div>
       {props.token ? null : <Redirect to="/" />}
@@ -164,6 +171,9 @@ const Asset = (props) => {
         ) : (
           <AssetDetail onCloseHandler={onCloseViewDetail} asset={viewDetail} />
         )}
+      </Modal>
+      <Modal show={deleteAsset}>
+        <AssetDelete asset={deleteAsset} deleteClick={deleteClick} />
       </Modal>
       <div className="group-icon-table">
         <div>
@@ -259,6 +269,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onFetchAsset: (token, page) => dispatch(actions.fetchAssets(token, page)),
+    onDeleteAsset: (id, token) => dispatch(actions.deleteAsset(id, token))
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Asset);

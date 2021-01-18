@@ -1,0 +1,97 @@
+/*Product*/
+.workBx{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 30px;
+    max-width: 100%;
+    margin-top: 20px;
+}
+.workBx .product{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 200px;
+    height: 200px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.workBx .product:hover{
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+.workBx .product .imgbox{
+    margin-top: 7px;
+    height: 100%;
+    box-sizing: border-box;
+}
+.workBx .product .imgbox img{
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    height: 100%;
+    object-fit: cover;
+}
+.workBx .details{
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    background: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow:  0 0 0 rgba(0, 0, 0, 0);
+    transition: 0.5s;
+}
+/* .workBx .product:hover .details{
+    bottom: 0;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.25);
+} */
+.workBx .details h2{
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    width: 100%;
+}
+.workBx .details h2 span{
+    font-size: 12px;
+    color: #555;
+    font-weight: normal;
+} 
+.workBx .details .price{
+    color: #000;
+    font-size: 20px;
+}
+.workBx .details .istar i{
+    color: goldenrod;
+    font-size: 15px;
+}
+.workBx a{
+    color: #000;
+    cursor: pointer;
+}
+/* .workBx a:hover{
+    color: #fff;
+    background: #ff209a;
+} */
+.button-page {
+    color: rgb(0, 167, 220);
+    background-color: rgb(255, 255, 255);
+    border: 1px solid transparent;
+    transition: all 0.2s ease 0s;
+    padding: 10px 15px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  .button-page:hover,
+  .button-page.active {
+    background-color: rgb(0, 167, 220);
+    color: rgb(255, 255, 255);
+    border-color: rgb(0, 167, 220);
+  }

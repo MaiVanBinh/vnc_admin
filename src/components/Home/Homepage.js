@@ -10,7 +10,7 @@ const Home = (props) => {
   const [plants, setPlants] = useState(null);
   const [postsNatural, setPostsNatural] = useState(null);
   const [postsNew, setPostsNew] = useState(null);
-  const [name, setName] = useState(null);
+  const [name, setName] = useState('');
   useEffect(() => {
     fetch(`${baseUrl}creatures?species=1&page=1&limit=3`)
       .then((res) => res.json())

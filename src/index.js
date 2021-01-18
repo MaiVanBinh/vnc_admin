@@ -21,6 +21,7 @@ import ordersReducer from './store/reducer/orders';
 import familiesReducer from './store/reducer/families';
 import assetsReducer from './store/reducer/assets';
 import usersReducer from './store/reducer/users';
+import woodReducer from './store/reducer/wood';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -37,7 +38,8 @@ const rootReducer = combineReducers({
   orders: ordersReducer,
   families: familiesReducer,
   assets: assetsReducer,
-  users: usersReducer
+  users: usersReducer,
+  woods: woodReducer
 });
 
 const store = createStore(

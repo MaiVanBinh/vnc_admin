@@ -27,7 +27,7 @@ const Species = (props) => {
 
   useEffect(() => {
     props.onFetchSpecies(entires, currentPage);
-  }, [currentPage, entires, props]);
+  }, [currentPage, entires, props.onFetchSpecies]);
   const onShowFormHandler = (mode, isEditing, itemEdit) => {
     setIsEditing(isEditing);
     setShowForm((prev) => !prev);

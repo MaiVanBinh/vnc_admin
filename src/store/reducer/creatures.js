@@ -16,7 +16,8 @@ const initState = {
   error: null,
   page: 1,
   total: 0,
-  redBookLoading: false
+  redBookLoading: false,
+  formState: null
 };
 
 const fetchFilterDataStart = (state, action) => {
@@ -74,6 +75,11 @@ const fetchCreaturesRedBookStart = (state, action) => {
   return updateObject(state, {redBookLoading: true});
 };
 
+const deleteCreatureSuccess = (state, action) => {
+  const updateCreature = state.creatures.filter(item => item.id !== action.id);
+  return updateObject(state, {loadingCreatures: false, creatures: updateCreature})
+}
+
 const reducer = (state = initState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_FILTER_DATA_START:
@@ -96,6 +102,7 @@ const reducer = (state = initState, action) => {
       return fetchCreaturesRedBookSucces(state, action);
     case actionTypes.FETCH_CREATURES_REDBOOK_START:
       return fetchCreaturesRedBookStart(state, action);
+    case actionTypes.DELETE_CREATURE_SUCCESS: return deleteCreatureSuccess(state, action);
     default:
       return state;
   }

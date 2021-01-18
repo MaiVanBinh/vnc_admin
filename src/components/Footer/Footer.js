@@ -57,16 +57,20 @@ const footer = () => {
           </div>
         </div>
       </div>
-      <div className="copyright">
-        <div className="cr_text">
+      <div className="copyright" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <p>
+            &copy;Ghi rõ nguồn <a href="/">Sinh vật rừng Việt Nam</a> khi bạn
+            phát hành lại thông tin từ Website này
+          </p>
+        {/* <div className="cr_text">
           <p>
             &copy;Ghi rõ nguồn <a href="/">Sinh vật rừng Việt Nam</a> khi bạn
             phát hành lại thông tin từ Website này
           </p>
-        </div>
-        <div className="image-slide">
+        </div> */}
+        {/* <div className="image-slide">
           <FooterSlider />
-        </div>
+        </div> */}
       </div>
     </footer>
   );

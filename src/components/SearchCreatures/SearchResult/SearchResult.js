@@ -39,13 +39,17 @@ const SearchResult = (props) => {
     onFetchFilterData();
     const query = new URLSearchParams(location.search);
     let name = "";
+    let species = 0;
     for (let param of query.entries()) {
       if (param[0] === "name") {
         name = param[1];
       }
+      if (param[0] === "species") {
+        species = parseInt(param[1]);
+      }
     }
     const formInputUpdate = {
-      species: 0,
+      species: species,
       group: [],
       order: [],
       family: [],
@@ -138,6 +142,7 @@ const SearchResult = (props) => {
     }
     setFormOption(formOptionUpdate);
     setFormInput({ ...formInputUpdate });
+    setPageInput(1);
   };
 
   const onResetFormInput = () => {
@@ -211,7 +216,7 @@ const SearchResult = (props) => {
 
   const onFetchCreaturesByPage = (page) => {
     let queryString = getQuery({ ...formInput, page: page });
-    // props.onFetchCreatures(queryString);
+    props.onFetchCreatures(queryString);
     props.history.push({
       search: queryString,
     });

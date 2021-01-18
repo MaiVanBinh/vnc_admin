@@ -100,7 +100,7 @@ const Families = (props) => {
         ) : (
           <FormCreate
             click={onShowFormHandler}
-            type="groups"
+            type="families"
             isEditing={isEditing}
             itemEdit={currentEdit}
           />

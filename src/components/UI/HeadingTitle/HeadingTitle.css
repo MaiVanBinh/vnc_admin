@@ -3,10 +3,10 @@
 }
 .heading h3{
     font-weight: bold;
-    font-size: 24px;
+    font-size: 14px;
     color: #000066;
     margin-bottom: 10px;
-    line-height: 30px;
+    /* line-height: 30px; */
 }
 .sub-heading h3{
     margin-bottom: 10px;

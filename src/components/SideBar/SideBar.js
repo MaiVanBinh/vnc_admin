@@ -55,7 +55,7 @@ const PostSideBar = (props) => {
         />
       </div>
     );
-  } else if (mode === "ReligiousNames" && props.posts) {
+  } else if (mode === "ReligiousNames" && props.religiousNames) {
     content = (
       <div>
         <SideBarItem
@@ -68,7 +68,7 @@ const PostSideBar = (props) => {
         {/* <SideBarItem title="Cách viết báo cáo khoa học" posts={props.scientificReports} image={props.image} /> */}
       </div>
     );
-  } else if (mode === "ScientificReports" && props.posts) {
+  } else if (mode === "ScientificReports" && props.scientificReports) {
     content = (
       <div>
         <SideBarItem

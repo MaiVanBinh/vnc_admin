@@ -148,3 +148,19 @@ export const createCreature = (payload, token) => {
         .catch(err => dispatch(fetchCreatureByIdError(err.message)));
     }
 }
+
+export const deleteCreatureSuccess = (id) => {
+    return {
+        type: actionTypes.DELETE_CREATURE_SUCCESS,
+        id: id
+    }
+}
+export const deleteCreature = (id, token) => {
+    return dispatch => {
+        dispatch(fetchCreatureByIdStart());
+        const headerCofig = headerAuthConfig(token);
+        axios.delete(`${baseUrl}auth/creatures/${id}`, headerCofig)
+        .then(res => dispatch(deleteCreatureSuccess(id)))
+        .catch(err => dispatch(fetchCreatureByIdError(err.message)));
+    }
+}

@@ -5,7 +5,8 @@ export {
   fetchCreatureById,
   fetchCreatureRedBook,
   editCreatureStart,
-  createCreature
+  createCreature,
+  deleteCreature
 } from "./creatures";
 
 export {
@@ -60,6 +61,8 @@ export {
   endFormFamily,
 } from "./families";
 
-export { fetchAssets, createAsset } from "./assets";
+export { fetchAssets, createAsset, deleteAsset } from "./assets";
 
-export { fetchUsers, createUser } from './Users';
+export { fetchUsers, createUser,deleteUser } from './Users';
+
+export {fetchWood} from './wood';

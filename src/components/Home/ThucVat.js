@@ -4,13 +4,13 @@ const ThucVat = (props) => {
   const plants = [];
   for (let i = 0; i < props.plants.length; i += 2) {
     plants.push(
-      <div class="thucvat-cards">
+      <div className="thucvat-cards" key={i}>
         <a href={`/sinh-vat/${props.plants[i].id}`}>
-        <div class="card-leftside">
-          <div class="img-fluid tv-img">
+        <div className="card-leftside">
+          <div className="img-fluid tv-img">
             <img src={props.plants[i].avatar} alt={props.plants[i].name_vn} />
           </div>
-          <div class="tv-card card-describe-tv1">
+          <div className="tv-card card-describe-tv1">
             <ul>
               <li>
                 Tên Việt Nam: <span id="name1">{props.plants[i].name_vn}</span>
@@ -32,8 +32,8 @@ const ThucVat = (props) => {
         </div>
         </a>
         <a href={`/sinh-vat/${props.plants[i+1].id}`}>
-        <div class="card-rightside">
-          <div class="tv-card card-describe-tv2">
+        <div className="card-rightside">
+          <div className="tv-card card-describe-tv2">
             <ul>
               <li>
                 Tên Việt Nam:{" "}
@@ -55,7 +55,7 @@ const ThucVat = (props) => {
               </li>
             </ul>
           </div>
-          <div class="img-fluid tv-img">
+          <div className="img-fluid tv-img">
             <img src={props.plants[i + 1].avatar} alt={props.plants[i+1].name_vn} />
           </div>
         </div>
@@ -64,23 +64,23 @@ const ThucVat = (props) => {
     );
   }
   return (
-    <div class="thucvat">
-      <div class="container container-thucvat">
-        <div class="caption caption-thucvat">
+    <div className="thucvat">
+      <div className="container container-thucvat">
+        <div className="caption caption-thucvat">
           <h2>
             <span>Thực vật</span>
           </h2>
         </div>
-        <div class="wrapper-thucvat-cards">
+        <div className="wrapper-thucvat-cards">
             {plants}
-          {/* <a href="#" class="btn-slide btn-prev">
-            <i class="fas fa-chevron-left"></i>
+          {/* <a href="#" className="btn-slide btn-prev">
+            <i className="fas fa-chevron-left"></i>
           </a>
-          <a href="#" class="btn-slide btn-next">
-            <i class="fas fa-chevron-right"></i>
+          <a href="#" className="btn-slide btn-next">
+            <i className="fas fa-chevron-right"></i>
           </a> */}
         </div>
-        <a href="/#" class="btn-main btn-main-thucvat">
+        <a href="/sinh-vat?species=2" className="btn-main btn-main-thucvat">
           <span>Tra cứu thực vật</span>
         </a>
       </div>

@@ -44,9 +44,10 @@ const Users = (props) => {
   }
 
   const deleteConfirmHandler = () => {
-    props.onDeleteSpecies(deleteItem.id, props.token);
+    props.onDeleteUser(deleteItem.id, props.token);
     setDeleteItem(null);
   };
+
   const cancelDelete = () => {
     setDeleteItem(null);
   };
@@ -70,7 +71,6 @@ const Users = (props) => {
 
   const onEditCreature = (item) => {
     setCurrentEdit(item);
-    // setIsEditing(true);
   }
 
   return (
@@ -126,7 +126,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onFetchUsers: (token) => dispatch(actions.fetchUsers(token)),
-    
+    onDeleteUser: (id, token) => dispatch(actions.deleteUser(id, token))
   };
 };
 

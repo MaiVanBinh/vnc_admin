@@ -11,6 +11,7 @@ import { useHistory } from "react-router-dom";
 import * as actions from "../../../store/actions/index";
 import CreaturesFilter from "./CreaturesFiter/CreaturesFilter";
 import Modal from "../../../components/UI/Modal/Modal";
+import DeleteConfirm from './DeleteConfirm/DeleteConfirm';
 
 const TABLE_CONFIG = {
   id: "Id",
@@ -33,12 +34,9 @@ const Creatures = (props) => {
     name: "",
   });
 
-  const [formOption, setFormOption] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
-  const [pageInput, setPageInput] = useState(1);
-
   const { onFetchFilterData, filterData, onFetchCreatures, token } = props;
+  const [cDelete, setCDelete] = useState(null);
 
   useEffect(() => {
     onFetchFilterData();
@@ -50,11 +48,6 @@ const Creatures = (props) => {
       search: "",
     });
   }, [props.history]);
-
-  const onChangePageInput = (event) => {
-    const pageInputUpdate = event.target.value.replace(/[^0-9]/g, "");
-    setPageInput(pageInputUpdate);
-  };
 
   const fetchCreaturesHandler = (title, formInput) => {
    
@@ -106,12 +99,24 @@ const Creatures = (props) => {
     window.location.href = '/admin/sinh-vat/create';
   }
   
+  const deleteCreatureHandler = () => {
+    props.onDeleteCreature(cDelete.id, props.token);
+    setCDelete(null);
+  }
+
+  const deleteCreatures = (creature) => {
+    setCDelete(creature);
+  }
+
   return (
     <section className="cd-gallery">
       <Modal show={showModal} modalClosed={modelShowHandler}>
         <CreaturesFilter formClosed={modelShowHandler} loadData={fetchCreaturesHandler} />
       </Modal>
       {token ? null : <Redirect to="/" />}
+      <Modal show={cDelete} formClosed={() => setCDelete(null)}>
+        <DeleteConfirm deleteItem={cDelete} cancelDelete={() => setCDelete(null)} deleteConfirmHandler={deleteCreatureHandler}/>
+      </Modal>
       {props.creatures ? (
         <TableAdminvV1
           filterHandler={modelShowHandler}
@@ -122,7 +127,7 @@ const Creatures = (props) => {
           onEdit={onViewDetailHandler}
           resetClick={onResetFormInput}
           createClick={createCreatures}
-          // deleteClick={deletePost}
+          deleteClick={deleteCreatures}
           onSearchData={fetchCreaturesHandler}
           fetchData={onFetchCreaturesByPage}
           total={props.total}
@@ -154,6 +159,7 @@ const mapDispatchToProps = (dispatch) => {
     onFetchFilterData: () => {
       dispatch(actions.fetchFilterData());
     },
+    onDeleteCreature: (id, token) => dispatch(actions.deleteCreature(id, token))
   };
 };
 

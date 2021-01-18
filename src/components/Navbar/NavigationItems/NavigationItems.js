@@ -24,7 +24,7 @@ const NavigationItem = (props) => {
                 <a href="/sinh-vat/sach-do?species=1">Sách đỏ</a>
               </li>
               <li className="dropdown-link">
-                <a href="/sinh-vat">Mẫu gỗ</a>
+                <a href="/sinh-vat/mau-go">Mẫu gỗ</a>
               </li>
               <div className="arrow"></div>
             </ul>
@@ -63,7 +63,6 @@ const NavigationItem = (props) => {
             Admin
           </a>
         </li> : null}
-        
       </ul>
     </div>
   );

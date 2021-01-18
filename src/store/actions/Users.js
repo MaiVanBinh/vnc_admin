@@ -28,3 +28,20 @@ export const createUser = (payload, token) => {
             .catch(err => console.log(err.message));
     }
 }
+
+const deleteUserSuccess = (id) => {
+    return {
+        type: actionsType.DELETE_USER_SUCCESS,
+        id: id
+    }
+}
+
+export const deleteUser = (id, token) =>{
+    return dispatch => {
+        dispatch({type: actionsType.USER_START});
+        const header = headerAuthConfig(token);
+        axios.delete(`${baseUrl}auth/users/${id}`,header)
+            .then(res => dispatch(deleteUserSuccess(id)))
+            .catch(err => console.log(err.message));
+    }
+}
