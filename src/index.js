@@ -10,7 +10,6 @@ import { createStore, compose, applyMiddleware, combineReducers } from "redux";
 
 import creaturesReducer from "./store/reducer/creatures";
 import postsReducer from './store/reducer/posts';
-import speciesReducer from './store/reducer/species';
 import categoryReducer from './store/reducer/category';
 import nationalParkReducer from './store/reducer/nationalParks';
 import authorReducer from './store/reducer/author';
@@ -28,7 +27,6 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
   creatures: creaturesReducer,
   posts: postsReducer,
-  species: speciesReducer,
   category: categoryReducer,
   nationalPark: nationalParkReducer,
   author: authorReducer,

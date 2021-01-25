@@ -24,11 +24,12 @@ const Asset = (props) => {
   });
   const [currentPage, setCurrentPage] = useState(1); 
 
+  const {token, onFetchAsset} = props;
   useEffect(() => {
-    if (props.token) {
-      props.onFetchAsset(props.token, currentPage);
+    if (token) {
+      onFetchAsset(token, currentPage);
     }
-  }, [props.onFetchAsset, currentPage]);
+  }, [onFetchAsset, token, currentPage]);
 
   useEffect(() => {
     if (props.totalAssets > 0) {
@@ -36,8 +37,8 @@ const Asset = (props) => {
     }
   }, [props.totalAssets]);
   useEffect(() => {
-    props.onFetchAsset(props.token, currentPage);
-  }, [currentPage]);
+    onFetchAsset(token, currentPage);
+  }, [currentPage, token, onFetchAsset]);
 
   const onPanigationHandler = (pageNumber) => {
     const totalPage = Math.floor(props.totalAssets / 15) + 1;
@@ -100,10 +101,10 @@ const Asset = (props) => {
           {item.id}
         </td>
         <td style={{ justifyContent: "center", alignItems: "center" }}>
-          <img src={item.url} style={{ width: "50px", maxHeight: "50px" }} />
+          <img src={item.url} style={{ width: "50px", maxHeight: "50px" }} alt="" />
         </td>
         <td>{item.url.split("/").pop()}</td>
-        <td><i class="fas fa-check" style={{color: '#32CD32'}}></i></td>
+        <td><i className="fas fa-check" style={{color: '#32CD32'}}></i></td>
         <td>{item.created_by}</td>
         <td>{item.created_at}</td>
         <td>{item.updated_at}</td>
@@ -117,16 +118,16 @@ const Asset = (props) => {
           }}
         >
           <i
-            class="far fa-eye icon"
+            className="far fa-eye icon"
             style={{ padding: "5px" }}
             onClick={() => onViewDetail(item)}
           ></i>
 
-          <a href={item.url} target="_blank" download>
-            <i class="fas fa-download icon" style={{ padding: "5px"}}></i>
+          <a href={item.url} target="_blank" download rel="noopener noreferrer">
+            <i className="fas fa-download icon" style={{ padding: "5px"}}></i>
           </a>
 
-          <i class="fas fa-trash icon" style={{ padding: "5px" }} onClick={() => setDeleteAsset(item)}></i>
+          <i className="fas fa-trash icon" style={{ padding: "5px" }} onClick={() => setDeleteAsset(item)}></i>
         </td>
       </tr>
     ));
@@ -146,6 +147,7 @@ const Asset = (props) => {
           <a
             onClick={() => onPanigationHandler(i)}
             className={i === currentPage ? "active" : ""}
+            href="#0"
           >
             {i}
           </a>
@@ -178,28 +180,28 @@ const Asset = (props) => {
       <div className="group-icon-table">
         <div>
           <i
-            class="fas fa-bars icon"
+            className="fas fa-bars icon"
             style={{ padding: "5px", borderRadius: "2px" }}
             onClick={props.sideBarHanlder}
           ></i>
           <span>|</span>
           <i
-            class="fas fa-filter icon"
+            className="fas fa-filter icon"
             style={{ padding: "5px", borderRadius: "2px" }}
           ></i>
         </div>
         <div>
           <i
-            class="fas fa-search icon"
+            className="fas fa-search icon"
             style={{ padding: "5px", borderRadius: "2px" }}
           ></i>
           <i
-            class="fas fa-redo icon"
+            className="fas fa-redo icon"
             style={{ padding: "5px", borderRadius: "2px" }}
             onClick={() => props.onFetchAsset(props.token, 1)}
           ></i>
           <i
-            class="fas fa-plus icon"
+            className="fas fa-plus icon"
             style={{ padding: "5px", borderRadius: "2px" }}
             onClick={() => onCreateHandler()}
           ></i>
@@ -236,18 +238,18 @@ const Asset = (props) => {
         )}
       </table>
       {props.label !== "species" ? (
-        <div class="tablefooter">
-          <div class="tableNavigation">
+        <div className="tablefooter">
+          <div className="tableNavigation">
             <ul>
               <li>
-                <a onClick={() => onPanigationHandler(1)}>
-                  <i class="fas fa-angle-double-left"></i>
+                <a onClick={() => onPanigationHandler(1)} href="#0">
+                  <i className="fas fa-angle-double-left"></i>
                 </a>
               </li>
               {pageContent}
               <li>
-                <a onClick={() => onPanigationHandler(-1)}>
-                  <i class="fas fa-angle-double-right"></i>
+                <a onClick={() => onPanigationHandler(-1)} href="#0">
+                  <i className="fas fa-angle-double-right"></i>
                 </a>
               </li>
             </ul>

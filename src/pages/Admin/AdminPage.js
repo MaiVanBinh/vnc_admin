@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import "./AdminPage.css";
-import Creatures from "./Creatures/Creatures";
 import SideBarAdmin from "../../components/SideBarAdmin/SideBarAdmin";
-import CreaturesCategories from './CreaturesCategories/CreaturesCategories';
 import Posts from './Post/Post';
 import Assets from './Asset/Asset';
 import Users from './Users/Users';
@@ -10,7 +8,7 @@ import Users from './Users/Users';
 const AdminPage = (props) => {
   // type 1: show page creatures
   // type 2: show categories
-  const [type, setType] = useState(1);
+  const [type, setType] = useState(3);
   const [marginLeft, setMarginLeft] = useState("300px");
   const sideBarHanlder = () => {
     if (marginLeft === "300px") {
@@ -26,29 +24,6 @@ const AdminPage = (props) => {
 
   let adminContent = null;
   switch(type) {
-    case 1: {
-      adminContent = <Creatures sideBarHanlder={sideBarHanlder}/>
-      break;
-    }
-    case 2: {
-      setType('species')
-      break;
-    }
-    case "species": {
-      adminContent = <CreaturesCategories type="species" sideBarHanlder={sideBarHanlder}/>;
-      break;
-    }
-    case "groups": {
-      adminContent = <CreaturesCategories type="groups" sideBarHanlder={sideBarHanlder}/>;
-      break;
-    }
-    case "orders": {
-      adminContent = <CreaturesCategories type="orders" sideBarHanlder={sideBarHanlder}/>;
-      break;
-    }
-    case "families": 
-      adminContent = <CreaturesCategories type="families" sideBarHanlder={sideBarHanlder}/>;
-      break;
     case 3: {
       adminContent = <Posts sideBarHanlder={sideBarHanlder}/>
       break;

@@ -25,6 +25,7 @@ const Post = (props) => {
   const [postDelete, setPostDelete] = useState(null);
   const [searchKey, setSearchKey] = useState(null);
 
+  const {onFetchPost} = props;
   const changeSearchKeyHandler = (key) => {
     console.log(key);
     setSearchKey(key);
@@ -32,12 +33,12 @@ const Post = (props) => {
 
   useEffect(() => {
     if(searchKey) {
-      props.onFetchPost({ categories: "", limit: 10, page: currentPage, title: searchKey});
+      onFetchPost({ categories: "", limit: 10, page: currentPage, title: searchKey});
     } else {
-      props.onFetchPost({ categories: "", limit: 10, page: currentPage });
+      onFetchPost({ categories: "", limit: 10, page: currentPage });
     }
     
-  }, [searchKey, currentPage]);
+  }, [searchKey, currentPage, onFetchPost]);
 
   const onChangeCurrentPage = (page) => {
     setCurrentPage(page);  

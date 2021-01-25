@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./TableAdminvV1.css";
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
-import { Link } from "react-router-dom";
 
 const TableAdminvV1 = (props) => {
   const [numberOfPage, setNumberOfPage] = useState(0);
@@ -15,21 +14,23 @@ const TableAdminvV1 = (props) => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    if (props.token) {
-      props.onFetchAsset(props.token, currentPage);
-    }
-  }, [props.onFetchAsset, currentPage]);
+  const {token, onFetchAsset, total} = props;
 
   useEffect(() => {
-    if (props.total > 0) {
-      setNumberOfPage(Math.floor(props.total/10) + 1);
+    if (token) {
+      onFetchAsset(token, currentPage);
     }
-  }, [props.total]);
+  }, [onFetchAsset, token, currentPage]);
+
+  useEffect(() => {
+    if (total > 0) {
+      setNumberOfPage(Math.floor(total/10) + 1);
+    }
+  }, [total, setNumberOfPage]);
   
   useEffect(() => {
-    props.onFetchAsset(props.token, currentPage);
-  }, [currentPage]);
+    onFetchAsset(token, currentPage);
+  }, [onFetchAsset, token, currentPage]);
 
   const onPanigationHandler = (pageNumber) => {
     const pageMax = panigation.pageMin + panigation.pageItem - 1;
@@ -79,7 +80,7 @@ const TableAdminvV1 = (props) => {
       }
       pageContent.push(
         <li key={i}>
-          <a
+          <a href="#0"
             onClick={() => onPanigationHandler(i)}
             className={i === currentPage ? "active" : ""}
           >
@@ -114,7 +115,7 @@ const TableAdminvV1 = (props) => {
 
   let tableContent = [];
   if (props.data) {
-    tableContent = props.data.map((item) => (
+    tableContent = props.data ? props.data.map((item) => (
       <tr key={item.id}>
         {renderRowContent(item)}
         <td
@@ -145,7 +146,7 @@ const TableAdminvV1 = (props) => {
           ></i>
         </td>
       </tr>
-    ));
+    )) : null;
   }
 
   const searchClickHanler = () => {
@@ -249,13 +250,13 @@ const TableAdminvV1 = (props) => {
           <div className="tableNavigation">
             <ul>
               <li>
-                <a onClick={() => onPanigationHandler(1)}>
+                <a onClick={() => onPanigationHandler(1)} href="#0">
                   <i className="fas fa-angle-double-left"></i>
                 </a>
               </li>
               {pageContent}
               <li>
-                <a onClick={() => onPanigationHandler(-1)}>
+                <a onClick={() => onPanigationHandler(-1)} href="#0">
                   <i className="fas fa-angle-double-right"></i>
                 </a>
               </li>

@@ -30,13 +30,15 @@ const PostDetail = (props) => {
     category: null,
   });
 
+  const {onFetchPost, onFetchAuthor, editPost} = props;
   useEffect(() => {
-    if (props.editPost) {
-      props.onFetchPost(props.editPost.id);
+    if (editPost) {
+      onFetchPost(editPost.id);
     }
-    props.onFetchAuthor();
-    props.onFetchCategory();
-  }, []);
+    onFetchAuthor();
+    onFetchAuthor();
+  }, [onFetchPost, onFetchAuthor, editPost]);
+
   useEffect(() => {
     if (props.editPost) {
       setFormInput({

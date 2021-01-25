@@ -18,16 +18,18 @@ const TABLE_CONFIG = {
 };
 
 const Users = (props) => {
-  const [currentPage, ] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [showForm, setShowForm] = useState(false);
   const [currentEdit, setCurrentEdit] = useState(false);
   // const [isEditing, setIsEditing] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
 
+  const {onFetchUsers, token} = props;
+
   useEffect(() => {
-    props.onFetchUsers(props.token);
-  }, [currentPage]);
+    onFetchUsers(token);
+  }, [onFetchUsers, token]);
 
   const onShowFormHandler = (mode, isEditing, itemEdit) => {
     // setIsEditing(isEditing);

@@ -19,14 +19,6 @@ export {
   deletePost,
 } from "./posts";
 
-export {
-  fetchSpecies,
-  createSpecies,
-  deleteSpecies,
-  endFormSpecies,
-  updateSpecies,
-} from "./species";
-
 export { fetchCategory } from "./category";
 
 export { fetchNationParkById, fetchNationalParkCoords } from "./nationalParks";

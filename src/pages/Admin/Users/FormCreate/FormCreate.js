@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./FormCreate.css";
 import { connect } from "react-redux";
 import * as actions from "../../../../store/actions/index";
-import Loading from "../../../../components/UI/Loader/Loader";
+// import Loading from "../../../../components/UI/Loader/Loader";
 
 const FormCreate = (props) => {
   const [formInput, setFormInput] = useState({

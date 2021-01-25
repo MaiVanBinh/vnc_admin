@@ -2,7 +2,7 @@ import React from "react";
 import "./Footer.css";
 import PhoneIcon from "../../assets/icons/phone.png";
 import GmailIcon from "../../assets/icons/gmail.png";
-import FooterSlider from "./FooterSlider/FooterSlider";
+// import FooterSlider from "./FooterSlider/FooterSlider";
 import { Link } from 'react-router-dom';
 const footer = () => {
   return (
