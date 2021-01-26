@@ -1,91 +1,150 @@
 import React, { useEffect, useState } from "react";
 import "./Post.css";
-// import TableAdminvV1 from "../../../components/UI/TableAdminvV1/TableAdminvV1";
 import * as actions from "../../../store/actions/index";
 import { connect } from "react-redux";
-import { Modal, Button, Table } from 'react-bootstrap';
-// import Modal from "../../../components/UI/Modal/Modal";
-// import PostUpdate from "./PostDetail/PostDetail";
-// import DeleteForm from "../../../components/DeleteForm/DeleteForm";
+import axios from "axios";
+import { baseUrl } from './../../../store/utilities/apiConfig';
+import * as actionTypes from './../../../store/actions/actionTypes';
+import { Modal, Button, Table, Form } from 'react-bootstrap';
 
-// const TABLE_CONFIG = {
-//   id: "id",
-//   title: "Title",
-//   author: "Author",
-//   category: "CategoryId",
-//   created_by: "OwnerId",
-//   created_at: "Created Day",
-//   updated_at: "Last Update",
-// };
+const mapStateToProps = (state) => {
+    return {
+        auth: state.auth,
+        posts: state.posts,
+        // formSubmit: state.posts.formSubmit,
+        // totalPost: state.posts.total
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        // onFetchPost: (payload) => dispatch(actions.fetchPost(payload)),
+        // onPostEndForm: () => dispatch(actions.postEndForm()),
+        // onDeletePost: (id, token) => dispatch(actions.deletePost(id, token)),
+        setLoader: (payload) => dispatch({
+            type: actionTypes.SET_LOADER, payload
+        }),
+        setPosts: (payload) => dispatch({
+            type: actionTypes.SET_POSTS_LIST, payload
+        })
+    };
+};
 
 const Post = (props) => {
-    const [show, setShow] = useState(false);
+    const {
+        auth,
+        posts,
+        setLoader,
+        setPosts
+    } = props;
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    // const [currentPage, setCurrentPage] = useState(1);
-    // const [showModal, setShowModal] = useState(false);
-    // const [editPost, setEditPost] = useState(null);
-    // const [isDelete, setIsDelete] = useState(false);
-    // const [postDelete, setPostDelete] = useState(null);
-    // const [searchKey, setSearchKey] = useState(null);
+    const [showEdit, setShowEdit] = useState(false);
+    const [showCreate, setShowCreate] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
 
-    // const {onFetchPost} = props;
-    // const changeSearchKeyHandler = (key) => {
-    //   console.log(key);
-    //   setSearchKey(key);
-    // }
+    const [infoPost, setInfoPost] = useState({
+        id: null,
+        title: '',
+        created_at: ''
+    })
 
-    // useEffect(() => {
-    //   if(searchKey) {
-    //     onFetchPost({ categories: "", limit: 10, page: currentPage, title: searchKey});
-    //   } else {
-    //     onFetchPost({ categories: "", limit: 10, page: currentPage });
-    //   }
+    const [titleCreate, setTitleCreate] = useState('');
 
-    // }, [searchKey, currentPage, onFetchPost]);
+    useEffect(() => {
+        if (!posts) getPostList();
+    }, [])
 
-    // const onChangeCurrentPage = (page) => {
-    //   setCurrentPage(page);  
-    // }
+    const getPostList = () => {
+        setLoader(true);
+        axios({
+            method: 'get',
+            url: baseUrl + 'auth/posts',
+            headers: {
+                'Authorization': 'Bearer ' + auth.token
+            },
+            params: {
+                page: 1,
+                limit: 10,
+                is_publish: 'true'
+            }
+        })
+            .then(res => {
+                console.log(res);
+                setLoader(false);
+                setPosts(res.data.data.posts);
+            })
+    }
 
-    // const onViewDetailHandler = (item) => {
-    //   const link = window.location.origin + "/bai-viet/" + item.id;
-    //   window.open(link, "_blank");
-    // };
 
-    // const editHandler = (item) => {
-    //   setShowModal(true);
-    //   setEditPost(item);
-    // };
+    const openEdit = (item) => {
+        setInfoPost({
+            id: item.id,
+            title: item.title,
+            created_at: item.created_at
+        })
+        setShowEdit(true);
+    }
 
-    // const onCloseModal = () => {
-    //   setEditPost(null);
-    //   setShowModal(false);
-    //   props.onPostEndForm();
-    //   setIsDelete(false);
-    //   setPostDelete(null);
-    // };
+    const openDelete = (item) => {
+        setInfoPost({
+            id: item.id,
+            title: item.title,
+            created_at: item.created_at
+        })
+        setShowDelete(true);
+    }
 
-    // const createNewPost = () => {
-    //   setShowModal(true);
-    // };
+    const editHandle = () => {
+        setLoader(true);
+        axios({
+            method: 'put',
+            url: baseUrl + 'auth/categories/' + infoPost.id,
+            data: {
+                title: infoPost.title
+            },
+            headers: {
+                'Authorization': 'Bearer ' + auth.token
+            }
+        })
+            .then(() => {
+                setShowEdit(false);
+                getPostList();
+            })
+    }
 
-    // const deletePost = (item) => {
-    //   setIsDelete(true);
-    //   setPostDelete(item);
-    // };
+    const deleteHandle = () => {
+        setLoader(true);
+        axios({
+            method: 'delete',
+            url: baseUrl + 'auth/categories/' + infoPost.id,
+            headers: {
+                'Authorization': 'Bearer ' + auth.token
+            }
+        })
+            .then((res) => {
+                console.log('delete handle result:', res);
+                setShowDelete(false);
+                getPostList();
+            })
+    }
 
-    // const cancleDelete = () => {
-    //   setIsDelete(false);
-    //   setPostDelete(null);
-    // };
-
-    // const confimDeletePost = () => {
-    //   if (postDelete) {
-    //     props.onDeletePost(postDelete.id, props.token);
-    //   }
-    // };
+    const saveHandle = () => {
+        setLoader(true);
+        axios({
+            method: 'post',
+            url: baseUrl + 'auth/categories',
+            headers: {
+                'Authorization': 'Bearer ' + auth.token
+            },
+            data: {
+                title: titleCreate
+            }
+        })
+            .then(() => {
+                setShowCreate(false);
+                getPostList();
+            })
+    }
 
     return (
         <div>
@@ -100,83 +159,103 @@ const Post = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* render by loop */}
-                        <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>
-                                <Button onClick={handleShow} className='mr-2'>Sửa</Button>
-                                <Button className='btn-danger'>Xóa</Button>
-                            </td>
-                        </tr>
+                        {
+                            posts && posts.map((e, i) => {
+                                return (
+                                    <tr key={i}>
+                                        <td>{i + 1}</td>
+                                        <td>{e.title}</td>
+                                        <td>Otto</td>
+                                        <td>
+                                            <Button onClick={() => setShowEdit(true)} className='mr-2'>Sửa</Button>
+                                            <Button onClick={() => setShowDelete(true)} className='btn-danger'>Xóa</Button>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
                     </tbody>
                 </Table>
             </div>
 
-
+            {/* edit */}
             <Modal
-                show={show}
-                onHide={handleClose}
+                show={showEdit}
+                onHide={() => setShowEdit(false)}
                 backdrop="static"
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal title</Modal.Title>
+                    <Modal.Title>Sửa danh mục</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    I will not close if you click outside me. Don't even try to press
-                    escape key.
+                    <Form>
+                        <Form.Group controlId="formBasicTitle">
+                            <Form.Label>Tên danh mục</Form.Label>
+                            <Form.Control
+                                type="title"
+                                placeholder="Nhập tên danh mục"
+                                value={infoPost.title}
+                                onChange={(v) => setInfoPost({ ...infoPost, title: v.target.value })}
+                            />
+                        </Form.Group>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary">Understood</Button>
+                    <Button variant="secondary" onClick={() => setShowEdit(false)}>Đóng</Button>
+                    <Button variant="primary" onClick={editHandle}>Lưu</Button>
                 </Modal.Footer>
             </Modal>
-            {/* <Modal show={showModal} modalClosed={onCloseModal}>
-        <PostUpdate editPost={editPost} formClosed={onCloseModal} />
-      </Modal>
-      <Modal show={isDelete} modalClosed={onCloseModal}>
-        <DeleteForm
-          title={postDelete ? postDelete.title : ""}
-          cancleDelete={cancleDelete}
-          confimDelete={confimDeletePost}
-          deleteSuccess={props.formSubmit}
-        />
-      </Modal>
 
-      <TableAdminvV1
-        tableConfig={TABLE_CONFIG}
-        data={props.posts}
-        onViewDetail={onViewDetailHandler}
-        onEdit={editHandler}
-        createClick={createNewPost}
-        deleteClick={deletePost}
-        fetchData={onChangeCurrentPage}
-        total={props.totalPost}
-        onSearchData={changeSearchKeyHandler}
-      /> */}
+            {/* create */}
+            <Modal
+                show={showCreate}
+                onHide={() => setShowCreate(false)}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Tạo danh mục</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="formBasicTitle">
+                            <Form.Label>Tên danh mục</Form.Label>
+                            <Form.Control
+                                type="title"
+                                placeholder="Nhập tên danh mục"
+                                value={titleCreate}
+                                onChange={(v) => setTitleCreate(v.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowCreate(false)}>Đóng</Button>
+                    <Button variant="primary" onClick={saveHandle}>Lưu</Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* delete */}
+            <Modal
+                show={showDelete}
+                onHide={() => setShowDelete(false)}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Xóa danh mục</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {'Bạn có chắc muốn xóa "' + infoPost.title + '" ?'}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDelete(false)}>Hủy</Button>
+                    <Button variant="danger" onClick={deleteHandle}>Có</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
-};
-
-const mapStateToProps = (state) => {
-    return {
-        posts: state.posts.posts,
-        token: state.auth.token,
-        formSubmit: state.posts.formSubmit,
-        totalPost: state.posts.total
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onFetchPost: (payload) => dispatch(actions.fetchPost(payload)),
-        onPostEndForm: () => dispatch(actions.postEndForm()),
-        onDeletePost: (id, token) => dispatch(actions.deletePost(id, token)),
-    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);
