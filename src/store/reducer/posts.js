@@ -89,8 +89,12 @@ import * as actionsType from "../actions/actionTypes";
 //   updatePost.splice(id, 1);
 //   return updateObject(state, { formSubmit: true, posts: updatePost});
 // }
-
 const initState = null;
+
+const createPostSuccess = (state, action) => {
+  state.push(action.payload);
+  return state;
+}
 
 const reducer = (state = initState, action) => {
   switch (action.type) {
@@ -106,7 +110,7 @@ const reducer = (state = initState, action) => {
     //   return fetchPostDetailSuccess(state, action);
     // case actionsType.POST_END_FORM: return updateObject(state, {formSubmit: false})
     // case actionsType.CHANGE_POST_SUCCESS: return changePostSuccess(state, action);
-    // case actionsType.CREATE_POST_SUCCESS: return createPostSuccess(state, action);
+    case actionsType.CREATE_POST: return createPostSuccess(state, action);
     // case actionsType.DELETE_POST_SUCCESS: return deletePostSuccess(state, action);
     // case actionsType.CHANGE_POST_START: return state;
     // case actionsType.CHANGE_POST_ERROR: return state; 

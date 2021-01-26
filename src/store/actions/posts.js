@@ -121,7 +121,7 @@ export const updatePost = (payload, token) => {
 
 const createPostSuccess = (newPost) => {
   return {
-    type: actionsType.CREATE_POST_SUCCESS,
+    type: actionsType.CREATE_POST,
     newPost: newPost
   }
 }
