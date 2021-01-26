@@ -25,9 +25,12 @@ const categoryError = errMessage => {
 export const fetchCategory = () => {
     return dispatch => {
         dispatch(categoryStart());
-        const url = getApi('GET', 'category');
+        const url = getApi('GET', 'categories');
         axios.get(url) 
-            .then(res => dispatch(fetchCategorySuccess(res.data.data)))
+            .then(res => {
+                console.log(res);
+                dispatch(fetchCategorySuccess(res.data.data));
+            })
             .catch(err => dispatch(categoryError(err.message)));
     }
 }

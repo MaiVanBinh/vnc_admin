@@ -49,14 +49,6 @@ const getOptionsApi = (method, data) => {
                 }
             }
         case 'POST':
-            return {
-                method,
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            }
         case 'PUT':
             return {
                 method,

@@ -6,12 +6,12 @@
     z-index: 1;
 }
 .logo-admin {
-    height: 72px;
     padding: 10px;
+    display: flex;
+    justify-content: center;
 }
 .logo-admin img {
-    height: 100%;
-    width: 200px;
+    width: 150px;
 }
 .main-menu-container .menu-item.active,
 .main-menu-container .menu-item:hover {

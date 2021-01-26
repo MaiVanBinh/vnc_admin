@@ -42,7 +42,7 @@ const loginError = (errMessage) => {
     errMessage: errMessage,
   };
 };
-export const login = (email, password) => {
+export const login = (email, password, callback) => {
   return (dispatch) => {
     dispatch(loginStart());
     axios
@@ -57,13 +57,18 @@ export const login = (email, password) => {
       )
       .then((res) => {
         // res.data.expirationTime
+        // console.log(res);
         localStorage.setItem("token", res.data.data.token);
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
         localStorage.setItem("expirationDate", expirationDate);
         dispatch(loginSuccess(res.data.data.token));
         dispatch(checkAuthTimeout(3600));
+        if(callback) callback(res.data.data);
       })
-      .catch((err) => dispatch(loginError(err.message)));
+      .catch((err) => {
+        dispatch(loginError(err.message));
+        if(callback) callback(null);
+      });
   };
 };
 

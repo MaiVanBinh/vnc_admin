@@ -11,6 +11,10 @@ Primary style
   box-sizing: border-box;
 }
 
+html, body{
+  overflow-x: hidden;
+}
+
 html * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

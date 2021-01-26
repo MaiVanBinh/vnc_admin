@@ -35,8 +35,8 @@ const PostDetail = (props) => {
     if (editPost) {
       onFetchPost(editPost.id);
     }
-    onFetchAuthor();
-    onFetchAuthor();
+    // onFetchAuthor();
+    // onFetchAuthor();
   }, [onFetchPost, onFetchAuthor, editPost]);
 
   useEffect(() => {
@@ -235,7 +235,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onFetchPost: (id) => dispatch(actions.fetchPostDetail(id)),
-    onFetchAuthor: () => dispatch(actions.fetchAuthors(null, "all")),
+    // onFetchAuthor: () => dispatch(actions.fetchAuthors(null, "all")),
     onFetchCategory: () => dispatch(actions.fetchCategory()),
     onUpdatePost: (payload, token) =>
       dispatch(actions.updatePost(payload, token)),
