@@ -19,6 +19,11 @@ const routes = [
     exact: true,
     component: lazy(() => import("./../pages/Admin/Post/Post")),
   },
+  {
+    path: "quan-li-anh",
+    exact: true,
+    component: lazy(() => import("./../pages/Admin/Image/ImageManagement")),
+  },
 ];
 
 function PageRouter() {

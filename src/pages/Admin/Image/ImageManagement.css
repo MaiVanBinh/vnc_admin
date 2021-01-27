@@ -1,0 +1,17 @@
+.wrap-area-drop{
+    border: 1px solid #333;
+    border-radius: 10px;
+}
+
+.wrap-area-drop.mouse-over {
+    border-style: dashed;
+}
+
+.list-images .thumbnail img{
+    width: 100px;
+}
+
+.list-images .name{
+    max-width: 300px;
+    overflow: hidden;
+}

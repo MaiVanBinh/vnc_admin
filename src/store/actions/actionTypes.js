@@ -35,3 +35,6 @@ export const EDIT_CREATURE_START = 'EDIT_CREATURE_START';
 
 // loader
 export const SET_LOADER = 'SET_LOADER';
+
+// list image
+export const SET_LIST_IMAGES = 'SET_LIST_IMAGES';
