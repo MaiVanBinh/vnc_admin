@@ -350,8 +350,8 @@ const Post = (props) => {
                   }
                   defaultValue={infoPost.category}
                 >
-                  {category.map((e) => (
-                    <option value={e.id}>{e.title}</option>
+                  {category.map((e, i) => (
+                    <option key={i} value={e.id}>{e.title}</option>
                   ))}
                 </Form.Control>
               ) : null}
@@ -464,8 +464,8 @@ const Post = (props) => {
                 }
                 defaultValue={category[0].id}
               >
-                {category.map((e) => (
-                  <option value={e.id}>{e.title}</option>
+                {category.map((e, i) => (
+                  <option key={i} value={e.id}>{e.title}</option>
                 ))}
               </Form.Control>
             </Form.Group>
@@ -568,8 +568,8 @@ const Post = (props) => {
             <Form.Group controlId="formBasicCategory">
               <Form.Label>Phân loại</Form.Label>
               {category
-                ? category.map((e) => (
-                    <Form.Check type="checkbox" label={e.title} value={e.id} onChange={(e) => console.log(e.target.checked)}/>
+                ? category.map((e, i) => (
+                    <Form.Check key={i} type="checkbox" label={e.title} value={e.id} onChange={(e) => console.log(e.target.checked)}/>
                   ))
                 : null}
             </Form.Group>
