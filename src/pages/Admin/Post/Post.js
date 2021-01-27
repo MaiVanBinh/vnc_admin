@@ -8,7 +8,7 @@ import * as actionTypes from "./../../../store/actions/actionTypes";
 import { Modal, Button, Table, Form } from "react-bootstrap";
 import { Editor } from "@tinymce/tinymce-react";
 import Pagination from "react-bootstrap-4-pagination";
-
+import { validateLength } from "../../../store/utilities/common";
 
 const mapStateToProps = (state) => {
   return {
@@ -49,16 +49,20 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const imageArrayToString = (images) => {
+  const imagesUrl = images.map(e => e.url);
+  return imagesUrl.join('\n');
+}
 const Post = (props) => {
   const { auth, posts, setLoader, setPosts, category, setCategory } = props;
 
-  const [showFilter, setShowFilter] = useState(false);
+  // const [showFilter, setShowFilter] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [totalPost, setTotalPost] = useState(0);
   const [currPage, setCurrentPage] = useState(1);
-  const [infoPost, setInfoPost] = useState({
+  const [initInfoPost] = useState({
     id: null,
     title: "",
     content: "",
@@ -66,6 +70,27 @@ const Post = (props) => {
     category: null,
     description: "",
     is_publish: false,
+  });
+
+  const [infoPost, setInfoPost] = useState({
+    id: null,
+    title: "",
+    content: "",
+    images: "",
+    category: category ? category[0].id : null,
+    description: "",
+    is_publish: false,
+  });
+
+  const [validAttr, setValidAttr] = useState({
+    title: {
+      value: false,
+      message: ">= 4 ký tự",
+    },
+    description: {
+      value: false,
+      message: ">= 4 ký tự",
+    },
   });
 
   const [currItem, setCurrItem] = useState(null);
@@ -127,27 +152,34 @@ const Post = (props) => {
 
   const editHandle = () => {
     const imagesUpdate = infoPost.images ? infoPost.images.split("\n") : [];
-    setLoader(true);
-    axios({
-      method: "put",
-      url: baseUrl + "auth/posts/" + infoPost.id,
-      data: {
-        ...infoPost,
-        images: imagesUpdate,
-      },
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-    })
-      .then(() => {
-        setShowEdit(false);
-        getPostList();
+    const is_publish = infoPost.is_publish === "true" ? true : false;
+    if (
+      !checkValid(infoPost, "title") ||
+      !checkValid(infoPost, "description")
+    ) {
+    } else {
+      setLoader(true);
+      axios({
+        method: "put",
+        url: baseUrl + "auth/posts/" + infoPost.id,
+        data: {
+          ...infoPost,
+          images: imagesUpdate,
+          is_publish,
+        },
+        headers: {
+          Authorization: "Bearer " + auth.token,
+        },
       })
-      .catch((err) => {
-        setShowEdit(false);
-        alert("Em khoong biet lay loi sao");
-        setLoader(false);
-      });
+        .then(() => {
+          setShowEdit(false);
+          getPostList();
+        })
+        .catch((err) => {
+          setShowEdit(false);
+          setLoader(false);
+        });
+    }
   };
 
   const deleteHandle = () => {
@@ -167,26 +199,36 @@ const Post = (props) => {
 
   const saveHandle = () => {
     const imagesUpdate = infoPost.images ? infoPost.images.split("\n") : [];
-    setLoader(true);
-    axios({
-      method: "post",
-      url: baseUrl + "auth/posts",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-      data: {
-        ...infoPost,
-        images: imagesUpdate,
-      },
-    })
-      .then((res) => {
-        setShowCreate(false);
-        getPostList();
-        setLoader(false);
+    const is_publish = infoPost.is_publish === "true" ? true : false;
+    if (
+      !checkValid(infoPost, "title") ||
+      !checkValid(infoPost, "description")
+    ) {
+    } else {
+      setLoader(true);
+      axios({
+        method: "post",
+        url: baseUrl + "auth/posts",
+        headers: {
+          Authorization: "Bearer " + auth.token,
+        },
+        data: {
+          ...infoPost,
+          images: imagesUpdate,
+          is_publish,
+        },
       })
-      .catch((err) => {
-        setLoader(false);
-      });
+        .then((res) => {
+          setShowCreate(false);
+          getPostList();
+          setLoader(false);
+          setInfoPost(initInfoPost);
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          setLoader(false);
+        });
+    }
   };
 
   const getCategoryList = () => {
@@ -202,6 +244,37 @@ const Post = (props) => {
       setCategory(res.data.data.category);
       setLoader(false);
     });
+  };
+
+  const checkValid = (infoPost, attr) => {
+    if (attr === "title") {
+      if (validateLength(infoPost.title, 4) === "incorrect") {
+        setValidAttr((prev) => {
+          return { ...prev, title: { ...prev.title, value: true } };
+        });
+        return false;
+      } else {
+        setValidAttr((prev) => {
+          return { ...prev, title: { ...prev.title, value: false } };
+        });
+      }
+    }
+    if (attr === "description") {
+      if (validateLength(infoPost.description, 4) === "incorrect") {
+        setValidAttr((prev) => {
+          return { ...prev, description: { ...prev.description, value: true } };
+        });
+        return false;
+      } else {
+        setValidAttr((prev) => {
+          return {
+            ...prev,
+            description: { ...prev.description, value: false },
+          };
+        });
+      }
+    }
+    return true;
   };
 
   return (
@@ -220,14 +293,14 @@ const Post = (props) => {
           >
             Tải lại danh sách
           </Button>
-          <Button
+          {/* <Button
             className="mr-2"
             onClick={() => {
               setShowFilter(true);
             }}
           >
             Filter
-          </Button>
+          </Button> */}
         </div>
 
         <Table striped bordered hover>
@@ -253,7 +326,10 @@ const Post = (props) => {
                       <Button
                         onClick={() => {
                           setShowEdit(true);
-                          setInfoPost(e);
+                          setInfoPost({
+                            ...e,
+                            is_publish: e.is_publish === "0" ? false : true,
+                          });
                         }}
                         className="mr-2"
                       >
@@ -294,7 +370,10 @@ const Post = (props) => {
       {/* edit */}
       <Modal
         show={showEdit}
-        onHide={() => setShowEdit(false)}
+        onHide={() => {
+          setShowEdit(false);
+          setInfoPost(initInfoPost);
+        }}
         backdrop="static"
         keyboard={false}
       >
@@ -306,26 +385,47 @@ const Post = (props) => {
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên tiêu đề</Form.Label>
               <Form.Control
+                className={
+                  validAttr.title.value ? "form-control is-invalid" : null
+                }
                 type="title"
                 placeholder="Nhập tên danh mục"
                 value={infoPost.title}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, title: v.target.value })
-                }
+                onChange={(v) => {
+                  checkValid({ ...infoPost, title: v.target.value }, "title");
+                  setInfoPost({ ...infoPost, title: v.target.value });
+                }}
               />
+              {validAttr.title.value ? (
+                <Form.Control.Feedback type="invalid">
+                  {validAttr.title.message}
+                </Form.Control.Feedback>
+              ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicTitleDescription">
               <Form.Label>Miêu tả</Form.Label>
               <Form.Control
+                className={
+                  validAttr.description.value ? "form-control is-invalid" : null
+                }
                 as="textarea"
                 rows={3}
                 type="title"
                 placeholder="Nhập miêu tả"
                 value={infoPost.description}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, description: v.target.value })
-                }
+                onChange={(v) => {
+                  checkValid(
+                    { ...infoPost, description: v.target.value },
+                    "description"
+                  );
+                  setInfoPost({ ...infoPost, description: v.target.value });
+                }}
               />
+              {validAttr.description.value ? (
+                <Form.Control.Feedback type="invalid">
+                  {validAttr.description.message}
+                </Form.Control.Feedback>
+              ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicTitleImages">
               <Form.Label>Hình ảnh</Form.Label>
@@ -333,8 +433,8 @@ const Post = (props) => {
                 as="textarea"
                 rows={3}
                 type="title"
-                placeholder="Nhập miêu tả"
-                value={infoPost.images}
+                placeholder="Danh sách url của hình ảnh nằm trên các dòng khác nhau"
+                value={infoPost.image ? imageArrayToString(infoPost.image) : ''}
                 onChange={(v) =>
                   setInfoPost({ ...infoPost, images: v.target.value })
                 }
@@ -351,7 +451,9 @@ const Post = (props) => {
                   defaultValue={infoPost.category}
                 >
                   {category.map((e, i) => (
-                    <option key={i} value={e.id}>{e.title}</option>
+                    <option key={i} value={e.id}>
+                      {e.title}
+                    </option>
                   ))}
                 </Form.Control>
               ) : null}
@@ -360,7 +462,7 @@ const Post = (props) => {
               <Form.Label>Chế độ</Form.Label>
               <Form.Control
                 as="select"
-                defaultValue={false}
+                defaultValue={infoPost.is_publish}
                 onChange={(v) =>
                   setInfoPost({ ...infoPost, is_publish: v.target.value })
                 }
@@ -376,9 +478,11 @@ const Post = (props) => {
                 apiKey="0dvov6kfqu61g0tppobt4fn6281shc7645qvg5gvtg48wuw2"
                 //   initialValue={creature.description.replaceAll("<br />", "")}
                 init={{
+                  body_id: "my_edit",
                   height: 800,
                   width: "100%",
                   menubar: true,
+
                   plugins: [
                     "advlist autolink lists link image charmap print preview anchor",
                     "searchreplace visualblocks code fullscreen",
@@ -389,9 +493,9 @@ const Post = (props) => {
                   toolbar2: "forecolor backcolor emoticons",
                 }}
                 value={infoPost.content}
-                onEditorChange={(value) =>
-                  setInfoPost({ ...infoPost, content: value })
-                }
+                onEditorChange={(value) => {
+                  setInfoPost({ ...infoPost, content: value });
+                }}
               />
             </Form.Group>
           </Form>
@@ -421,26 +525,47 @@ const Post = (props) => {
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên tiêu đề</Form.Label>
               <Form.Control
+                className={
+                  validAttr.title.value ? "form-control is-invalid" : null
+                }
                 type="title"
                 placeholder="Nhập tên danh mục"
                 value={infoPost.title}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, title: v.target.value })
-                }
+                onChange={(v) => {
+                  checkValid({ ...infoPost, title: v.target.value }, "title");
+                  setInfoPost({ ...infoPost, title: v.target.value });
+                }}
               />
+              {validAttr.title.value ? (
+                <Form.Control.Feedback type="invalid">
+                  {validAttr.title.message}
+                </Form.Control.Feedback>
+              ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicTitleDescription">
               <Form.Label>Miêu tả</Form.Label>
               <Form.Control
+                className={
+                  validAttr.description.value ? "form-control is-invalid" : null
+                }
                 as="textarea"
                 rows={3}
                 type="title"
                 placeholder="Nhập miêu tả"
                 value={infoPost.description}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, description: v.target.value })
-                }
+                onChange={(v) => {
+                  checkValid(
+                    { ...infoPost, description: v.target.value },
+                    "description"
+                  );
+                  setInfoPost({ ...infoPost, description: v.target.value });
+                }}
               />
+              {validAttr.description.value ? (
+                <Form.Control.Feedback type="invalid">
+                  {validAttr.description.message}
+                </Form.Control.Feedback>
+              ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicTitleImages">
               <Form.Label>Hình ảnh</Form.Label>
@@ -448,7 +573,7 @@ const Post = (props) => {
                 as="textarea"
                 rows={3}
                 type="title"
-                placeholder="Nhập miêu tả"
+                placeholder="Danh sách url của hình ảnh nằm trên các dòng khác nhau"
                 value={infoPost.images}
                 onChange={(v) =>
                   setInfoPost({ ...infoPost, images: v.target.value })
@@ -465,7 +590,9 @@ const Post = (props) => {
                 defaultValue={category[0].id}
               >
                 {category.map((e, i) => (
-                  <option key={i} value={e.id}>{e.title}</option>
+                  <option key={i} value={e.id}>
+                    {e.title}
+                  </option>
                 ))}
               </Form.Control>
             </Form.Group>
@@ -543,7 +670,7 @@ const Post = (props) => {
       </Modal>
 
       {/* Filter Form */}
-      <Modal
+      {/* <Modal
         show={showFilter}
         onHide={() => setShowFilter(false)}
         backdrop="static"
@@ -601,7 +728,10 @@ const Post = (props) => {
             Lưu
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
+
+      {/* detail info */}
+      
     </div>
   );
 };
