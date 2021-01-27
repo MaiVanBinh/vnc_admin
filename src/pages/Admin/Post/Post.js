@@ -15,16 +15,12 @@ const mapStateToProps = (state) => {
     auth: state.auth,
     posts: state.posts,
     category: state.category,
-    // formSubmit: state.posts.formSubmit,
-    // totalPost: state.posts.total
+    listImages: state.listImages,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // onFetchPost: (payload) => dispatch(actions.fetchPost(payload)),
-    // onPostEndForm: () => dispatch(actions.postEndForm()),
-    // onDeletePost: (id, token) => dispatch(actions.deletePost(id, token)),
     setLoader: (payload) =>
       dispatch({
         type: actionTypes.SET_LOADER,
@@ -46,15 +42,29 @@ const mapDispatchToProps = (dispatch) => {
         type: actionTypes.SET_CATEGORY_LIST,
         payload,
       }),
+    setListImages: (payload) =>
+      dispatch({
+        type: actionTypes.SET_LIST_IMAGES,
+        payload,
+      }),
   };
 };
 
 const imageArrayToString = (images) => {
-  const imagesUrl = images.map(e => e.url);
-  return imagesUrl.join('\n');
-}
+  const imagesUrl = images.map((e) => e.url);
+  return imagesUrl.join("\n");
+};
 const Post = (props) => {
-  const { auth, posts, setLoader, setPosts, category, setCategory } = props;
+  const {
+    auth,
+    posts,
+    setLoader,
+    setPosts,
+    category,
+    setCategory,
+    setListImages,
+    listImages,
+  } = props;
 
   // const [showFilter, setShowFilter] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -62,6 +72,11 @@ const Post = (props) => {
   const [showDelete, setShowDelete] = useState(false);
   const [totalPost, setTotalPost] = useState(0);
   const [currPage, setCurrentPage] = useState(1);
+  const [showPreview, setShowPreview] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [images, setImages] = useState([]);
+
+
   const [initInfoPost] = useState({
     id: null,
     title: "",
@@ -225,7 +240,6 @@ const Post = (props) => {
           setInfoPost(initInfoPost);
         })
         .catch((err) => {
-          console.log(err.response.data);
           setLoader(false);
         });
     }
@@ -277,6 +291,51 @@ const Post = (props) => {
     return true;
   };
 
+  const previewPost = (id) => {
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "auth/posts/" + id,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+    })
+      .then((res) => {
+        setCurrItem(res.data.data);
+        setLoader(false);
+        setShowPreview(true);
+      })
+      .catch((err) => {
+        setLoader(false);
+      });
+  };
+
+  const getListImages = () => {
+    setImages([]);
+    setShowImage(true);
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "auth/images",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+    }).then((res) => {
+      setListImages(res.data.data.images);
+      setLoader(false);
+    });
+  };
+
+  const addImgae = (v, image) => {
+    let imagesUpdate = [...images];
+    if(v.target.checked) {
+      imagesUpdate = [...imagesUpdate, image];
+    } else {
+      imagesUpdate = images.filter(e => e.id !== image.id);
+    }
+    setImages(imagesUpdate);
+  }
+
   return (
     <div>
       <div className="container-fluid pt-5 pb-5">
@@ -309,6 +368,7 @@ const Post = (props) => {
               <th>#</th>
               <th>Tiêu đề</th>
               <th>Danh mục</th>
+              <th>Chế độ</th>
               <th>Ngày tạo</th>
               <th>Thao tác</th>
             </tr>
@@ -321,6 +381,7 @@ const Post = (props) => {
                     <td>{i + 1}</td>
                     <td>{e.title}</td>
                     <td>{e.category}</td>
+                    <td>{e.is_publish === "1" ? "public " : "private"}</td>
                     <td>{e.created_at}</td>
                     <td>
                       <Button
@@ -340,9 +401,16 @@ const Post = (props) => {
                           setShowDelete(true);
                           setCurrItem(e);
                         }}
-                        className="btn-danger"
+                        className="btn-danger mr-2"
                       >
                         Xóa
+                      </Button>
+                      <Button
+                        onClick={() => previewPost(e.id)}
+                        className="btn-danger"
+                        className="mr-2"
+                      >
+                        Xem
                       </Button>
                     </td>
                   </tr>
@@ -434,14 +502,14 @@ const Post = (props) => {
                 rows={3}
                 type="title"
                 placeholder="Danh sách url của hình ảnh nằm trên các dòng khác nhau"
-                value={infoPost.image ? imageArrayToString(infoPost.image) : ''}
+                value={infoPost.image ? imageArrayToString(infoPost.image) : ""}
                 onChange={(v) =>
                   setInfoPost({ ...infoPost, images: v.target.value })
                 }
               />
             </Form.Group>
             <Form.Group controlId="formBasicCategory">
-              <Form.Label>Phân loại</Form.Label>
+              <Form.Label>Danh mục</Form.Label>
               {category ? (
                 <Form.Control
                   as="select"
@@ -501,7 +569,13 @@ const Post = (props) => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEdit(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowEdit(false);
+              setInfoPost(initInfoPost);
+            }}
+          >
             Đóng
           </Button>
           <Button variant="primary" onClick={editHandle}>
@@ -513,7 +587,10 @@ const Post = (props) => {
       {/* create */}
       <Modal
         show={showCreate}
-        onHide={() => setShowCreate(false)}
+        onHide={() => {
+          setInfoPost(initInfoPost);
+          setShowCreate(false);
+        }}
         backdrop="static"
         keyboard={false}
       >
@@ -569,6 +646,13 @@ const Post = (props) => {
             </Form.Group>
             <Form.Group controlId="formBasicTitleImages">
               <Form.Label>Hình ảnh</Form.Label>
+              <Button
+                className="mr-2"
+                variant="primary"
+                onClick={getListImages}
+              >
+                Thêm ảnh
+              </Button>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -581,7 +665,7 @@ const Post = (props) => {
               />
             </Form.Group>
             <Form.Group controlId="formBasicCategory">
-              <Form.Label>Phân loại</Form.Label>
+              <Form.Label>Danh mục</Form.Label>
               <Form.Control
                 as="select"
                 onChange={(v) =>
@@ -637,7 +721,13 @@ const Post = (props) => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCreate(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setInfoPost(initInfoPost);
+              setShowCreate(false);
+            }}
+          >
             Đóng
           </Button>
           <Button variant="primary" onClick={saveHandle}>
@@ -669,69 +759,152 @@ const Post = (props) => {
         </Modal.Footer>
       </Modal>
 
-      {/* Filter Form */}
-      {/* <Modal
-        show={showFilter}
-        onHide={() => setShowFilter(false)}
+     {/* show preview */}
+      <Modal
+        show={showPreview}
+        onHide={() => setShowPreview(false)}
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Lọc</Modal.Title>
+          <Modal.Title>Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group controlId="formBasicTitle">
-              <Form.Label>Tên tiêu đề</Form.Label>
-              <Form.Control
-                type="title"
-                placeholder="Nhập tên danh mục"
-                value={infoPost.title}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, title: v.target.value })
-                }
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicCategory">
-              <Form.Label>Phân loại</Form.Label>
-              {category
-                ? category.map((e, i) => (
-                    <Form.Check key={i} type="checkbox" label={e.title} value={e.id} onChange={(e) => console.log(e.target.checked)}/>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Tiêu đề:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem ? currItem.title : ""}
+            </div>
+          </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Miêu tả:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem ? currItem.description : ""}
+            </div>
+          </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Danh mục:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem
+                ? "(" + currItem.category + ") " + currItem.categoryTitle
+                : ""}
+            </div>
+          </div>
+          <div>
+            <div className="p-2 font-weight-bold">Ảnh:</div>
+            <div className="p-2 d-flex flex-wrap">
+              {currItem && currItem.images && currItem.images.length > 0
+                ? currItem.images.map((e) => (
+                    <div class="d-flex flex-wrap p-2">
+                      <img
+                        src={e.url}
+                        alt="err"
+                        width="200px"
+                        height="200px"
+                        style={{
+                          border: "1px solid #000",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    </div>
                   ))
                 : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicMode">
-              <Form.Label>Chế độ</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={false}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, is_publish: v.target.value })
-                }
-              >
-                <option value={true}>All</option>
-                <option value={true}>Public</option>
-                <option value={false}>Private</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="formBasicMode">
-              <Form.Label>Ngày tạo</Form.Label>
-              
-            </Form.Group>
-          </Form>
+            </div>
+          </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Chế độ:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem
+                ? currItem.is_publish === "0"
+                  ? "private"
+                  : "public"
+                : ""}
+            </div>
+          </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Ngày tạo:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem ? currItem.created_at : ""}
+            </div>
+          </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Người tạo:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem ? currItem.created_by : ""}
+            </div>
+          </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Ngày sửa cuối:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem ? currItem.updated_at : ""}
+            </div>
+          </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Người sửa cuối:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem ? currItem.updated_by : ""}
+            </div>
+          </div>
+          <div>
+            <div className="p-2 font-weight-bold">Nội dung:</div>
+            <div
+              className="p-2 flex-sm-grow-1"
+              dangerouslySetInnerHTML={{
+                __html: currItem ? currItem.content : "",
+              }}
+            ></div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEdit(false)}>
+          <Button variant="secondary" onClick={() => setShowPreview(false)}>
             Đóng
           </Button>
-          <Button variant="primary" onClick={editHandle}>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showImage}
+        onHide={() => setShowImage(false)}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Chọn ảnh</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Thumbnail</th>
+                <th>Tên ảnh</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listImages &&
+                listImages.map((e, i) => {
+                  return (
+                    <tr key={i}>
+                      <td><Form.Check type="checkbox" label="Check me out" onChange={(v) => addImgae(v, e)}/></td>
+                      <td>
+                        <img src={e.url} alt="error" style={{width: '100px'}}/>
+                      </td>
+                      <td>{e.name}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </Table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowImage(false)}>
+            Đóng
+          </Button>
+          <Button variant="secondary" onClick={() => setShowImage(false)}>
             Lưu
           </Button>
         </Modal.Footer>
-      </Modal> */}
-
-      {/* detail info */}
-      
+      </Modal>
     </div>
   );
 };
