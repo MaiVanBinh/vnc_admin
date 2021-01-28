@@ -43,13 +43,19 @@ const ImageManagement = (props) => {
 
     const [showUpload, setShowUpload] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
+    const [infoImage, setInfoImage] = useState({
+        id: null,
+        name: '',
+        url: '',
+        created_at: '',
+    })
 
     useEffect(() => {
         getListImages();
     }, [])
 
     useEffect(() => {
-        const getFile = (e) => {
+        const getFile = () => {
             if (Array.from(inputFile.current.files).length > 0) {
                 setLoader(true);
                 sendFileUpload(inputFile.current.files, afterUpload, Array.from(inputFile.current.files).length);
@@ -61,7 +67,7 @@ const ImageManagement = (props) => {
         inputFile.current && inputFile.current.addEventListener('change', getFile);
 
         return () => inputFile.current && inputFile.current.removeEventListener('change', getFile)
-    }, [])
+    }, [showUpload])
 
     const uploadHandle = (e) => {
         e.stopPropagation();
@@ -95,6 +101,7 @@ const ImageManagement = (props) => {
         // setLoader(false);
         // console.log(json);
         getListImages();
+        setShowUpload(false);
     }
 
     const sendFileUpload = (imgArr, callback, total) => {
@@ -150,8 +157,25 @@ const ImageManagement = (props) => {
         })
     }
 
-    const deleteHandle = () => {
+    const openDelete = (item) => {
+        setShowDelete(true);
+        setInfoImage(item);
+    }
 
+    const deleteHandle = () => {
+        setLoader(true);
+        axios({
+            url: baseUrl + 'auth/images/' + infoImage.id,
+            method: 'delete',
+            headers: {
+                Authorization: "Bearer " + auth.token,
+            }
+        })
+        .then(res => {
+            // if(res.data.statusCode === 200) 
+            setShowDelete(false);
+            getListImages();
+        })
     }
 
     return (
@@ -175,7 +199,14 @@ const ImageManagement = (props) => {
                 </thead>
                 <tbody className='list-images'>
                     {
-                        listImages && listImages.map((e, i) => {
+                        listImages && listImages.length === 0 ? 
+                        <tr>
+                            <td colSpan="6" className='text-center'>Chưa có dữ liệu trong bảng</td>
+                        </tr>
+                        : null
+                    }
+                    {
+                        listImages && listImages.length > 0 ? listImages.map((e, i) => {
                             return <tr key={i}>
                                 <td>{i + 1}</td>
                                 <td className='thumbnail'>
@@ -185,11 +216,12 @@ const ImageManagement = (props) => {
                                 <td>{e.url}</td>
                                 <td>{e.created_at}</td>
                                 <td>
-                                    <Button className='mr-2'>Copy URL</Button>
-                                    <Button onClick={() => setShowDelete(true)} className='btn-danger'>Xóa</Button>
+                                    {/* <Button className='mr-2'>Copy URL</Button> */}
+                                    <Button onClick={() => openDelete(e)} className='btn-danger'>Xóa</Button>
                                 </td>
                             </tr>
                         })
+                        : null
                     }
                 </tbody>
             </Table>
@@ -205,7 +237,7 @@ const ImageManagement = (props) => {
                     <Modal.Title>Tải ảnh</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div ref={dropArea} className="wrap-area-drop p-5" onDrop={uploadHandle} onDragOver={dragOverHandle} onDragLeave={dragLeaveHandle} onClick={clickHandle}>
+                    <div ref={dropArea} className="wrap-area-drop p-5" style={{cursor: 'pointer'}} onDrop={uploadHandle} onDragOver={dragOverHandle} onDragLeave={dragLeaveHandle} onClick={clickHandle}>
                         <p className="text-center mb-0">Thả ảnh hoặc click vào đây để tải ảnh lên.</p>
                     </div>
                     <input type="file" style={{ display: 'none' }} ref={inputFile} />
@@ -226,7 +258,7 @@ const ImageManagement = (props) => {
                     <Modal.Title>Xóa danh mục</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {'Bạn có chắc muốn xóa "' + '" ?'}
+                    {'Bạn có chắc muốn xóa "' + infoImage.name + '" ?'}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowDelete(false)}>Hủy</Button>
