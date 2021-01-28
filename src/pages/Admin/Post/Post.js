@@ -95,7 +95,7 @@ const Post = (props) => {
   const [images, setImages] = useState([]);
   const [oldImages, setOldImages] = useState([]);
   const [imageSearch, setImageSearch] = useState({
-    name: '',
+    name: "",
     currPage: 1,
     total: 1,
   });
@@ -145,7 +145,7 @@ const Post = (props) => {
         title: "",
         content: "",
         images: "",
-        category: category ? category[0]["id"] : null,
+        category: category && category.length ? category[0]["id"] : null,
         description: "",
         is_publish: false,
       });
@@ -154,7 +154,7 @@ const Post = (props) => {
         title: "",
         content: "",
         images: "",
-        category: category ? category[0]["id"] : null,
+        category: category && category.length ? category[0]["id"] : null,
         description: "",
         is_publish: false,
       });
@@ -380,7 +380,10 @@ const Post = (props) => {
       },
     }).then((res) => {
       setListImages(res.data.data.images);
-      setImageSearch(prev => ({...prev, total: Math.floor(res.data.data.total/10) + 1}));
+      setImageSearch((prev) => ({
+        ...prev,
+        total: Math.floor(res.data.data.total / 10) + 1,
+      }));
       setLoader(false);
     });
   }, [imageSearch.name, imageSearch.currPage]);
@@ -453,7 +456,7 @@ const Post = (props) => {
             </tr>
           </thead>
           <tbody>
-            {posts &&
+            {posts && posts.length ? (
               posts.map((e, i) => {
                 return (
                   <tr key={i}>
@@ -496,7 +499,25 @@ const Post = (props) => {
                     </td>
                   </tr>
                 );
-              })}
+              })
+            ) : (
+              <tr>
+                <td colSpan={6}>
+                  {" "}
+                  <p
+                    class="text-center mb-0"
+                    height="400"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    Không có kết quả nào được tìm thấy
+                  </p>
+                </td>
+              </tr>
+            )}
           </tbody>
         </Table>
         {totalPost ? (
@@ -525,6 +546,7 @@ const Post = (props) => {
         }}
         backdrop="static"
         keyboard={false}
+        enforceFocus={false}
       >
         <Modal.Header closeButton>
           <Modal.Title>Sửa danh mục</Modal.Title>
@@ -579,7 +601,7 @@ const Post = (props) => {
             <Form.Group controlId="formBasicTitleImages">
               <Form.Label>Hình ảnh</Form.Label>
               <Button
-                className="mr-2"
+                className="ml-2 mb-2"
                 variant="primary"
                 onClick={() => getListImages()}
               >
@@ -686,7 +708,7 @@ const Post = (props) => {
           <Modal.Title>Tạo bài viết</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
+          {category && category.length ? <Form>
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên tiêu đề</Form.Label>
               <Form.Control
@@ -735,7 +757,7 @@ const Post = (props) => {
             <Form.Group controlId="formBasicTitleImages">
               <Form.Label>Hình ảnh</Form.Label>
               <Button
-                className="mr-2"
+                className="ml-2 mb-2"
                 variant="primary"
                 onClick={getListImages}
               >
@@ -755,19 +777,21 @@ const Post = (props) => {
             </Form.Group>
             <Form.Group controlId="formBasicCategory">
               <Form.Label>Danh mục</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, category: v.target.value })
-                }
-                defaultValue={category[0].id}
-              >
-                {category.map((e, i) => (
-                  <option key={i} value={e.id}>
-                    {e.title}
-                  </option>
-                ))}
-              </Form.Control>
+              {category && category.length > 0 ? (
+                <Form.Control
+                  as="select"
+                  onChange={(v) =>
+                    setInfoPost({ ...infoPost, category: v.target.value })
+                  }
+                  defaultValue={category[0].id}
+                >
+                  {category.map((e, i) => (
+                    <option key={i} value={e.id}>
+                      {e.title}
+                    </option>
+                  ))}
+                </Form.Control>
+              ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicMode">
               <Form.Label>Chế độ</Form.Label>
@@ -788,6 +812,7 @@ const Post = (props) => {
                 //   onEditorChange={onDescriptionChangeHandler}
                 apiKey="0dvov6kfqu61g0tppobt4fn6281shc7645qvg5gvtg48wuw2"
                 //   initialValue={creature.description.replaceAll("<br />", "")}
+                images_upda
                 init={{
                   height: 800,
                   width: "100%",
@@ -807,7 +832,7 @@ const Post = (props) => {
                 }
               />
             </Form.Group>
-          </Form>
+          </Form> : "Tạo một danh mục trước khi tạo bài viết"}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -819,9 +844,9 @@ const Post = (props) => {
           >
             Đóng
           </Button>
-          <Button variant="primary" onClick={saveHandle}>
+          {category && category.length > 0 ? <Button variant="primary" onClick={saveHandle}>
             Lưu
-          </Button>
+          </Button> : null}
         </Modal.Footer>
       </Modal>
 
@@ -961,12 +986,15 @@ const Post = (props) => {
           <Modal.Title>Chọn ảnh</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <InputGroup className="mb-3" >
+          <InputGroup className="mb-3">
             <InputGroup.Prepend>
-              <InputGroup.Text id="basic-addon1" onChange={(v) =>
-                console.log(v.target)
-                // setImageSearch((prev) => ({ ...prev, name: v.target.value }))
-              }>
+              <InputGroup.Text
+                id="basic-addon1"
+                onChange={
+                  (v) => console.log(v.target)
+                  // setImageSearch((prev) => ({ ...prev, name: v.target.value }))
+                }
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -985,9 +1013,9 @@ const Post = (props) => {
               id="image-name"
               aria-describedby="basic-addon1"
               value={imageSearch.name}
-              onChange={(v) =>{
+              onChange={(v) => {
                 const name = v.target.value;
-                setImageSearch((prev) => ({ ...prev, name:  name}))
+                setImageSearch((prev) => ({ ...prev, name: name }));
               }}
             />
           </InputGroup>
