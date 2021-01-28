@@ -31,57 +31,81 @@ const maxSizeUpload = 5 * 1000000; // 5mb
 let count = 1; // count number of files
 
 const ImageManagement = (props) => {
-  const { auth, setLoader, listImages, setListImages } = props;
+    const {
+        auth,
+        setLoader,
+        listImages,
+        setListImages
+    } = props;
 
-  const dropArea = useRef(null);
-  const inputFile = useRef(null);
+    const dropArea = useRef(null);
+    const inputFile = useRef(null);
 
-  const [uploadProgress, setUploadProgress] = useState({
-    count: 0,
-    totalCount: 0,
-    received: 0,
-    total: 100,
-  });
+    const [uploadProgress, setUploadProgress] = useState({
+        count: 0, totalCount: 0, received: 0, total: 100
+    })
 
-  const [showUpload, setShowUpload] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
+    const [showUpload, setShowUpload] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
+    const [infoImage, setInfoImage] = useState({
+        id: null,
+        name: '',
+        url: '',
+        created_at: '',
+    })
 
-  useEffect(() => {
-    getListImages();
-  }, []);
+    useEffect(() => {
+        getListImages();
+    }, [])
 
-  useEffect(() => {
-    const getFile = (e) => {
-      if (Array.from(inputFile.current.files).length > 0) {
-        setLoader(true);
-        sendFileUpload(
-          inputFile.current.files,
-          afterUpload,
-          Array.from(inputFile.current.files).length
-        );
-      } else {
-        // error
-      }
-    };
-    inputFile.current && inputFile.current.addEventListener("change", getFile);
+    useEffect(() => {
+        const getFile = () => {
+            if (Array.from(inputFile.current.files).length > 0) {
+                setLoader(true);
+                sendFileUpload(inputFile.current.files, afterUpload, Array.from(inputFile.current.files).length);
+            }
+            else {
+                // error
+            }
+        }
+        inputFile.current && inputFile.current.addEventListener('change', getFile);
 
-    return () =>
-      inputFile.current &&
-      inputFile.current.removeEventListener("change", getFile);
-  }, []);
+        return () => inputFile.current && inputFile.current.removeEventListener('change', getFile)
+    }, [showUpload])
 
-  const uploadHandle = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (Array.from(e.dataTransfer.files).length > 0) {
-      setLoader(true);
-      sendFileUpload(
-        e.dataTransfer.files,
-        afterUpload,
-        Array.from(e.dataTransfer.files).length
-      );
-    } else {
-      // error
+    const uploadHandle = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (Array.from(e.dataTransfer.files).length > 0) {
+            setLoader(true);
+            sendFileUpload(e.dataTransfer.files, afterUpload, Array.from(e.dataTransfer.files).length);
+        }
+        else {
+            // error
+        }
+        dropArea.current.classList.remove('mouse-over');
+    }
+    const dragOverHandle = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        dropArea.current.classList.add('mouse-over');
+    }
+    const dragLeaveHandle = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        dropArea.current.classList.remove('mouse-over');
+    }
+    const clickHandle = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        inputFile.current.click();
+    }
+    const afterUpload = (json) => {
+        // setLoader(false);
+        // console.log(json);
+        getListImages();
+        setShowUpload(false);
     }
     dropArea.current.classList.remove("mouse-over");
   };
@@ -171,129 +195,119 @@ const ImageManagement = (props) => {
     });
   };
 
-  const deleteHandle = () => {};
+    const openDelete = (item) => {
+        setShowDelete(true);
+        setInfoImage(item);
+    }
 
-  return (
-    <div className="container-fluid pt-5 pb-5">
-      <div className="wrap-action mb-3">
-        <Button
-          className="btn-primary mr-2"
-          onClick={() => setShowUpload(true)}
-        >
-          Tải ảnh
-        </Button>
-        <Button onClick={() => getListImages()}>Tải lại danh sách</Button>
-      </div>
+    const deleteHandle = () => {
+        setLoader(true);
+        axios({
+            url: baseUrl + 'auth/images/' + infoImage.id,
+            method: 'delete',
+            headers: {
+                Authorization: "Bearer " + auth.token,
+            }
+        })
+        .then(res => {
+            // if(res.data.statusCode === 200) 
+            setShowDelete(false);
+            getListImages();
+        })
+    }
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Thumbnail</th>
-            <th>Tên ảnh</th>
-            <th>URL</th>
-            <th>Ngày tạo</th>
-            <th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody className="list-images">
-          {listImages && listImages.length ? (
-            listImages.map((e, i) => {
-              return (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td className="thumbnail">
-                    <img src={e.url} className="img-fluid" alt="error" />
-                  </td>
-                  <td className="name">{e.name}</td>
-                  <td>{e.url}</td>
-                  <td>{e.created_at}</td>
-                  <td>
-                    <Button className="mr-2">Copy URL</Button>
-                    <Button
-                      onClick={() => setShowDelete(true)}
-                      className="btn-danger"
-                    >
-                      Xóa
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td colSpan={6}>
-                {" "}
-                <p
-                  class="text-center mb-0"
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  Không có kết quả nào được tìm thấy
-                </p>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+    return (
+        <div className='container-fluid pt-5 pb-5'>
 
-      {/* upload */}
-      <Modal
-        show={showUpload}
-        onHide={() => setShowUpload(false)}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Tải ảnh</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div
-            ref={dropArea}
-            className="wrap-area-drop p-5"
-            onDrop={uploadHandle}
-            onDragOver={dragOverHandle}
-            onDragLeave={dragLeaveHandle}
-            onClick={clickHandle}
-          >
-            <p className="text-center mb-0">
-              Thả ảnh hoặc click vào đây để tải ảnh lên.
-            </p>
-          </div>
-          <input type="file" style={{ display: "none" }} ref={inputFile} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowUpload(false)}>
-            Đóng
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            <div className="wrap-action mb-3">
+                <Button className='btn-primary mr-2' onClick={() => setShowUpload(true)}>Tải ảnh</Button>
+                <Button onClick={() => getListImages()}>Tải lại danh sách</Button>
+            </div>
 
-      {/* delete */}
-      <Modal
-        show={showDelete}
-        onHide={() => setShowDelete(false)}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Xóa danh mục</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{'Bạn có chắc muốn xóa "' + '" ?'}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDelete(false)}>
-            Hủy
-          </Button>
-          <Button variant="danger" onClick={deleteHandle}>
-            Có
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
-  );
-};
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Thumbnail</th>
+                        <th>Tên ảnh</th>
+                        <th>URL</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody className='list-images'>
+                    {
+                        listImages && listImages.length === 0 ? 
+                        <tr>
+                            <td colSpan="6" className='text-center'>Chưa có dữ liệu trong bảng</td>
+                        </tr>
+                        : null
+                    }
+                    {
+                        listImages && listImages.length > 0 ? listImages.map((e, i) => {
+                            return <tr key={i}>
+                                <td>{i + 1}</td>
+                                <td className='thumbnail'>
+                                    <img src={e.url} className='img-fluid' alt="error"/>
+                                </td>
+                                <td className='name'>{e.name}</td>
+                                <td>{e.url}</td>
+                                <td>{e.created_at}</td>
+                                <td>
+                                    {/* <Button className='mr-2'>Copy URL</Button> */}
+                                    <Button onClick={() => openDelete(e)} className='btn-danger'>Xóa</Button>
+                                </td>
+                            </tr>
+                        })
+                        : null
+                    }
+                </tbody>
+            </Table>
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImageManagement);
+            {/* upload */}
+            <Modal
+                show={showUpload}
+                onHide={() => setShowUpload(false)}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Tải ảnh</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div ref={dropArea} className="wrap-area-drop p-5" style={{cursor: 'pointer'}} onDrop={uploadHandle} onDragOver={dragOverHandle} onDragLeave={dragLeaveHandle} onClick={clickHandle}>
+                        <p className="text-center mb-0">Thả ảnh hoặc click vào đây để tải ảnh lên.</p>
+                    </div>
+                    <input type="file" style={{ display: 'none' }} ref={inputFile} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowUpload(false)}>Đóng</Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* delete */}
+            <Modal
+                show={showDelete}
+                onHide={() => setShowDelete(false)}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Xóa danh mục</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {'Bạn có chắc muốn xóa "' + infoImage.name + '" ?'}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDelete(false)}>Hủy</Button>
+                    <Button variant="danger" onClick={deleteHandle}>Có</Button>
+                </Modal.Footer>
+            </Modal>
+        </div>
+    )
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ImageManagement);
