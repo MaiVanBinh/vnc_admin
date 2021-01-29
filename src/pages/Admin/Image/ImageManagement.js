@@ -95,6 +95,7 @@ const ImageManagement = (props) => {
         // setLoader(false);
         // console.log(json);
         getListImages();
+        setShowUpload(false);
     }
 
     const sendFileUpload = (imgArr, callback, total) => {
