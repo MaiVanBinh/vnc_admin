@@ -7,7 +7,7 @@ import { useHistory } from 'react-router';
 
 const SignIn = (props) => {
     const [authInfo, setAuthInfo] = useState({
-        email: {
+        username: {
             value: "",
             isValid: true,
         },
@@ -24,26 +24,26 @@ const SignIn = (props) => {
     const changeAuthInfoHandler = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        const email = { ...authInfo.email };
+        const username = { ...authInfo.username };
         const password = { ...authInfo.password };
-        if (name === 'email') {
-            email.value = value;
+        if (name === 'username') {
+            username.value = value;
         } else if (name === 'password') {
             password.value = value;
         }
-        setAuthInfo({ email: { ...email }, password: { ...password } });
+        setAuthInfo({ username: { ...username }, password: { ...password } });
     };
 
     const onLoginHandler = (event) => {
         event.preventDefault();
-        console.log(authInfo);
-        dispatch(login(authInfo.email.value, authInfo.password.value, (data) => {
+        dispatch(login(authInfo.username.value, authInfo.password.value, (data) => {
             // callback function after login
             if(data) {
                 history.push('/danh-muc');
             }
         }));
     }
+    
     return (
         <div className="login-box">
             <div className="container">
@@ -54,12 +54,12 @@ const SignIn = (props) => {
                     <div className="formBx">
                         <form onSubmit={onLoginHandler}>
                             <h2>Đăng Nhập dành cho ADMIN</h2>
-                            {error ? <p className="error">Email hoặc mật khẩu không đúng</p> : null}
+                            {error ? <p className="error">Username hoặc mật khẩu không đúng</p> : null}
                             <input
-                                type="email"
-                                name="email"
-                                placeholder="Email"
-                                value={authInfo.email.value}
+                                type="username"
+                                name="username"
+                                placeholder="Username"
+                                value={authInfo.username.value}
                                 onChange={changeAuthInfoHandler}
                             />
                             <input

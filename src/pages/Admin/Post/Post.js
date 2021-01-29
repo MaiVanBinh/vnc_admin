@@ -5,7 +5,14 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
-import { Modal, Button, Table, Form } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Table,
+  Form,
+  InputGroup,
+  FormControl,
+} from "react-bootstrap";
 import { Editor } from "@tinymce/tinymce-react";
 import Pagination from "react-bootstrap-4-pagination";
 import { validateLength } from "../../../store/utilities/common";
@@ -54,6 +61,17 @@ const imageArrayToString = (images) => {
   const imagesUrl = images.map((e) => e.url);
   return imagesUrl.join("\n");
 };
+
+const intersection2Array = (newArray, oldArray) => {
+  let result = [];
+  for (let i = 0; i < oldArray.length; i++) {
+    if (newArray.findIndex((e) => e.id === oldArray[i].id) < 0) {
+      result.push(oldArray[i]);
+    }
+  }
+  return result;
+};
+
 const Post = (props) => {
   const {
     auth,
@@ -75,9 +93,14 @@ const Post = (props) => {
   const [showPreview, setShowPreview] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [images, setImages] = useState([]);
+  const [oldImages, setOldImages] = useState([]);
+  const [imageSearch, setImageSearch] = useState({
+    name: "",
+    currPage: 1,
+    total: 1,
+  });
 
-
-  const [initInfoPost] = useState({
+  const [initInfoPost, setInitInfoPost] = useState({
     id: null,
     title: "",
     content: "",
@@ -92,7 +115,7 @@ const Post = (props) => {
     title: "",
     content: "",
     images: "",
-    category: category ? category[0].id : null,
+    category: null,
     description: "",
     is_publish: false,
   });
@@ -116,15 +139,26 @@ const Post = (props) => {
   }, []);
 
   useEffect(() => {
-    setInfoPost({
-      id: null,
-      title: "",
-      content: "",
-      images: "",
-      category: category ? category[0]["id"] : null,
-      description: "",
-      is_publish: false,
-    });
+    if (category) {
+      setInfoPost({
+        id: null,
+        title: "",
+        content: "",
+        images: "",
+        category: category && category.length ? category[0]["id"] : null,
+        description: "",
+        is_publish: false,
+      });
+      setInitInfoPost({
+        id: null,
+        title: "",
+        content: "",
+        images: "",
+        category: category && category.length ? category[0]["id"] : null,
+        description: "",
+        is_publish: false,
+      });
+    }
   }, [category]);
 
   const getPostList = (page) => {
@@ -166,7 +200,9 @@ const Post = (props) => {
   };
 
   const editHandle = () => {
-    const imagesUpdate = infoPost.images ? infoPost.images.split("\n") : [];
+    const imagesRemove = intersection2Array(images, oldImages).map((e) => e.id);
+    const imageAdd = images.map((e) => e.id);
+
     const is_publish = infoPost.is_publish === "true" ? true : false;
     if (
       !checkValid(infoPost, "title") ||
@@ -179,7 +215,8 @@ const Post = (props) => {
         url: baseUrl + "auth/posts/" + infoPost.id,
         data: {
           ...infoPost,
-          images: imagesUpdate,
+          imageAdd,
+          imagesRemove,
           is_publish,
         },
         headers: {
@@ -213,7 +250,7 @@ const Post = (props) => {
   };
 
   const saveHandle = () => {
-    const imagesUpdate = infoPost.images ? infoPost.images.split("\n") : [];
+    const imagesId = images.map((e) => e.id);
     const is_publish = infoPost.is_publish === "true" ? true : false;
     if (
       !checkValid(infoPost, "title") ||
@@ -229,7 +266,7 @@ const Post = (props) => {
         },
         data: {
           ...infoPost,
-          images: imagesUpdate,
+          images: imagesId,
           is_publish,
         },
       })
@@ -241,6 +278,7 @@ const Post = (props) => {
         })
         .catch((err) => {
           setLoader(false);
+          console.log(err.response.data);
         });
     }
   };
@@ -310,8 +348,7 @@ const Post = (props) => {
       });
   };
 
-  const getListImages = () => {
-    setImages([]);
+  const getListImages = (name) => {
     setShowImage(true);
     setLoader(true);
     axios({
@@ -322,25 +359,70 @@ const Post = (props) => {
       },
     }).then((res) => {
       setListImages(res.data.data.images);
+      setImageSearch((prev) => ({
+        ...prev,
+        total: Math.floor(res.data.data.total / 10) + 1,
+      }));
       setLoader(false);
     });
   };
 
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: baseUrl + "auth/images",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: {
+        name: imageSearch.name ? imageSearch.name : null,
+        page: imageSearch.currPage ? imageSearch.currPage : null,
+      },
+    }).then((res) => {
+      setListImages(res.data.data.images);
+      setImageSearch((prev) => ({
+        ...prev,
+        total: Math.floor(res.data.data.total / 10) + 1,
+      }));
+      setLoader(false);
+    });
+  }, [imageSearch.name, imageSearch.currPage]);
+
   const addImgae = (v, image) => {
     let imagesUpdate = [...images];
-    if(v.target.checked) {
+    if (v.target.checked) {
       imagesUpdate = [...imagesUpdate, image];
     } else {
-      imagesUpdate = images.filter(e => e.id !== image.id);
+      imagesUpdate = images.filter((e) => e.id !== image.id);
     }
     setImages(imagesUpdate);
-  }
+  };
+
+  const imagesHandler = () => {
+    const imagesUrl = images.map((e) => e.url);
+    const infoPostUpdate = { ...infoPost, images: imagesUrl.join("\n") };
+    setInfoPost(infoPostUpdate);
+  };
+
+  const checkImageUse = (id) => {
+    if (images) {
+      const index = images.findIndex((e) => e.id === id);
+      if (index >= 0) return true;
+      return false;
+    }
+  };
 
   return (
     <div>
       <div className="container-fluid pt-5 pb-5">
         <div className="wrap-action mb-3">
-          <Button className="mr-2" onClick={() => setShowCreate(true)}>
+          <Button
+            className="mr-2"
+            onClick={() => {
+              setShowCreate(true);
+              setImages([]);
+            }}
+          >
             Tạo bài viết +
           </Button>
           <Button
@@ -374,13 +456,13 @@ const Post = (props) => {
             </tr>
           </thead>
           <tbody>
-            {posts &&
+            {posts && posts.length ? (
               posts.map((e, i) => {
                 return (
                   <tr key={i}>
                     <td>{i + 1}</td>
                     <td>{e.title}</td>
-                    <td>{e.category}</td>
+                    <td>{e.categoryTitle}</td>
                     <td>{e.is_publish === "1" ? "public " : "private"}</td>
                     <td>{e.created_at}</td>
                     <td>
@@ -391,6 +473,8 @@ const Post = (props) => {
                             ...e,
                             is_publish: e.is_publish === "0" ? false : true,
                           });
+                          setImages(e.image);
+                          setOldImages(e.image);
                         }}
                         className="mr-2"
                       >
@@ -415,7 +499,25 @@ const Post = (props) => {
                     </td>
                   </tr>
                 );
-              })}
+              })
+            ) : (
+              <tr>
+                <td colSpan={6}>
+                  {" "}
+                  <p
+                    class="text-center mb-0"
+                    height="400"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    Không có kết quả nào được tìm thấy
+                  </p>
+                </td>
+              </tr>
+            )}
           </tbody>
         </Table>
         {totalPost ? (
@@ -423,7 +525,7 @@ const Post = (props) => {
             threeDots
             totalPages={totalPost}
             currentPage={currPage}
-            showMax={totalPost > 5 ? 4 : totalPost}
+            showMax={totalPost > 5 ? 4 : 2}
             prevNext
             activeBgColor="#18eaca"
             activeBorderColor="#7bc9c9"
@@ -444,6 +546,7 @@ const Post = (props) => {
         }}
         backdrop="static"
         keyboard={false}
+        enforceFocus={false}
       >
         <Modal.Header closeButton>
           <Modal.Title>Sửa danh mục</Modal.Title>
@@ -497,15 +600,23 @@ const Post = (props) => {
             </Form.Group>
             <Form.Group controlId="formBasicTitleImages">
               <Form.Label>Hình ảnh</Form.Label>
+              <Button
+                className="ml-2 mb-2"
+                variant="primary"
+                onClick={() => getListImages()}
+              >
+                Thêm ảnh
+              </Button>
               <Form.Control
                 as="textarea"
                 rows={3}
                 type="title"
+                disabled
                 placeholder="Danh sách url của hình ảnh nằm trên các dòng khác nhau"
-                value={infoPost.image ? imageArrayToString(infoPost.image) : ""}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, images: v.target.value })
-                }
+                value={images ? imageArrayToString(images) : ""}
+                // onChange={(v) =>
+                //   setInfoPost({ ...infoPost, images: v.target.value })
+                // }
               />
             </Form.Group>
             <Form.Group controlId="formBasicCategory">
@@ -542,9 +653,7 @@ const Post = (props) => {
             <Form.Group controlId="formBasicContent">
               <Form.Label>Nội dung</Form.Label>
               <Editor
-                //   onEditorChange={onDescriptionChangeHandler}
                 apiKey="0dvov6kfqu61g0tppobt4fn6281shc7645qvg5gvtg48wuw2"
-                //   initialValue={creature.description.replaceAll("<br />", "")}
                 init={{
                   body_id: "my_edit",
                   height: 800,
@@ -593,12 +702,13 @@ const Post = (props) => {
         }}
         backdrop="static"
         keyboard={false}
+        enforceFocus={false}
       >
         <Modal.Header closeButton>
           <Modal.Title>Tạo bài viết</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
+          {category && category.length ? <Form>
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên tiêu đề</Form.Label>
               <Form.Control
@@ -647,7 +757,7 @@ const Post = (props) => {
             <Form.Group controlId="formBasicTitleImages">
               <Form.Label>Hình ảnh</Form.Label>
               <Button
-                className="mr-2"
+                className="ml-2 mb-2"
                 variant="primary"
                 onClick={getListImages}
               >
@@ -655,6 +765,7 @@ const Post = (props) => {
               </Button>
               <Form.Control
                 as="textarea"
+                disabled
                 rows={3}
                 type="title"
                 placeholder="Danh sách url của hình ảnh nằm trên các dòng khác nhau"
@@ -666,19 +777,21 @@ const Post = (props) => {
             </Form.Group>
             <Form.Group controlId="formBasicCategory">
               <Form.Label>Danh mục</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, category: v.target.value })
-                }
-                defaultValue={category[0].id}
-              >
-                {category.map((e, i) => (
-                  <option key={i} value={e.id}>
-                    {e.title}
-                  </option>
-                ))}
-              </Form.Control>
+              {category && category.length > 0 ? (
+                <Form.Control
+                  as="select"
+                  onChange={(v) =>
+                    setInfoPost({ ...infoPost, category: v.target.value })
+                  }
+                  defaultValue={category[0].id}
+                >
+                  {category.map((e, i) => (
+                    <option key={i} value={e.id}>
+                      {e.title}
+                    </option>
+                  ))}
+                </Form.Control>
+              ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicMode">
               <Form.Label>Chế độ</Form.Label>
@@ -699,6 +812,7 @@ const Post = (props) => {
                 //   onEditorChange={onDescriptionChangeHandler}
                 apiKey="0dvov6kfqu61g0tppobt4fn6281shc7645qvg5gvtg48wuw2"
                 //   initialValue={creature.description.replaceAll("<br />", "")}
+                images_upda
                 init={{
                   height: 800,
                   width: "100%",
@@ -718,7 +832,7 @@ const Post = (props) => {
                 }
               />
             </Form.Group>
-          </Form>
+          </Form> : "Tạo một danh mục trước khi tạo bài viết"}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -730,9 +844,9 @@ const Post = (props) => {
           >
             Đóng
           </Button>
-          <Button variant="primary" onClick={saveHandle}>
+          {category && category.length > 0 ? <Button variant="primary" onClick={saveHandle}>
             Lưu
-          </Button>
+          </Button> : null}
         </Modal.Footer>
       </Modal>
 
@@ -759,7 +873,7 @@ const Post = (props) => {
         </Modal.Footer>
       </Modal>
 
-     {/* show preview */}
+      {/* show preview */}
       <Modal
         show={showPreview}
         onHide={() => setShowPreview(false)}
@@ -872,6 +986,39 @@ const Post = (props) => {
           <Modal.Title>Chọn ảnh</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text
+                id="basic-addon1"
+                onChange={
+                  (v) => console.log(v.target)
+                  // setImageSearch((prev) => ({ ...prev, name: v.target.value }))
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                </svg>
+              </InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              placeholder="Tên"
+              aria-label="name"
+              id="image-name"
+              aria-describedby="basic-addon1"
+              value={imageSearch.name}
+              onChange={(v) => {
+                const name = v.target.value;
+                setImageSearch((prev) => ({ ...prev, name: name }));
+              }}
+            />
+          </InputGroup>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -885,9 +1032,19 @@ const Post = (props) => {
                 listImages.map((e, i) => {
                   return (
                     <tr key={i}>
-                      <td><Form.Check type="checkbox" label="Check me out" onChange={(v) => addImgae(v, e)}/></td>
                       <td>
-                        <img src={e.url} alt="error" style={{width: '100px'}}/>
+                        <Form.Check
+                          type="checkbox"
+                          onChange={(v) => addImgae(v, e)}
+                          checked={checkImageUse(e.id)}
+                        />
+                      </td>
+                      <td>
+                        <img
+                          src={e.url}
+                          alt="error"
+                          style={{ width: "100px" }}
+                        />
                       </td>
                       <td>{e.name}</td>
                     </tr>
@@ -895,12 +1052,30 @@ const Post = (props) => {
                 })}
             </tbody>
           </Table>
+          <Pagination
+            threeDots
+            totalPages={imageSearch.total}
+            currentPage={imageSearch.currPage}
+            showMax={totalPost > 5 ? 4 : 2}
+            prevNext
+            activeBgColor="#18eaca"
+            activeBorderColor="#7bc9c9"
+            onClick={(page) => {
+              setImageSearch((prev) => ({ ...prev, currPage: page }));
+            }}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowImage(false)}>
             Đóng
           </Button>
-          <Button variant="secondary" onClick={() => setShowImage(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowImage(false);
+              imagesHandler();
+            }}
+          >
             Lưu
           </Button>
         </Modal.Footer>

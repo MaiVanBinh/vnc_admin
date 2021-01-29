@@ -42,13 +42,13 @@ const loginError = (errMessage) => {
     errMessage: errMessage,
   };
 };
-export const login = (email, password, callback) => {
+export const login = (username, password, callback) => {
   return (dispatch) => {
     dispatch(loginStart());
     axios
       .post(
         `${baseUrl}users/login`,
-        { email: email, password: password },
+        { username: username, password: password },
         {
           headers: {
             "Content-Type": "application/json",
