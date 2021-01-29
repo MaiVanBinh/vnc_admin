@@ -171,7 +171,7 @@ const Post = (props) => {
       },
       params: {
         page: page,
-        limit: 10,
+        limit: 1000,
         is_publish: "true",
       },
     }).then((res) => {
@@ -511,21 +511,22 @@ const Post = (props) => {
             )}
           </tbody>
         </Table>
-        {totalPost ? (
+        {/* {totalPost ? (
           <Pagination
             threeDots
             totalPages={totalPost}
             currentPage={currPage}
-            showMax={totalPost > 5 ? 4 : 2}
+            showMax={totalPost > 1 ? 4 : 2}
             prevNext
             activeBgColor="#18eaca"
             activeBorderColor="#7bc9c9"
             onClick={(page) => {
-              setCurrentPage(page);
-              getPostList(page);
+              console.log(page);
+              // setCurrentPage(page);
+              // getPostList(page);
             }}
           />
-        ) : null}
+        ) : null} */}
       </div>
 
       {/* edit */}

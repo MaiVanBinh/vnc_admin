@@ -4,6 +4,7 @@ import { Modal, Button, Table, Form } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
+import { validateLength } from "../../../store/utilities/common";
 
 const mapStateToProps = (state) => {
   return {
@@ -28,10 +29,13 @@ const mapDispatchToProps = (dispatch) => {
 
 const Category = (props) => {
   const { auth, category, setCategory, setLoader } = props;
-
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [valid, setValid] = useState({
+    message: "Tên danh mục không được để rỗng",
+    valid: true,
+  });
 
   const [infoCategory, setInfoCategory] = useState({
     id: null,
@@ -81,6 +85,9 @@ const Category = (props) => {
   };
 
   const editHandle = () => {
+    if(validateLength(infoCategory.title, 1, 100) === 'incorrect'){
+      return;
+    }
     setLoader(true);
     axios({
       method: "put",
@@ -109,10 +116,18 @@ const Category = (props) => {
       // console.log("delete handle result:", res);
       setShowDelete(false);
       getCategoryList();
+    })
+    .catch(err => {
+      setLoader(false);
+      setShowDelete(false);
+      alert("Xóa không thành công. Xóa những bài viết thuộc danh mục này trước.");
     });
   };
 
   const saveHandle = () => {
+    if(validateLength(titleCreate, 1, 100) === 'incorrect'){
+      return;
+    }
     setLoader(true);
     axios({
       method: "post",
@@ -123,17 +138,47 @@ const Category = (props) => {
       data: {
         title: titleCreate,
       },
-    }).then(() => {
-      setShowCreate(false);
-      getCategoryList();
-    });
+    })
+      .then(() => {
+        setShowCreate(false);
+        getCategoryList();
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        setLoader(false);
+      });
+  };
+
+  const onChangeTitle = (value) => {
+    if (validateLength(value, 1, 100) === "incorrect") {
+      setValid({
+        message: "Tên danh mục không được để rỗng",
+        valid: false,
+      });
+    } else {
+      setValid({
+        message: "Tên danh mục không được để rỗng",
+        valid: true,
+      });
+    }
+    setTitleCreate(value);
   };
 
   return (
     <div>
       <div className="container-fluid pt-5 pb-5">
         <div className="wrap-action mb-3">
-          <Button className="mr-2" onClick={() => setShowCreate(true)}>
+          <Button
+            className="mr-2"
+            onClick={() => {
+              setShowCreate(true);
+              setTitleCreate("");
+              setValid({
+                message: "Tên danh mục không được để rỗng",
+                valid: true,
+              });
+            }}
+          >
             Tạo danh mục +
           </Button>
           <Button onClick={() => getCategoryList()}>Tải lại danh sách</Button>
@@ -157,7 +202,16 @@ const Category = (props) => {
                     <td>{e.title}</td>
                     <td>{e.created_at}</td>
                     <td>
-                      <Button onClick={() => openEdit(e)} className="mr-2">
+                      <Button
+                        onClick={() => {
+                          openEdit(e);
+                          setValid({
+                            message: "Tên danh mục không được để rỗng",
+                            valid: true,
+                          });
+                        }}
+                        className="mr-2"
+                      >
                         Sửa
                       </Button>
                       <Button
@@ -198,13 +252,20 @@ const Category = (props) => {
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên danh mục</Form.Label>
               <Form.Control
+                className={valid.valid ? null : "form-control is-invalid"}
                 type="title"
                 placeholder="Nhập tên danh mục"
                 value={infoCategory.title}
-                onChange={(v) =>
-                  setInfoCategory({ ...infoCategory, title: v.target.value })
-                }
+                onChange={(v) => {
+                  setInfoCategory({ ...infoCategory, title: v.target.value });
+                  onChangeTitle(v.target.value);
+                }}
               />
+              {!valid.valid ? (
+                <Form.Control.Feedback type="invalid">
+                  {valid.message}
+                </Form.Control.Feedback>
+              ) : null}
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -233,11 +294,17 @@ const Category = (props) => {
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên danh mục</Form.Label>
               <Form.Control
+                className={valid.valid ? null : "form-control is-invalid"}
                 type="title"
                 placeholder="Nhập tên danh mục"
                 value={titleCreate}
-                onChange={(v) => setTitleCreate(v.target.value)}
+                onChange={(v) => onChangeTitle(v.target.value)}
               />
+              {!valid.valid ? (
+                <Form.Control.Feedback type="invalid">
+                  {valid.message}
+                </Form.Control.Feedback>
+              ) : null}
             </Form.Group>
           </Form>
         </Modal.Body>

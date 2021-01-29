@@ -150,6 +150,9 @@ const ImageManagement = (props) => {
             headers: {
                 Authorization: "Bearer " + auth.token,
             },
+            params: {
+                limit: 1000
+            }
         })
         .then(res => {
             setListImages(res.data.data.images);
@@ -172,9 +175,12 @@ const ImageManagement = (props) => {
             }
         })
         .then(res => {
-            // if(res.data.statusCode === 200) 
             setShowDelete(false);
             getListImages();
+        }).catch(err => {
+            setShowDelete(false);
+            setLoader(false);
+            alert(err.response.data.data)
         })
     }
 
