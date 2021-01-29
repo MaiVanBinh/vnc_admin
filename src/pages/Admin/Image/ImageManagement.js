@@ -213,7 +213,7 @@ const ImageManagement = (props) => {
                                     <img src={e.url} className='img-fluid' alt="error"/>
                                 </td>
                                 <td className='name'>{e.name}</td>
-                                <td>{e.url}</td>
+                                <td className='url'>{e.url}</td>
                                 <td>{e.created_at}</td>
                                 <td>
                                     {/* <Button className='mr-2'>Copy URL</Button> */}

@@ -15,3 +15,7 @@
     max-width: 300px;
     overflow: hidden;
 }
+.list-images .url{
+    word-break: break-word;
+    max-width: 300px;
+}

@@ -1,6 +1,6 @@
 // const APP_ROOT = 'https://api.vncreatures.net/';
-const APP_ROOT = 'http://localhost:8080/';
-export const baseUrl = 'http://localhost:8080/';
+const APP_ROOT = 'http://hi1.xyz/scmss/';
+export const baseUrl = 'http://hi1.xyz/scmss/';
 const apiName = {
     creatures: 'creatures',
     groups: 'groups',

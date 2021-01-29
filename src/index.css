@@ -20,6 +20,10 @@ html * {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.container-layout{
+  overflow-x: auto;
+}
+
 body {
   padding: 100px;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

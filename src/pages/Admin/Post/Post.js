@@ -503,16 +503,7 @@ const Post = (props) => {
             ) : (
               <tr>
                 <td colSpan={6}>
-                  {" "}
-                  <p
-                    class="text-center mb-0"
-                    height="400"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                  <p className="text-center mb-0">
                     Không có kết quả nào được tìm thấy
                   </p>
                 </td>
@@ -909,7 +900,7 @@ const Post = (props) => {
             <div className="p-2 d-flex flex-wrap">
               {currItem && currItem.images && currItem.images.length > 0
                 ? currItem.images.map((e) => (
-                    <div class="d-flex flex-wrap p-2">
+                    <div className="d-flex flex-wrap p-2">
                       <img
                         src={e.url}
                         alt="err"
@@ -1000,7 +991,7 @@ const Post = (props) => {
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-search"
+                  className="bi bi-search"
                   viewBox="0 0 16 16"
                 >
                   <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
@@ -1052,7 +1043,7 @@ const Post = (props) => {
                 })}
             </tbody>
           </Table>
-          <Pagination
+          {/* <Pagination
             threeDots
             totalPages={imageSearch.total}
             currentPage={imageSearch.currPage}
@@ -1063,7 +1054,7 @@ const Post = (props) => {
             onClick={(page) => {
               setImageSearch((prev) => ({ ...prev, currPage: page }));
             }}
-          />
+          /> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowImage(false)}>

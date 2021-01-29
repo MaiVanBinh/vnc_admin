@@ -106,7 +106,7 @@ const Category = (props) => {
         Authorization: "Bearer " + auth.token,
       },
     }).then((res) => {
-      console.log("delete handle result:", res);
+      // console.log("delete handle result:", res);
       setShowDelete(false);
       getCategoryList();
     });
@@ -173,16 +173,7 @@ const Category = (props) => {
             ) : (
               <tr>
                 <td colSpan={6}>
-                  {" "}
-                  <p
-                    class="text-center mb-0"
-                    height="400"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                  <p className="text-center mb-0">
                     Không có kết quả nào được tìm thấy
                   </p>
                 </td>
