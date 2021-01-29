@@ -201,7 +201,7 @@ const ImageManagement = (props) => {
                     {
                         listImages && listImages.length === 0 ? 
                         <tr>
-                            <td colSpan="6" className='text-center'>Chưa có dữ liệu trong bảng</td>
+                            <td colSpan="6" className='text-center'>Không có kết quả nào được tìm thấy</td>
                         </tr>
                         : null
                     }

@@ -1,7 +1,8 @@
 import React from 'react';
 import RouteConfig from './router/RouterConfig';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { authCheckState } from './store//actions/index';
+import Loader from './components/UI/Loader/Loader';
 
 class App extends React.Component {
   componentWillMount() {
@@ -9,11 +10,20 @@ class App extends React.Component {
   }
   render() {
     return (
-      <RouteConfig />
+      <>
+        <RouteConfig />
+        {this.props.loader ? <Loader /> : null}
+      </>
+
     );
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    loader: state.loader
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
     onAuthCheckState: () => {
@@ -22,4 +32,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

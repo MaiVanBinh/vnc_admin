@@ -4,6 +4,7 @@ import { login } from "../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import bg from "./../../assets/bg.jpg";
 import { useHistory } from 'react-router';
+import * as actionTypes from './../../store/actions/actionTypes';
 
 const SignIn = (props) => {
     const [authInfo, setAuthInfo] = useState({
@@ -36,10 +37,15 @@ const SignIn = (props) => {
 
     const onLoginHandler = (event) => {
         event.preventDefault();
+        dispatch({type: actionTypes.SET_LOADER, payload: true});
         dispatch(login(authInfo.username.value, authInfo.password.value, (data) => {
+            dispatch({type: actionTypes.SET_LOADER, payload: false});
             // callback function after login
             if(data) {
                 history.push('/danh-muc');
+            }
+            else{
+                alert('Có lỗi xảy ra, vui lòng thử lại sau!');
             }
         }));
     }
@@ -58,7 +64,7 @@ const SignIn = (props) => {
                             <input
                                 type="username"
                                 name="username"
-                                placeholder="Username"
+                                placeholder="Tên đăng nhập"
                                 value={authInfo.username.value}
                                 onChange={changeAuthInfoHandler}
                             />
@@ -70,9 +76,9 @@ const SignIn = (props) => {
                                 onChange={changeAuthInfoHandler}
                             />
                             <button type="submit" name="">Đăng nhập</button>
-                            <p className="signup">
+                            {/* <p className="signup">
                                 <a href="#0">Quên mật khẩu?</a>
-                            </p>
+                            </p> */}
                         </form>
                     </div>
                 </div>
