@@ -14,8 +14,9 @@ import {
   FormControl,
 } from "react-bootstrap";
 import { Editor } from "@tinymce/tinymce-react";
-import Pagination from "react-bootstrap-4-pagination";
-import { validateLength } from "../../../store/utilities/common";
+import Pagination from './../../../components/Panigation/Pagination';
+import { validateLength, getIndexListPage } from "../../../store/utilities/common";
+import { apiKeyEditor } from './../../../constant';
 
 const mapStateToProps = (state) => {
   return {
@@ -88,16 +89,15 @@ const Post = (props) => {
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [totalPost, setTotalPost] = useState(0);
-  const [currPage, setCurrentPage] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
-  const [showImage, setShowImage] = useState(false);
+  const [showImage, setShowImage] = useState({
+    active: false,
+    callback: null
+  });
   const [images, setImages] = useState([]);
   const [oldImages, setOldImages] = useState([]);
   const [imageSearch, setImageSearch] = useState({
     name: "",
-    currPage: 1,
-    total: 1,
   });
 
   const [initInfoPost, setInitInfoPost] = useState({
@@ -133,10 +133,29 @@ const Post = (props) => {
 
   const [currItem, setCurrItem] = useState(null);
 
+  const [filterList, setFilterList] = useState({ // posts
+    page: 1,
+    limit: 10,
+    is_publish: 'true'
+  })
+
+  const [filterImageList, setFilterImageList] = useState({
+    name: '',
+    page: 1,
+    limit: 10,
+  })
+
   useEffect(() => {
     getCategoryList();
-    getPostList(currPage);
-  }, []);
+  }, [])
+
+  useEffect(() => { // watcher
+    getPostList();
+  }, [filterList]);
+
+  useEffect(() => { // watcher
+    getListImages();
+  }, [filterImageList]);
 
   useEffect(() => {
     if (category) {
@@ -145,7 +164,7 @@ const Post = (props) => {
         title: "",
         content: "",
         images: "",
-        category: category && category.length ? category[0]["id"] : null,
+        category: category && category.category.length ? category.category[0]["id"] : null,
         description: "",
         is_publish: false,
       });
@@ -154,7 +173,7 @@ const Post = (props) => {
         title: "",
         content: "",
         images: "",
-        category: category && category.length ? category[0]["id"] : null,
+        category: category && category.category.length ? category.category[0]["id"] : null,
         description: "",
         is_publish: false,
       });
@@ -169,34 +188,16 @@ const Post = (props) => {
       headers: {
         Authorization: "Bearer " + auth.token,
       },
-      params: {
-        page: page,
-        limit: 1000,
-        is_publish: "true",
-      },
+      params: filterList,
     }).then((res) => {
       setLoader(false);
-      setPosts(res.data.data.posts);
-      setTotalPost(Math.floor(res.data.data.total / 10) + 1);
-    });
-  };
 
-  const openEdit = (item) => {
-    setInfoPost({
-      id: item.id,
-      title: item.title,
-      created_at: item.created_at,
-    });
-    setShowEdit(true);
-  };
+      const { begin, end } = getIndexListPage(filterList.page, filterList.limit, res.data.data.total);
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
 
-  const openDelete = (item) => {
-    setInfoPost({
-      id: item.id,
-      title: item.title,
-      created_at: item.created_at,
+      setPosts(res.data.data);
     });
-    setShowDelete(true);
   };
 
   const editHandle = () => {
@@ -290,10 +291,10 @@ const Post = (props) => {
       url: baseUrl + "categories",
       params: {
         page: 1,
-        limit: 10,
+        limit: 1000,
       },
     }).then((res) => {
-      setCategory(res.data.data.category);
+      setCategory(res.data.data);
       setLoader(false);
     });
   };
@@ -348,8 +349,7 @@ const Post = (props) => {
       });
   };
 
-  const getListImages = (name) => {
-    setShowImage(true);
+  const getListImages = () => {
     setLoader(true);
     axios({
       method: "get",
@@ -357,60 +357,36 @@ const Post = (props) => {
       headers: {
         Authorization: "Bearer " + auth.token,
       },
+      params: filterImageList
     }).then((res) => {
-      setListImages(res.data.data.images);
-      setImageSearch((prev) => ({
-        ...prev,
-        total: Math.floor(res.data.data.total / 10) + 1,
-      }));
+      const { begin, end } = getIndexListPage(filterImageList.page, filterImageList.limit, res.data.data.total);
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
+
+      setListImages(res.data.data);
       setLoader(false);
     });
   };
 
-  useEffect(() => {
-    axios({
-      method: "get",
-      url: baseUrl + "auth/images",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-      params: {
-        name: imageSearch.name ? imageSearch.name : null,
-        page: imageSearch.currPage ? imageSearch.currPage : null,
-      },
-    }).then((res) => {
-      setListImages(res.data.data.images);
-      setImageSearch((prev) => ({
-        ...prev,
-        total: Math.floor(res.data.data.total / 10) + 1,
-      }));
-      setLoader(false);
-    });
-  }, [imageSearch.name, imageSearch.currPage]);
-
-  const addImgae = (v, image) => {
-    let imagesUpdate = [...images];
-    if (v.target.checked) {
-      imagesUpdate = [...imagesUpdate, image];
-    } else {
-      imagesUpdate = images.filter((e) => e.id !== image.id);
-    }
-    setImages(imagesUpdate);
+  const imagesHandler = (item) => {
+    showImage.callback(item.url, { title: item.name });
+    setShowImage({
+      active: false,
+      callback: null
+    })
   };
 
-  const imagesHandler = () => {
-    const imagesUrl = images.map((e) => e.url);
-    const infoPostUpdate = { ...infoPost, images: imagesUrl.join("\n") };
-    setInfoPost(infoPostUpdate);
-  };
+  const changePage = (page) => {
+    setFilterList({
+      ...filterList, page
+    })
+  }
 
-  const checkImageUse = (id) => {
-    if (images) {
-      const index = images.findIndex((e) => e.id === id);
-      if (index >= 0) return true;
-      return false;
-    }
-  };
+  const changePageImageList = (page) => {
+    setFilterImageList({
+      ...filterImageList, page
+    })
+  }
 
   return (
     <div>
@@ -424,24 +400,27 @@ const Post = (props) => {
             }}
           >
             Tạo bài viết +
-          </Button>
+            </Button>
           <Button
             className="mr-2"
             onClick={() => {
-              getPostList(1);
-              setCurrentPage(1);
+              setFilterList({ // reset filter
+                page: 1,
+                limit: 10,
+                is_publish: 'true'
+              });
             }}
           >
             Tải lại danh sách
-          </Button>
+            </Button>
           {/* <Button
-            className="mr-2"
-            onClick={() => {
-              setShowFilter(true);
-            }}
-          >
-            Filter
-          </Button> */}
+              className="mr-2"
+              onClick={() => {
+                setShowFilter(true);
+              }}
+            >
+              Filter
+            </Button> */}
         </div>
 
         <Table striped bordered hover>
@@ -456,11 +435,12 @@ const Post = (props) => {
             </tr>
           </thead>
           <tbody>
-            {posts && posts.length ? (
-              posts.map((e, i) => {
+            {posts && posts.posts.length ? (
+              posts.posts.map((e, i) => {
+                let beginIndex = posts.pages.begin;
                 return (
                   <tr key={i}>
-                    <td>{i + 1}</td>
+                    <td>{beginIndex + i}</td>
                     <td>{e.title}</td>
                     <td>{e.categoryTitle}</td>
                     <td>{e.is_publish === "1" ? "public " : "private"}</td>
@@ -501,32 +481,21 @@ const Post = (props) => {
                 );
               })
             ) : (
-              <tr>
-                <td colSpan={6}>
-                  <p className="text-center mb-0">
-                    Không có kết quả nào được tìm thấy
+                <tr>
+                  <td colSpan={6}>
+                    <p className="text-center mb-0">
+                      Không có kết quả nào được tìm thấy
                   </p>
-                </td>
-              </tr>
-            )}
+                  </td>
+                </tr>
+              )}
           </tbody>
         </Table>
-        {/* {totalPost ? (
-          <Pagination
-            threeDots
-            totalPages={totalPost}
-            currentPage={currPage}
-            showMax={totalPost > 1 ? 4 : 2}
-            prevNext
-            activeBgColor="#18eaca"
-            activeBorderColor="#7bc9c9"
-            onClick={(page) => {
-              console.log(page);
-              // setCurrentPage(page);
-              // getPostList(page);
-            }}
-          />
-        ) : null} */}
+        <div className="pagination mt-4 d-flex justify-content-center">
+          {
+            posts ? <Pagination pagination={posts.pages} callFetchList={changePage} /> : null
+          }
+        </div>
       </div>
 
       {/* edit */}
@@ -590,27 +559,6 @@ const Post = (props) => {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-            <Form.Group controlId="formBasicTitleImages">
-              <Form.Label>Hình ảnh</Form.Label>
-              <Button
-                className="ml-2 mb-2"
-                variant="primary"
-                onClick={() => getListImages()}
-              >
-                Thêm ảnh
-              </Button>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                type="title"
-                disabled
-                placeholder="Danh sách url của hình ảnh nằm trên các dòng khác nhau"
-                value={images ? imageArrayToString(images) : ""}
-                // onChange={(v) =>
-                //   setInfoPost({ ...infoPost, images: v.target.value })
-                // }
-              />
-            </Form.Group>
             <Form.Group controlId="formBasicCategory">
               <Form.Label>Danh mục</Form.Label>
               {category ? (
@@ -621,7 +569,7 @@ const Post = (props) => {
                   }
                   defaultValue={infoPost.category}
                 >
-                  {category.map((e, i) => (
+                  {category.category.map((e, i) => (
                     <option key={i} value={e.id}>
                       {e.title}
                     </option>
@@ -645,13 +593,19 @@ const Post = (props) => {
             <Form.Group controlId="formBasicContent">
               <Form.Label>Nội dung</Form.Label>
               <Editor
-                apiKey="0dvov6kfqu61g0tppobt4fn6281shc7645qvg5gvtg48wuw2"
+                apiKey={apiKeyEditor}
                 init={{
                   body_id: "my_edit",
                   height: 800,
                   width: "100%",
                   menubar: true,
-
+                  automatic_uploads: true,
+                  file_picker_types: 'image',
+                  file_picker_callback: (callback) => {
+                    setShowImage({
+                      active: true, callback
+                    });
+                  },
                   plugins: [
                     "advlist autolink lists link image charmap print preview anchor",
                     "searchreplace visualblocks code fullscreen",
@@ -660,11 +614,13 @@ const Post = (props) => {
                   toolbar1:
                     "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
                   toolbar2: "forecolor backcolor emoticons",
+
                 }}
                 value={infoPost.content}
                 onEditorChange={(value) => {
                   setInfoPost({ ...infoPost, content: value });
                 }}
+
               />
             </Form.Group>
           </Form>
@@ -700,7 +656,7 @@ const Post = (props) => {
           <Modal.Title>Tạo bài viết</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {category && category.length ? <Form>
+          {category && category.category.length ? <Form>
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên tiêu đề</Form.Label>
               <Form.Control
@@ -746,38 +702,17 @@ const Post = (props) => {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-            <Form.Group controlId="formBasicTitleImages">
-              <Form.Label>Hình ảnh</Form.Label>
-              <Button
-                className="ml-2 mb-2"
-                variant="primary"
-                onClick={getListImages}
-              >
-                Thêm ảnh
-              </Button>
-              <Form.Control
-                as="textarea"
-                disabled
-                rows={3}
-                type="title"
-                placeholder="Danh sách url của hình ảnh nằm trên các dòng khác nhau"
-                value={infoPost.images}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, images: v.target.value })
-                }
-              />
-            </Form.Group>
             <Form.Group controlId="formBasicCategory">
               <Form.Label>Danh mục</Form.Label>
-              {category && category.length > 0 ? (
+              {category && category.category.length > 0 ? (
                 <Form.Control
                   as="select"
                   onChange={(v) =>
                     setInfoPost({ ...infoPost, category: v.target.value })
                   }
-                  defaultValue={category[0].id}
+                  defaultValue={category.category[0].id}
                 >
-                  {category.map((e, i) => (
+                  {category.category.map((e, i) => (
                     <option key={i} value={e.id}>
                       {e.title}
                     </option>
@@ -802,7 +737,7 @@ const Post = (props) => {
               <Form.Label>Nội dung</Form.Label>
               <Editor
                 //   onEditorChange={onDescriptionChangeHandler}
-                apiKey="0dvov6kfqu61g0tppobt4fn6281shc7645qvg5gvtg48wuw2"
+                apiKey={apiKeyEditor}
                 //   initialValue={creature.description.replaceAll("<br />", "")}
                 images_upda
                 init={{
@@ -817,6 +752,13 @@ const Post = (props) => {
                   toolbar1:
                     "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
                   toolbar2: "forecolor backcolor emoticons",
+                  automatic_uploads: true,
+                  file_picker_types: 'image',
+                  file_picker_callback: (callback) => {
+                    setShowImage({
+                      active: true, callback
+                    });
+                  },
                 }}
                 value={infoPost.content}
                 onEditorChange={(value) =>
@@ -836,7 +778,7 @@ const Post = (props) => {
           >
             Đóng
           </Button>
-          {category && category.length > 0 ? <Button variant="primary" onClick={saveHandle}>
+          {category && category.category.length > 0 ? <Button variant="primary" onClick={saveHandle}>
             Lưu
           </Button> : null}
         </Modal.Footer>
@@ -901,19 +843,19 @@ const Post = (props) => {
             <div className="p-2 d-flex flex-wrap">
               {currItem && currItem.images && currItem.images.length > 0
                 ? currItem.images.map((e) => (
-                    <div className="d-flex flex-wrap p-2">
-                      <img
-                        src={e.url}
-                        alt="err"
-                        width="200px"
-                        height="200px"
-                        style={{
-                          border: "1px solid #000",
-                          borderRadius: "5px",
-                        }}
-                      />
-                    </div>
-                  ))
+                  <div className="d-flex flex-wrap p-2">
+                    <img
+                      src={e.url}
+                      alt="err"
+                      width="200px"
+                      height="200px"
+                      style={{
+                        border: "1px solid #000",
+                        borderRadius: "5px",
+                      }}
+                    />
+                  </div>
+                ))
                 : null}
             </div>
           </div>
@@ -968,11 +910,15 @@ const Post = (props) => {
         </Modal.Footer>
       </Modal>
 
+      {/* show image */}
       <Modal
-        show={showImage}
-        onHide={() => setShowImage(false)}
+        show={showImage.active}
+        onHide={() => setShowImage({
+          active: false, callback: null
+        })}
         backdrop="static"
         keyboard={false}
+        className='show-image-modal'
       >
         <Modal.Header closeButton>
           <Modal.Title>Chọn ảnh</Modal.Title>
@@ -982,10 +928,6 @@ const Post = (props) => {
             <InputGroup.Prepend>
               <InputGroup.Text
                 id="basic-addon1"
-                onChange={
-                  (v) => console.log(v.target)
-                  // setImageSearch((prev) => ({ ...prev, name: v.target.value }))
-                }
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1009,6 +951,11 @@ const Post = (props) => {
                 const name = v.target.value;
                 setImageSearch((prev) => ({ ...prev, name: name }));
               }}
+              onKeyPress={(e) => {
+                if (e.charCode === 13) {
+                  setFilterImageList({ ...filterImageList, name: imageSearch.name })
+                }
+              }}
             />
           </InputGroup>
           <Table striped bordered hover>
@@ -1021,16 +968,11 @@ const Post = (props) => {
             </thead>
             <tbody>
               {listImages &&
-                listImages.map((e, i) => {
+                listImages.images.map((e, i) => {
+                  let beginIndex = listImages.pages.begin;
                   return (
-                    <tr key={i}>
-                      <td>
-                        <Form.Check
-                          type="checkbox"
-                          onChange={(v) => addImgae(v, e)}
-                          checked={checkImageUse(e.id)}
-                        />
-                      </td>
+                    <tr key={i} onClick={() => imagesHandler(e)} style={{cursor: 'pointer'}}>
+                      <td>{beginIndex + i}</td>
                       <td>
                         <img
                           src={e.url}
@@ -1044,32 +986,25 @@ const Post = (props) => {
                 })}
             </tbody>
           </Table>
-          {/* <Pagination
-            threeDots
-            totalPages={imageSearch.total}
-            currentPage={imageSearch.currPage}
-            showMax={totalPost > 5 ? 4 : 2}
-            prevNext
-            activeBgColor="#18eaca"
-            activeBorderColor="#7bc9c9"
-            onClick={(page) => {
-              setImageSearch((prev) => ({ ...prev, currPage: page }));
-            }}
-          /> */}
+          <div className="pagination mt-4 d-flex justify-content-center">
+            {
+              listImages ? <Pagination pagination={listImages.pages} callFetchList={changePageImageList} /> : null
+            }
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowImage(false)}>
+          <Button variant="secondary" onClick={() => setShowImage({active: false, callback: null})}>
             Đóng
           </Button>
-          <Button
+          {/* <Button
             variant="secondary"
             onClick={() => {
-              setShowImage(false);
+              setShowImage({active: false, callback: null});
               imagesHandler();
             }}
           >
             Lưu
-          </Button>
+          </Button> */}
         </Modal.Footer>
       </Modal>
     </div>

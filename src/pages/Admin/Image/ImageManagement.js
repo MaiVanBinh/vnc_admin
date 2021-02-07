@@ -5,6 +5,8 @@ import { Modal, Button, Table, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { baseUrl } from './../../../store/utilities/apiConfig';
 import * as actionTypes from './../../../store/actions/actionTypes';
+import Pagination from './../../../components/Panigation/Pagination';
+import { getIndexListPage } from './../../../store/utilities/common';
 
 const mapStateToProps = (state) => {
     return {
@@ -50,9 +52,14 @@ const ImageManagement = (props) => {
         created_at: '',
     })
 
+    const [filterList, setFilterList] = useState({
+        page: 1,
+        limit: 10,
+    })
+
     useEffect(() => {
         getListImages();
-    }, [])
+    }, [filterList])
 
     useEffect(() => {
         const getFile = () => {
@@ -150,14 +157,15 @@ const ImageManagement = (props) => {
             headers: {
                 Authorization: "Bearer " + auth.token,
             },
-            params: {
-                limit: 1000
-            }
+            params: filterList
         })
-        .then(res => {
-            setListImages(res.data.data.images);
-            setLoader(false);
-        })
+            .then(res => {
+                const { begin, end } = getIndexListPage(filterList.page, filterList.limit, res.data.data.total);
+                res.data.data.pages.begin = begin;
+                res.data.data.pages.end = end;
+                setListImages(res.data.data);
+                setLoader(false);
+            })
     }
 
     const openDelete = (item) => {
@@ -174,13 +182,19 @@ const ImageManagement = (props) => {
                 Authorization: "Bearer " + auth.token,
             }
         })
-        .then(res => {
-            setShowDelete(false);
-            getListImages();
-        }).catch(err => {
-            setShowDelete(false);
-            setLoader(false);
-            alert(err.response.data.data)
+            .then(res => {
+                setShowDelete(false);
+                getListImages();
+            }).catch(err => {
+                setShowDelete(false);
+                setLoader(false);
+                alert(err.response.data.data)
+            })
+    }
+
+    const changePage = (page) => {
+        setFilterList({
+            ...filterList, page
         })
     }
 
@@ -205,18 +219,19 @@ const ImageManagement = (props) => {
                 </thead>
                 <tbody className='list-images'>
                     {
-                        listImages && listImages.length === 0 ? 
-                        <tr>
-                            <td colSpan="6" className='text-center'>Không có kết quả nào được tìm thấy</td>
-                        </tr>
-                        : null
+                        listImages && listImages.images.length === 0 ?
+                            <tr>
+                                <td colSpan="6" className='text-center'>Không có kết quả nào được tìm thấy</td>
+                            </tr>
+                            : null
                     }
                     {
-                        listImages && listImages.length > 0 ? listImages.map((e, i) => {
+                        listImages && listImages.images.length > 0 ? listImages.images.map((e, i) => {
+                            let beginIndex = listImages.pages.begin;
                             return <tr key={i}>
-                                <td>{i + 1}</td>
+                                <td>{beginIndex + i}</td>
                                 <td className='thumbnail'>
-                                    <img src={e.url} className='img-fluid' alt="error"/>
+                                    <img src={e.url} className='img-fluid' alt="error" />
                                 </td>
                                 <td className='name'>{e.name}</td>
                                 <td className='url'>{e.url}</td>
@@ -227,10 +242,16 @@ const ImageManagement = (props) => {
                                 </td>
                             </tr>
                         })
-                        : null
+                            : null
                     }
                 </tbody>
             </Table>
+
+            <div className="pagination mt-4 d-flex justify-content-center">
+                {
+                    listImages ? <Pagination pagination={listImages.pages} callFetchList={changePage} /> : null
+                }
+            </div>
 
             {/* upload */}
             <Modal
@@ -243,7 +264,7 @@ const ImageManagement = (props) => {
                     <Modal.Title>Tải ảnh</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div ref={dropArea} className="wrap-area-drop p-5" style={{cursor: 'pointer'}} onDrop={uploadHandle} onDragOver={dragOverHandle} onDragLeave={dragLeaveHandle} onClick={clickHandle}>
+                    <div ref={dropArea} className="wrap-area-drop p-5" style={{ cursor: 'pointer' }} onDrop={uploadHandle} onDragOver={dragOverHandle} onDragLeave={dragLeaveHandle} onClick={clickHandle}>
                         <p className="text-center mb-0">Thả ảnh hoặc click vào đây để tải ảnh lên.</p>
                     </div>
                     <input type="file" style={{ display: 'none' }} ref={inputFile} />

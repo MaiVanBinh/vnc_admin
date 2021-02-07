@@ -1,3 +1,4 @@
+/* eslint-disable */
 const getFirstLetterName = (value) => {
     return value.charAt(0);
 }
@@ -109,6 +110,16 @@ const checkValidDate = (date) => {
     return 'ok';
 }
 
+const getIndexListPage = (currentPage, pageSize, totalItems) => {
+    let begin, end;
+
+    begin = (currentPage - 1) * pageSize + 1;
+    end = begin + pageSize;
+    if(end > totalItems) end = totalItems;
+
+    return { begin, end };
+}
+
 export {
     getFirstLetterName,
     convertDateTime,
@@ -126,5 +137,6 @@ export {
     stripNonNumeric,
     megabyteToBytes,
     checkContainSpecialCharacters,
-    checkValidDate
+    checkValidDate,
+    getIndexListPage
 }

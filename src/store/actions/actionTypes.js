@@ -38,3 +38,6 @@ export const SET_LOADER = 'SET_LOADER';
 
 // list image
 export const SET_LIST_IMAGES = 'SET_LIST_IMAGES';
+
+// list Users
+export const SET_LIST_USERS = 'SET_LIST_USERS';

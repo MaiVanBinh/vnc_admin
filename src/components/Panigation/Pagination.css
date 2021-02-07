@@ -1,0 +1,46 @@
+.WRAP_PAGINATION .double, .WRAP_PAGINATION .single, .WRAP_PAGINATION .first-page, .WRAP_PAGINATION .pre-page, .WRAP_PAGINATION .current-page, .WRAP_PAGINATION .next-page, .WRAP_PAGINATION .last-page, .WRAP_PAGINATION .more {
+  padding: 5px;
+  min-width: 20px;
+  height: 25px;
+  transition: 0.2s;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 2px;
+  font-size: 12px;
+  background-color: transparent;
+  color: #333;
+}
+
+.WRAP_PAGINATION .double path, .WRAP_PAGINATION .single path, .WRAP_PAGINATION .first-page path, .WRAP_PAGINATION .pre-page path, .WRAP_PAGINATION .current-page path, .WRAP_PAGINATION .next-page path, .WRAP_PAGINATION .last-page path, .WRAP_PAGINATION .more path, .WRAP_PAGINATION .double circle, .WRAP_PAGINATION .single circle, .WRAP_PAGINATION .first-page circle, .WRAP_PAGINATION .pre-page circle, .WRAP_PAGINATION .current-page circle, .WRAP_PAGINATION .next-page circle, .WRAP_PAGINATION .last-page circle, .WRAP_PAGINATION .more circle {
+  fill: #333;
+}
+
+.WRAP_PAGINATION .double:hover, .WRAP_PAGINATION .single:hover, .WRAP_PAGINATION .first-page:hover, .WRAP_PAGINATION .pre-page:hover, .WRAP_PAGINATION .current-page:hover, .WRAP_PAGINATION .next-page:hover, .WRAP_PAGINATION .last-page:hover, .WRAP_PAGINATION .more:hover {
+  background-color: #555;
+  color: #fff;
+}
+
+.WRAP_PAGINATION .double:hover path, .WRAP_PAGINATION .single:hover path, .WRAP_PAGINATION .first-page:hover path, .WRAP_PAGINATION .pre-page:hover path, .WRAP_PAGINATION .current-page:hover path, .WRAP_PAGINATION .next-page:hover path, .WRAP_PAGINATION .last-page:hover path, .WRAP_PAGINATION .more:hover path, .WRAP_PAGINATION .double:hover circle, .WRAP_PAGINATION .single:hover circle, .WRAP_PAGINATION .first-page:hover circle, .WRAP_PAGINATION .pre-page:hover circle, .WRAP_PAGINATION .current-page:hover circle, .WRAP_PAGINATION .next-page:hover circle, .WRAP_PAGINATION .last-page:hover circle, .WRAP_PAGINATION .more:hover circle {
+  fill: #fff;
+}
+
+.WRAP_PAGINATION .current-page {
+  color: #fff;
+  background-color: #555;
+}
+
+.WRAP_PAGINATION .more {
+  align-items: flex-end;
+  cursor: default;
+}
+
+.WRAP_PAGINATION .more:hover {
+  background-color: transparent;
+}
+
+.WRAP_PAGINATION .more:hover path, .WRAP_PAGINATION .more:hover circle {
+  fill: #333;
+}

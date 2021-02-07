@@ -1,9 +1,17 @@
-.main-menu-container  {
-    position: absolute;
-    float: left;
+.admin-side-bar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
     width: 300px;
+}
+
+.main-menu-container  {
     padding: 0 20px;
+    margin: 20px 0;
     z-index: 1;
+    height: calc(100vh - 40px);
+    border-right: 1px solid #e4e4e4;
 }
 .logo-admin {
     padding: 10px;
@@ -25,15 +33,18 @@
     margin-bottom: 10px;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 .main-menu-container .menu-item .icon {
-    display: inline-block;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     width: 30px;
+    margin-right: 5px;
 }
 .main-menu-container .menu-item span {
-    font-size: 20px;
+    font-size: 17px;
 }
 .sup-menu-item {
     padding: 10px;

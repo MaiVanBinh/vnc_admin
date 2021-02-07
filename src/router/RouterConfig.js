@@ -34,7 +34,6 @@ const RouteConfig = (props) => {
         <ErrorBoundary>
             <Suspense fallback={<Loader />}>
                 <Switch>
-                    {/* <Layout /> */}
                     {
                         publicRoutes.map((route, index) => {
                             return (
@@ -47,7 +46,6 @@ const RouteConfig = (props) => {
                     <PrivateRoute path="/">
                         <Layout />
                     </PrivateRoute>
-                    {/* <Redirect from="/" to="/danh-muc"/> */}
                 </Switch>
             </Suspense>
         </ErrorBoundary>

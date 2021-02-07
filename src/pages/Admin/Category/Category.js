@@ -4,7 +4,8 @@ import { Modal, Button, Table, Form } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
-import { validateLength } from "../../../store/utilities/common";
+import { validateLength, getIndexListPage } from "../../../store/utilities/common";
+import Pagination from './../../../components/Panigation/Pagination';
 
 const mapStateToProps = (state) => {
   return {
@@ -45,23 +46,26 @@ const Category = (props) => {
 
   const [titleCreate, setTitleCreate] = useState("");
 
+  const [filterList, setFilterList] = useState({
+    page: 1,
+    limit: 10,
+  })
+
   useEffect(() => {
-    if (!category) {
-      getCategoryList();
-    }
-  }, []);
+    getCategoryList();
+  }, [filterList]);
 
   const getCategoryList = () => {
     setLoader(true);
     axios({
       method: "get",
       url: baseUrl + "categories",
-      params: {
-        page: 1,
-        limit: 10,
-      },
+      params: filterList,
     }).then((res) => {
-      setCategory(res.data.data.category);
+      const { begin, end } = getIndexListPage(filterList.page, filterList.limit, res.data.data.total);
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
+      setCategory(res.data.data);
       setLoader(false);
     });
   };
@@ -164,6 +168,12 @@ const Category = (props) => {
     setTitleCreate(value);
   };
 
+  const changePage = (page) => {
+    setFilterList({
+      ...filterList, page
+    })
+  }
+
   return (
     <div>
       <div className="container-fluid pt-5 pb-5">
@@ -194,11 +204,12 @@ const Category = (props) => {
             </tr>
           </thead>
           <tbody>
-            {category && category.length > 0 ? (
-              category.map((e, i) => {
+            {category && category.category.length > 0 ? (
+              category.category.map((e, i) => {
+                let beginIndex = category.pages.begin;
                 return (
                   <tr key={i}>
-                    <td>{i + 1}</td>
+                    <td>{beginIndex + i}</td>
                     <td>{e.title}</td>
                     <td>{e.created_at}</td>
                     <td>
@@ -235,6 +246,11 @@ const Category = (props) => {
             )}
           </tbody>
         </Table>
+        <div className="pagination mt-4 d-flex justify-content-center">
+          {
+            category ? <Pagination pagination={category.pages} callFetchList={changePage} /> : null
+          }
+        </div>
       </div>
 
       {/* edit */}

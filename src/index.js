@@ -11,6 +11,7 @@ import categoryReducer from './store/reducer/category';
 import authReducer from './store/reducer/auth';
 import loaderReducer from './store/reducer/loader';
 import listImagesReducer from './store/reducer/listImages';
+import listUsers from './store/reducer/listUsers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   auth: authReducer,
   loader: loaderReducer,
-  listImages: listImagesReducer
+  listImages: listImagesReducer,
+  listUsers: listUsers
 });
 
 const store = createStore(

@@ -8,7 +8,7 @@ import axios from "axios";
 import { baseUrl } from "../utilities/apiConfig";
 
 export const logout = () => {
-  localStorage.removeItem("token");
+  localStorage.removeItem("autobi-auth");
   localStorage.removeItem("expirationDate");
   return {
     type: LOG_OUT,
@@ -29,10 +29,10 @@ const loginStart = () => {
   };
 };
 
-const loginSuccess = (token) => {
+const loginSuccess = (payload) => {
   return {
     type: LOGIN_SUCCESS,
-    token: token,
+    payload
   };
 };
 
@@ -58,12 +58,18 @@ export const login = (username, password, callback) => {
       .then((res) => {
         // res.data.expirationTime
         // console.log(res);
-        localStorage.setItem("token", res.data.data.token);
+        const data = res.data.data;
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+
+        let authStorage = JSON.stringify(res.data.data);
+
+        localStorage.setItem("autobi-auth", authStorage);
         localStorage.setItem("expirationDate", expirationDate);
-        dispatch(loginSuccess(res.data.data.token));
+
+        dispatch(loginSuccess(data));
         dispatch(checkAuthTimeout(3600));
-        if(callback) callback(res.data.data);
+
+        if(callback) callback(data);
       })
       .catch((err) => {
         dispatch(loginError(err.message));
@@ -74,21 +80,23 @@ export const login = (username, password, callback) => {
 
 export const authCheckState = () => {
   return (dispatch) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    // const auth = localStorage.getItem("autobi-auth");
+    // if (!auth) {
+    //   dispatch(logout());
+    // } else {
+      
+    // }
+
+    const expirationDate = new Date(localStorage.getItem("expirationDate"));
+    if (expirationDate <= new Date()) {
       dispatch(logout());
     } else {
-      const expirationDate = new Date(localStorage.getItem("expirationDate"));
-      if (expirationDate <= new Date()) {
-        dispatch(logout());
-      } else {
-        dispatch(loginSuccess(token));
-        dispatch(
-          checkAuthTimeout(
-            (expirationDate.getTime() - new Date().getTime()) / 1000
-          )
-        );
-      }
+      // dispatch(loginSuccess(JSON.parse(auth)));
+      dispatch(
+        checkAuthTimeout(
+          (expirationDate.getTime() - new Date().getTime()) / 1000
+        )
+      );
     }
   };
 };
