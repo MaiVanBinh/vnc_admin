@@ -17,6 +17,10 @@ import { Editor } from "@tinymce/tinymce-react";
 import Pagination from './../../../components/Panigation/Pagination';
 import { validateLength, getIndexListPage } from "../../../store/utilities/common";
 import { apiKeyEditor } from './../../../constant';
+import { 
+  IconPlus,
+  IconRefresh
+} from './../../../store/utilities/SVG';
 
 const mapStateToProps = (state) => {
   return {
@@ -390,7 +394,7 @@ const Post = (props) => {
 
   return (
     <div>
-      <div className="container-fluid pt-5 pb-5">
+      <div className="container-fluid pt-3 pb-5">
         <div className="wrap-action mb-3">
           <Button
             className="mr-2"
@@ -399,7 +403,7 @@ const Post = (props) => {
               setImages([]);
             }}
           >
-            Tạo bài viết +
+            <IconPlus width={15} height={15} color={'#fff'} />
             </Button>
           <Button
             className="mr-2"
@@ -411,7 +415,7 @@ const Post = (props) => {
               });
             }}
           >
-            Tải lại danh sách
+            <IconRefresh width={15} height={15} color={'#fff'} />
             </Button>
           {/* <Button
               className="mr-2"
@@ -838,7 +842,7 @@ const Post = (props) => {
                 : ""}
             </div>
           </div>
-          <div>
+          {/* <div>
             <div className="p-2 font-weight-bold">Ảnh:</div>
             <div className="p-2 d-flex flex-wrap">
               {currItem && currItem.images && currItem.images.length > 0
@@ -858,7 +862,7 @@ const Post = (props) => {
                 ))
                 : null}
             </div>
-          </div>
+          </div> */}
           <div className="d-flex">
             <div className="p-2 font-weight-bold">Chế độ:</div>
             <div className="p-2 flex-sm-grow-1">

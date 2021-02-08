@@ -1,5 +1,32 @@
+.top-menu{
+    position: fixed;
+    top: 0;
+    left: 300px;
+    right: 0;
+    height: 60px;
+    border-bottom: 1px solid #e4e4e4;
+}
+
+.top-menu .group-btn{
+    padding: 12px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.top-menu .group-btn > *{
+    transition: .2s;
+}
+
+.top-menu .group-btn:hover path{
+    fill: #007bff;
+}
+.top-menu .group-btn:hover span{
+    color: #007bff;
+}
+
 .container-layout {
-    min-height: 100vh;
+    /* min-height: 100vh; */
+    margin-top: 60px;
 }
 
 .admin-side-bar {

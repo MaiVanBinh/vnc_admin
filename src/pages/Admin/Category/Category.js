@@ -6,6 +6,10 @@ import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
 import { validateLength, getIndexListPage } from "../../../store/utilities/common";
 import Pagination from './../../../components/Panigation/Pagination';
+import { 
+  IconPlus,
+  IconRefresh
+} from './../../../store/utilities/SVG';
 
 const mapStateToProps = (state) => {
   return {
@@ -176,7 +180,7 @@ const Category = (props) => {
 
   return (
     <div>
-      <div className="container-fluid pt-5 pb-5">
+      <div className="container-fluid pt-3 pb-5">
         <div className="wrap-action mb-3">
           <Button
             className="mr-2"
@@ -189,9 +193,11 @@ const Category = (props) => {
               });
             }}
           >
-            Tạo danh mục +
+            <IconPlus width={15} height={15} color={'#fff'} />
           </Button>
-          <Button onClick={() => getCategoryList()}>Tải lại danh sách</Button>
+          <Button onClick={() => getCategoryList()}>
+            <IconRefresh width={15} height={15} color={'#fff'} />
+          </Button>
         </div>
 
         <Table striped bordered hover>

@@ -6,6 +6,9 @@ import { Modal, Button, Table, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { baseUrl } from './../../../store/utilities/apiConfig';
 import Pagination from './../../../components/Panigation/Pagination';
+import { 
+    IconRefresh
+  } from './../../../store/utilities/SVG';
 
 const mapStateToProps = (state) => {
     return {
@@ -143,13 +146,13 @@ const User = (props) => {
         }
     }
 
-    return <div className='container-fluid pt-5 pb-5'>
+    return <div className='container-fluid pt-3 pb-5'>
         <div className="wrap-action mb-3">
             <Button onClick={() => setFilterList({
                 username: '',
                 page: 1,
                 limit: 10,
-            })}>Tải lại danh sách</Button>
+            })}><IconRefresh width={15} height={15} color={'#fff'} /></Button>
         </div>
 
         <Table striped bordered hover>

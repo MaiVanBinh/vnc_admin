@@ -33,7 +33,7 @@ const SideBarAdmin = (props) => {
     return (
         <div className="main-menu-container">
             <div className="logo-admin">
-                <img src={Logo} alt="" />
+                <a href="http://hi1.xyz/scmsswww/" target="_blank"><img src={Logo} alt="" /></a>
             </div>
             <div className={page === 0 ? "menu-item active" : "menu-item"} onClick={() => changePage('/danh-muc')}>
                 <span className="icon">

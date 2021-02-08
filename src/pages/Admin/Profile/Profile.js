@@ -6,6 +6,7 @@ import axios from 'axios';
 import { validateLengthSpace } from './../../../store/utilities/common';
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
+import './Profile.css';
 
 const mapStateToProps = (state) => {
     return {
@@ -106,7 +107,7 @@ const Profile = (props) => {
     }
 
     return (
-        <div className='p-5'>
+        <div className='pt-3 pl-5 pr-5 pb-5'>
             <div className="wrap-static-info">
                 <h2 className='mb-4'>Thông tin tài khoản</h2>
                 <div className="group-info d-flex align-items-center mb-3">
