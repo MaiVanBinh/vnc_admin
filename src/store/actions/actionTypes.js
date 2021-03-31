@@ -41,3 +41,29 @@ export const SET_LIST_IMAGES = 'SET_LIST_IMAGES';
 
 // list Users
 export const SET_LIST_USERS = 'SET_LIST_USERS';
+
+
+// list species 
+export const SET_LIST_SPECIES = 'SET_LIST_SPECIES';
+
+// list groups
+export const SET_LIST_GROUPS = 'SET_LIST_GROUPS';
+
+// list orders
+
+export const SET_LIST_ORDERS = 'SET_LIST_ORDERS';
+
+//list FAMILIES
+export const SET_LIST_FAMILIES = 'SET_LIST_FAMILIES';
+
+// fetch creature category 
+export const SET_CREATURES_CATEGORIES = 'SET_CREATURES_CATEGORIES';
+
+//
+export const SET_LIST_CREATURES = 'SET_LIST_CREATURES';
+
+// footprint
+export const SET_LIST_FOOTPRINTS = 'SET_LIST_FOOTPRINTS';
+
+// TimberSample
+ export const SET_TIMBER_SAMPLE = 'SET_TIMBER_SAMPLE';

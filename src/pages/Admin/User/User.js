@@ -91,7 +91,27 @@ const User = (props) => {
     }
 
     const deleteHandle = () => {
-        console.log(info);
+        axios({
+            method: "delete",
+            url: baseUrl + "auth/users/" + info.id,
+            headers: {
+                Authorization: "Bearer " + auth.token,
+            },
+        })
+            .then(res => {
+                if(res.status === 200) {
+                    // setInformSuccess(true);
+                    setShowEdit(false);
+                }
+                else{
+                    alert('Có lỗi xảy ra, vui lòng thử lại sau!');
+                }
+                setLoader(false);
+            })
+            .catch(function() {
+                alert('Có lỗi xảy ra, vui lòng thử lại sau!');
+                setLoader(false);
+            })
     }
 
     const saveHandle = () => {
@@ -119,7 +139,7 @@ const User = (props) => {
             })
             setLoader(true);
             axios({
-                method: "put",
+                method: "post",
                 url: baseUrl + "auth/users/change-password-sadmin",
                 headers: {
                     Authorization: "Bearer " + auth.token,
@@ -181,7 +201,7 @@ const User = (props) => {
                             <td>{beginIndex + i}</td>
                             <td>{e.username}</td>
                             <td>{e.state === '0' ? 'Inactive' : 'Active'}</td>
-                            <td>{e.role === '0' ? 'Admin' : 'unknown'}</td>
+                            <td>{e.role === '0' ? 'Admin' : e.role === '1' ? 'Super admin' : 'unknow'}</td>
                             <td>{e.created_at}</td>
                             <td>
                                 <Button className='mr-2' onClick={() => openEdit(e)}>Sửa</Button>

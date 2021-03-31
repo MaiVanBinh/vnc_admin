@@ -12,6 +12,14 @@ import authReducer from './store/reducer/auth';
 import loaderReducer from './store/reducer/loader';
 import listImagesReducer from './store/reducer/listImages';
 import listUsers from './store/reducer/listUsers';
+import speciesReducers from './store/reducer/species';
+import groupsReducers from './store/reducer/groups';
+import ordersReducers from './store/reducer/orders';
+import creaturesCategoriesReducers from './store/reducer/creaturesCategories';
+import familiesReducer from './store/reducer/families';
+import creaturesReducer from './store/reducer/creatures';
+import footprintReducer from './store/reducer/footprint';
+import timberSampleReducer from './store/reducer/timberSample';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -21,7 +29,15 @@ const rootReducer = combineReducers({
   auth: authReducer,
   loader: loaderReducer,
   listImages: listImagesReducer,
-  listUsers: listUsers
+  listUsers: listUsers,
+  species: speciesReducers,
+  groups: groupsReducers,
+  orders: ordersReducers,
+  creaturesCategories: creaturesCategoriesReducers,
+  families: familiesReducer,
+  creatures: creaturesReducer,
+  footprints: footprintReducer,
+  timberSample: timberSampleReducer
 });
 
 const store = createStore(

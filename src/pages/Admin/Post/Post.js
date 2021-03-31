@@ -14,13 +14,14 @@ import {
   FormControl,
 } from "react-bootstrap";
 import { Editor } from "@tinymce/tinymce-react";
-import Pagination from './../../../components/Panigation/Pagination';
-import { validateLength, getIndexListPage } from "../../../store/utilities/common";
-import { apiKeyEditor } from './../../../constant';
-import { 
-  IconPlus,
-  IconRefresh
-} from './../../../store/utilities/SVG';
+import Pagination from "./../../../components/Panigation/Pagination";
+import {
+  validateLength,
+  getIndexListPage,
+} from "../../../store/utilities/common";
+import { apiKeyEditor } from "./../../../constant";
+import { IconPlus, IconRefresh, IconSearch, IconFilter } from "./../../../store/utilities/SVG";
+import Filter from './Filter/Filter';
 
 const mapStateToProps = (state) => {
   return {
@@ -94,9 +95,11 @@ const Post = (props) => {
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+
   const [showImage, setShowImage] = useState({
     active: false,
-    callback: null
+    callback: null,
   });
   const [images, setImages] = useState([]);
   const [oldImages, setOldImages] = useState([]);
@@ -137,27 +140,30 @@ const Post = (props) => {
 
   const [currItem, setCurrItem] = useState(null);
 
-  const [filterList, setFilterList] = useState({ // posts
+  const [filterList, setFilterList] = useState({
+    // posts
     page: 1,
     limit: 10,
-    is_publish: 'true'
-  })
-
+    is_publish: null,
+  });
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [filterImageList, setFilterImageList] = useState({
-    name: '',
+    name: "",
     page: 1,
     limit: 10,
-  })
+  });
 
   useEffect(() => {
     getCategoryList();
-  }, [])
+  }, []);
 
-  useEffect(() => { // watcher
+  useEffect(() => {
+    console.log(filterList);
     getPostList();
   }, [filterList]);
 
-  useEffect(() => { // watcher
+  useEffect(() => {
+    // watcher
     getListImages();
   }, [filterImageList]);
 
@@ -168,7 +174,10 @@ const Post = (props) => {
         title: "",
         content: "",
         images: "",
-        category: category && category.category.length ? category.category[0]["id"] : null,
+        category:
+          category && category.category.length
+            ? category.category[0]["id"]
+            : null,
         description: "",
         is_publish: false,
       });
@@ -177,7 +186,10 @@ const Post = (props) => {
         title: "",
         content: "",
         images: "",
-        category: category && category.category.length ? category.category[0]["id"] : null,
+        category:
+          category && category.category.length
+            ? category.category[0]["id"]
+            : null,
         description: "",
         is_publish: false,
       });
@@ -196,7 +208,11 @@ const Post = (props) => {
     }).then((res) => {
       setLoader(false);
 
-      const { begin, end } = getIndexListPage(filterList.page, filterList.limit, res.data.data.total);
+      const { begin, end } = getIndexListPage(
+        filterList.page,
+        filterList.limit,
+        res.data.data.total
+      );
       res.data.data.pages.begin = begin;
       res.data.data.pages.end = end;
 
@@ -207,36 +223,35 @@ const Post = (props) => {
   const editHandle = () => {
     const imagesRemove = intersection2Array(images, oldImages).map((e) => e.id);
     const imageAdd = images.map((e) => e.id);
-
-    const is_publish = infoPost.is_publish === "true" ? true : false;
-    if (
-      !checkValid(infoPost, "title") ||
-      !checkValid(infoPost, "description")
-    ) {
-    } else {
-      setLoader(true);
-      axios({
-        method: "put",
-        url: baseUrl + "auth/posts/" + infoPost.id,
-        data: {
-          ...infoPost,
-          imageAdd,
-          imagesRemove,
-          is_publish,
-        },
-        headers: {
-          Authorization: "Bearer " + auth.token,
-        },
-      })
-        .then(() => {
-          setShowEdit(false);
-          getPostList();
-        })
-        .catch((err) => {
-          setShowEdit(false);
-          setLoader(false);
-        });
-    }
+    // const is_publish = infoPost.is_publish === "true" ? true : false;
+    // if (
+    //   !checkValid(infoPost, "title") ||
+    //   !checkValid(infoPost, "description")
+    // ) {
+    // } else {
+    //   setLoader(true);
+    //   axios({
+    //     method: "put",
+    //     url: baseUrl + "auth/posts/" + infoPost.id,
+    //     data: {
+    //       ...infoPost,
+    //       imageAdd,
+    //       imagesRemove,
+    //       is_publish,
+    //     },
+    //     headers: {
+    //       Authorization: "Bearer " + auth.token,
+    //     },
+    //   })
+    //     .then(() => {
+    //       setShowEdit(false);
+    //       getPostList();
+    //     })
+    //     .catch((err) => {
+    //       setShowEdit(false);
+    //       setLoader(false);
+    //     });
+    // }
   };
 
   const deleteHandle = () => {
@@ -248,14 +263,13 @@ const Post = (props) => {
         Authorization: "Bearer " + auth.token,
       },
     }).then((res) => {
-      console.log("delete handle result:", res);
       setShowDelete(false);
       getPostList();
     });
   };
 
   const saveHandle = () => {
-    const imagesId = images.map((e) => e.id);
+    // const imagesId = images.map((e) => e.id);
     const is_publish = infoPost.is_publish === "true" ? true : false;
     if (
       !checkValid(infoPost, "title") ||
@@ -271,7 +285,7 @@ const Post = (props) => {
         },
         data: {
           ...infoPost,
-          images: imagesId,
+          images: images,
           is_publish,
         },
       })
@@ -292,7 +306,7 @@ const Post = (props) => {
     setLoader(true);
     axios({
       method: "get",
-      url: baseUrl + "categories",
+      url: baseUrl + "category",
       params: {
         page: 1,
         limit: 1000,
@@ -357,13 +371,17 @@ const Post = (props) => {
     setLoader(true);
     axios({
       method: "get",
-      url: baseUrl + "auth/images",
+      url: baseUrl + "auth/assets",
       headers: {
         Authorization: "Bearer " + auth.token,
       },
-      params: filterImageList
+      params: filterImageList,
     }).then((res) => {
-      const { begin, end } = getIndexListPage(filterImageList.page, filterImageList.limit, res.data.data.total);
+      const { begin, end } = getIndexListPage(
+        filterImageList.page,
+        filterImageList.limit,
+        res.data.data.total
+      );
       res.data.data.pages.begin = begin;
       res.data.data.pages.end = end;
 
@@ -373,50 +391,72 @@ const Post = (props) => {
   };
 
   const imagesHandler = (item) => {
+    const newImages = [...images, item.id];
+    setImages(newImages);
     showImage.callback(item.url, { title: item.name });
     setShowImage({
       active: false,
-      callback: null
-    })
+      callback: null,
+    });
   };
 
   const changePage = (page) => {
     setFilterList({
-      ...filterList, page
-    })
-  }
+      ...filterList,
+      page,
+    });
+  };
 
   const changePageImageList = (page) => {
     setFilterImageList({
-      ...filterImageList, page
-    })
-  }
+      ...filterImageList,
+      page,
+    });
+  };
 
+  const onSearchHandler = (filter) => {
+    setFilterList({...filterList, ...filter})
+  } 
   return (
     <div>
       <div className="container-fluid pt-3 pb-5">
-        <div className="wrap-action mb-3">
-          <Button
-            className="mr-2"
-            onClick={() => {
-              setShowCreate(true);
-              setImages([]);
-            }}
-          >
-            <IconPlus width={15} height={15} color={'#fff'} />
+        <div className="wrap-action mb-3 d-flex justify-content-between">
+          <div>
+            <Button
+              className="mr-2"
+              onClick={() => {
+                setShowCreate(true);
+                setImages([]);
+              }}
+            >
+              <IconPlus width={15} height={15} color={"#fff"} />
             </Button>
-          <Button
-            className="mr-2"
-            onClick={() => {
-              setFilterList({ // reset filter
-                page: 1,
-                limit: 10,
-                is_publish: 'true'
-              });
-            }}
-          >
-            <IconRefresh width={15} height={15} color={'#fff'} />
+            <Button
+              className="mr-2"
+              onClick={() => {
+                setSearchKeyword('');
+                setFilterList({
+                  // reset filter
+                  page: 1,
+                  limit: 10
+                });
+              }}
+            >
+              <IconRefresh width={15} height={15} color={"#fff"} />
             </Button>
+            <Button
+              className="mr-2"
+              onClick={() => setShowFilter(true)}
+            >
+              <IconFilter width={15} height={15} color={"#fff"} />
+            </Button>
+          </div>
+          <Form inline className="searchCp">
+            <FormControl type="text" placeholder="" className="mr-sm-2" onChange={e => setSearchKeyword(e.target.value)} value={searchKeyword} />
+            <Button onClick={() => setFilterList({...filterList, title: searchKeyword})}>
+              <IconSearch width={15} height={15} color={"#fff"} />
+            </Button>
+          </Form>
           {/* <Button
               className="mr-2"
               onClick={() => {
@@ -434,6 +474,7 @@ const Post = (props) => {
               <th>Tiêu đề</th>
               <th>Danh mục</th>
               <th>Chế độ</th>
+              <th>Ngôn ngữ</th>
               <th>Ngày tạo</th>
               <th>Thao tác</th>
             </tr>
@@ -446,8 +487,9 @@ const Post = (props) => {
                   <tr key={i}>
                     <td>{beginIndex + i}</td>
                     <td>{e.title}</td>
-                    <td>{e.categoryTitle}</td>
+                    <td>{e.categorytitle}</td>
                     <td>{e.is_publish === "1" ? "public " : "private"}</td>
+                    <td>{e.language === "vn" ? "Việt" : "English"}</td>
                     <td>{e.created_at}</td>
                     <td>
                       <Button
@@ -460,7 +502,7 @@ const Post = (props) => {
                           setImages(e.image);
                           setOldImages(e.image);
                         }}
-                        className="mr-2"
+                        className="mr-2 mb-2"
                       >
                         Sửa
                       </Button>
@@ -469,14 +511,14 @@ const Post = (props) => {
                           setShowDelete(true);
                           setCurrItem(e);
                         }}
-                        className="btn-danger mr-2"
+                        className="btn-danger mr-2 mb-2"
                       >
                         Xóa
                       </Button>
                       <Button
                         onClick={() => previewPost(e.id)}
                         className="btn-danger"
-                        className="mr-2"
+                        className="mr-2 mb-2"
                       >
                         Xem
                       </Button>
@@ -485,20 +527,20 @@ const Post = (props) => {
                 );
               })
             ) : (
-                <tr>
-                  <td colSpan={6}>
-                    <p className="text-center mb-0">
-                      Không có kết quả nào được tìm thấy
+              <tr>
+                <td colSpan={6}>
+                  <p className="text-center mb-0">
+                    Không có kết quả nào được tìm thấy
                   </p>
-                  </td>
-                </tr>
-              )}
+                </td>
+              </tr>
+            )}
           </tbody>
         </Table>
         <div className="pagination mt-4 d-flex justify-content-center">
-          {
-            posts ? <Pagination pagination={posts.pages} callFetchList={changePage} /> : null
-          }
+          {posts ? (
+            <Pagination pagination={posts.pages} callFetchList={changePage} />
+          ) : null}
         </div>
       </div>
 
@@ -575,7 +617,7 @@ const Post = (props) => {
                 >
                   {category.category.map((e, i) => (
                     <option key={i} value={e.id}>
-                      {e.title}
+                      {e.name_vn}
                     </option>
                   ))}
                 </Form.Control>
@@ -604,10 +646,11 @@ const Post = (props) => {
                   width: "100%",
                   menubar: true,
                   automatic_uploads: true,
-                  file_picker_types: 'image',
+                  file_picker_types: "image",
                   file_picker_callback: (callback) => {
                     setShowImage({
-                      active: true, callback
+                      active: true,
+                      callback,
                     });
                   },
                   plugins: [
@@ -618,13 +661,11 @@ const Post = (props) => {
                   toolbar1:
                     "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
                   toolbar2: "forecolor backcolor emoticons",
-
                 }}
                 value={infoPost.content}
                 onEditorChange={(value) => {
                   setInfoPost({ ...infoPost, content: value });
                 }}
-
               />
             </Form.Group>
           </Form>
@@ -660,117 +701,124 @@ const Post = (props) => {
           <Modal.Title>Tạo bài viết</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {category && category.category.length ? <Form>
-            <Form.Group controlId="formBasicTitle">
-              <Form.Label>Tên tiêu đề</Form.Label>
-              <Form.Control
-                className={
-                  validAttr.title.value ? "form-control is-invalid" : null
-                }
-                type="title"
-                placeholder="Nhập tên danh mục"
-                value={infoPost.title}
-                onChange={(v) => {
-                  checkValid({ ...infoPost, title: v.target.value }, "title");
-                  setInfoPost({ ...infoPost, title: v.target.value });
-                }}
-              />
-              {validAttr.title.value ? (
-                <Form.Control.Feedback type="invalid">
-                  {validAttr.title.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicTitleDescription">
-              <Form.Label>Miêu tả</Form.Label>
-              <Form.Control
-                className={
-                  validAttr.description.value ? "form-control is-invalid" : null
-                }
-                as="textarea"
-                rows={3}
-                type="title"
-                placeholder="Nhập miêu tả"
-                value={infoPost.description}
-                onChange={(v) => {
-                  checkValid(
-                    { ...infoPost, description: v.target.value },
-                    "description"
-                  );
-                  setInfoPost({ ...infoPost, description: v.target.value });
-                }}
-              />
-              {validAttr.description.value ? (
-                <Form.Control.Feedback type="invalid">
-                  {validAttr.description.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicCategory">
-              <Form.Label>Danh mục</Form.Label>
-              {category && category.category.length > 0 ? (
+          {category && category.category.length ? (
+            <Form>
+              <Form.Group controlId="formBasicTitle">
+                <Form.Label>Tên tiêu đề</Form.Label>
+                <Form.Control
+                  className={
+                    validAttr.title.value ? "form-control is-invalid" : null
+                  }
+                  type="title"
+                  placeholder="Nhập tên danh mục"
+                  value={infoPost.title}
+                  onChange={(v) => {
+                    checkValid({ ...infoPost, title: v.target.value }, "title");
+                    setInfoPost({ ...infoPost, title: v.target.value });
+                  }}
+                />
+                {validAttr.title.value ? (
+                  <Form.Control.Feedback type="invalid">
+                    {validAttr.title.message}
+                  </Form.Control.Feedback>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="formBasicTitleDescription">
+                <Form.Label>Miêu tả</Form.Label>
+                <Form.Control
+                  className={
+                    validAttr.description.value
+                      ? "form-control is-invalid"
+                      : null
+                  }
+                  as="textarea"
+                  rows={3}
+                  type="title"
+                  placeholder="Nhập miêu tả"
+                  value={infoPost.description}
+                  onChange={(v) => {
+                    checkValid(
+                      { ...infoPost, description: v.target.value },
+                      "description"
+                    );
+                    setInfoPost({ ...infoPost, description: v.target.value });
+                  }}
+                />
+                {validAttr.description.value ? (
+                  <Form.Control.Feedback type="invalid">
+                    {validAttr.description.message}
+                  </Form.Control.Feedback>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="formBasicCategory">
+                <Form.Label>Danh mục</Form.Label>
+                {category && category.category.length > 0 ? (
+                  <Form.Control
+                    as="select"
+                    onChange={(v) =>
+                      setInfoPost({ ...infoPost, category: v.target.value })
+                    }
+                    defaultValue={category.category[0].id}
+                  >
+                    {category.category.map((e, i) => (
+                      <option key={i} value={e.id}>
+                        {e.name_vn}
+                      </option>
+                    ))}
+                  </Form.Control>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="formBasicMode">
+                <Form.Label>Chế độ</Form.Label>
                 <Form.Control
                   as="select"
+                  defaultValue={false}
                   onChange={(v) =>
-                    setInfoPost({ ...infoPost, category: v.target.value })
+                    setInfoPost({ ...infoPost, is_publish: v.target.value })
                   }
-                  defaultValue={category.category[0].id}
                 >
-                  {category.category.map((e, i) => (
-                    <option key={i} value={e.id}>
-                      {e.title}
-                    </option>
-                  ))}
+                  <option value={true}>Public</option>
+                  <option value={false}>Private</option>
                 </Form.Control>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicMode">
-              <Form.Label>Chế độ</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={false}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, is_publish: v.target.value })
-                }
-              >
-                <option value={true}>Public</option>
-                <option value={false}>Private</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="formBasicContent">
-              <Form.Label>Nội dung</Form.Label>
-              <Editor
-                //   onEditorChange={onDescriptionChangeHandler}
-                apiKey={apiKeyEditor}
-                //   initialValue={creature.description.replaceAll("<br />", "")}
-                images_upda
-                init={{
-                  height: 800,
-                  width: "100%",
-                  menubar: true,
-                  plugins: [
-                    "advlist autolink lists link image charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen",
-                    "insertdatetime media table paste code help wordcount",
-                  ],
-                  toolbar1:
-                    "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
-                  toolbar2: "forecolor backcolor emoticons",
-                  automatic_uploads: true,
-                  file_picker_types: 'image',
-                  file_picker_callback: (callback) => {
-                    setShowImage({
-                      active: true, callback
-                    });
-                  },
-                }}
-                value={infoPost.content}
-                onEditorChange={(value) =>
-                  setInfoPost({ ...infoPost, content: value })
-                }
-              />
-            </Form.Group>
-          </Form> : "Tạo một danh mục trước khi tạo bài viết"}
+              </Form.Group>
+              <Form.Group controlId="formBasicContent">
+                <Form.Label>Nội dung</Form.Label>
+                <Editor
+                  //   onEditorChange={onDescriptionChangeHandler}
+                  apiKey={apiKeyEditor}
+                  //   initialValue={creature.description.replaceAll("<br />", "")}
+                  images_upda
+                  init={{
+                    height: 800,
+                    width: "100%",
+                    menubar: true,
+                    plugins: [
+                      "advlist autolink lists link image charmap print preview anchor",
+                      "searchreplace visualblocks code fullscreen",
+                      "insertdatetime media table paste code help wordcount",
+                    ],
+                    toolbar1:
+                      "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+                    toolbar2: "forecolor backcolor emoticons",
+                    automatic_uploads: true,
+                    file_picker_types: "image",
+                    file_picker_callback: (callback) => {
+                      setShowImage({
+                        active: true,
+                        callback,
+                      });
+                    },
+                  }}
+                  value={infoPost.content}
+                  onEditorChange={(value) =>
+                    setInfoPost({ ...infoPost, content: value })
+                  }
+                />
+              </Form.Group>
+            </Form>
+          ) : (
+            "Tạo một danh mục trước khi tạo bài viết"
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -782,9 +830,11 @@ const Post = (props) => {
           >
             Đóng
           </Button>
-          {category && category.category.length > 0 ? <Button variant="primary" onClick={saveHandle}>
-            Lưu
-          </Button> : null}
+          {category && category.category.length > 0 ? (
+            <Button variant="primary" onClick={saveHandle}>
+              Lưu
+            </Button>
+          ) : null}
         </Modal.Footer>
       </Modal>
 
@@ -815,6 +865,7 @@ const Post = (props) => {
       <Modal
         show={showPreview}
         onHide={() => setShowPreview(false)}
+        size="lg"
         backdrop="static"
         keyboard={false}
       >
@@ -917,12 +968,15 @@ const Post = (props) => {
       {/* show image */}
       <Modal
         show={showImage.active}
-        onHide={() => setShowImage({
-          active: false, callback: null
-        })}
+        onHide={() =>
+          setShowImage({
+            active: false,
+            callback: null,
+          })
+        }
         backdrop="static"
         keyboard={false}
-        className='show-image-modal'
+        className="show-image-modal"
       >
         <Modal.Header closeButton>
           <Modal.Title>Chọn ảnh</Modal.Title>
@@ -930,9 +984,7 @@ const Post = (props) => {
         <Modal.Body>
           <InputGroup className="mb-3">
             <InputGroup.Prepend>
-              <InputGroup.Text
-                id="basic-addon1"
-              >
+              <InputGroup.Text id="basic-addon1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -957,7 +1009,10 @@ const Post = (props) => {
               }}
               onKeyPress={(e) => {
                 if (e.charCode === 13) {
-                  setFilterImageList({ ...filterImageList, name: imageSearch.name })
+                  setFilterImageList({
+                    ...filterImageList,
+                    name: imageSearch.name,
+                  });
                 }
               }}
             />
@@ -975,7 +1030,11 @@ const Post = (props) => {
                 listImages.images.map((e, i) => {
                   let beginIndex = listImages.pages.begin;
                   return (
-                    <tr key={i} onClick={() => imagesHandler(e)} style={{cursor: 'pointer'}}>
+                    <tr
+                      key={i}
+                      onClick={() => imagesHandler(e)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <td>{beginIndex + i}</td>
                       <td>
                         <img
@@ -991,13 +1050,19 @@ const Post = (props) => {
             </tbody>
           </Table>
           <div className="pagination mt-4 d-flex justify-content-center">
-            {
-              listImages ? <Pagination pagination={listImages.pages} callFetchList={changePageImageList} /> : null
-            }
+            {listImages ? (
+              <Pagination
+                pagination={listImages.pages}
+                callFetchList={changePageImageList}
+              />
+            ) : null}
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowImage({active: false, callback: null})}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowImage({ active: false, callback: null })}
+          >
             Đóng
           </Button>
           {/* <Button
@@ -1011,6 +1076,7 @@ const Post = (props) => {
           </Button> */}
         </Modal.Footer>
       </Modal>
+      <Filter show={showFilter} closeHandler={() => setShowFilter(false)} search={onSearchHandler}/>
     </div>
   );
 };

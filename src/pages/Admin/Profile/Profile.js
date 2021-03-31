@@ -81,7 +81,7 @@ const Profile = (props) => {
             })
             setLoader(true);
             axios({
-                method: "put",
+                method: "post",
                 url: baseUrl + "auth/users/change-password",
                 headers: {
                     Authorization: "Bearer " + auth.token,

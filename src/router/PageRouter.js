@@ -7,6 +7,11 @@ import { useSelector } from "react-redux";
 
 const publicRoutes = [
   {
+    path: "dau-chan",
+    exact: true,
+    component: lazy(() => import('./../pages/Admin/Footprint/Footprint'))
+  },
+  {
     path: "danh-muc",
     exact: true,
     component: lazy(() => import("./../pages/Admin/Category/Category")),
@@ -26,6 +31,21 @@ const publicRoutes = [
     exact: true,
     component: lazy(() => import("./../pages/Admin/Profile/Profile")),
   },
+  {
+    path: "phan-loai-dong-vat",
+    exact: true,
+    component: lazy(() => import('./../pages/Admin/CreaturesCategories/CreaturesCategories'))
+  },
+  {
+    path: "quan-li-sinh-vat",
+    exact: true,
+    component: lazy(() => import('./../pages/Admin/Creatures/Creatures'))
+  },
+  {
+    path: "mau-go",
+    exact: true,
+    component: lazy(() => import('./../pages/Admin/TimberSample/TimberSample'))
+  }
 ];
 
 function PrivateRoute({ children, ...rest }) {

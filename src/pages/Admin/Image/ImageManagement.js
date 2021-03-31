@@ -125,7 +125,7 @@ const ImageManagement = (props) => {
             return;
         }
         let xhr = new window.XMLHttpRequest();
-        xhr.open('POST', baseUrl + 'auth/images', true);
+        xhr.open('POST', baseUrl + 'auth/assets', true);
         xhr.setRequestHeader('Authorization', 'Bearer ' + auth.token);
         xhr.responseType = 'json';
         xhr.onload = function () {
@@ -157,7 +157,7 @@ const ImageManagement = (props) => {
         setLoader(true);
         axios({
             method: 'get',
-            url: baseUrl + 'auth/images',
+            url: baseUrl + 'auth/assets',
             headers: {
                 Authorization: "Bearer " + auth.token,
             },
@@ -180,7 +180,7 @@ const ImageManagement = (props) => {
     const deleteHandle = () => {
         setLoader(true);
         axios({
-            url: baseUrl + 'auth/images/' + infoImage.id,
+            url: baseUrl + 'auth/assets/' + infoImage.id,
             method: 'delete',
             headers: {
                 Authorization: "Bearer " + auth.token,

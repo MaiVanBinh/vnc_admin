@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
+import "./Category.css";
 import { connect } from "react-redux";
-import { Modal, Button, Table, Form } from "react-bootstrap";
+import { Modal, Button, Table, Form, FormControl } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
-import { validateLength, getIndexListPage } from "../../../store/utilities/common";
-import Pagination from './../../../components/Panigation/Pagination';
-import { 
+import {
+  validateLength,
+  getIndexListPage,
+} from "../../../store/utilities/common";
+import Pagination from "./../../../components/Panigation/Pagination";
+import {
   IconPlus,
-  IconRefresh
-} from './../../../store/utilities/SVG';
+  IconRefresh,
+  IconSearch,
+} from "./../../../store/utilities/SVG";
 
 const mapStateToProps = (state) => {
   return {
@@ -37,23 +42,50 @@ const Category = (props) => {
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [valid, setValid] = useState({
-    message: "Tên danh mục không được để rỗng",
-    valid: true,
-  });
-
   const [infoCategory, setInfoCategory] = useState({
     id: null,
     title: "",
     created_at: "",
   });
 
-  const [titleCreate, setTitleCreate] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [formInput, setFormInput] = useState({
+    name_vn: {
+      value: null,
+      isValid: true,
+      validMessage: "Don't allow empty string",
+      minLength: 1,
+    },
+    name_en: {
+      value: null,
+      isValid: true,
+      validMessage: "Don't allow empty string",
+      minLength: 1,
+    },
+  });
+
+  const resetFormInput = () => {
+    setFormInput({
+      name_vn: {
+        value: null,
+        isValid: true,
+        validMessage: "Don't allow empty string",
+        minLength: 1,
+      },
+      name_en: {
+        value: null,
+        isValid: true,
+        validMessage: "Don't allow empty string",
+        minLength: 1,
+      },
+    });
+  };
 
   const [filterList, setFilterList] = useState({
     page: 1,
     limit: 10,
-  })
+    title: "",
+  });
 
   useEffect(() => {
     getCategoryList();
@@ -63,10 +95,14 @@ const Category = (props) => {
     setLoader(true);
     axios({
       method: "get",
-      url: baseUrl + "categories",
+      url: baseUrl + "category",
       params: filterList,
     }).then((res) => {
-      const { begin, end } = getIndexListPage(filterList.page, filterList.limit, res.data.data.total);
+      const { begin, end } = getIndexListPage(
+        filterList.page,
+        filterList.limit,
+        res.data.data.total
+      );
       res.data.data.pages.begin = begin;
       res.data.data.pages.end = end;
       setCategory(res.data.data);
@@ -75,34 +111,40 @@ const Category = (props) => {
   };
 
   const openEdit = (item) => {
+    const updateFormInput = { ...formInput };
+    for (let key in updateFormInput) {
+      if (key !== "id") {
+        updateFormInput[key].value = item[key];
+      }
+    }
     setInfoCategory({
       id: item.id,
-      title: item.title,
+      title: item.name_vn,
       created_at: item.created_at,
     });
+
     setShowEdit(true);
   };
 
   const openDelete = (item) => {
     setInfoCategory({
       id: item.id,
-      title: item.title,
+      title: item.name_vn,
       created_at: item.created_at,
     });
     setShowDelete(true);
   };
 
   const editHandle = () => {
-    if(validateLength(infoCategory.title, 1, 100) === 'incorrect'){
+    const data = preprocessInput();
+    if (!data) {
       return;
     }
     setLoader(true);
     axios({
       method: "put",
-      url: baseUrl + "auth/categories/" + infoCategory.id,
-      data: {
-        title: infoCategory.title,
-      },
+      url: baseUrl + "auth/category/" + infoCategory.id,
+      data,
       headers: {
         Authorization: "Bearer " + auth.token,
       },
@@ -116,36 +158,65 @@ const Category = (props) => {
     setLoader(true);
     axios({
       method: "delete",
-      url: baseUrl + "auth/categories/" + infoCategory.id,
+      url: baseUrl + "auth/category/" + infoCategory.id,
       headers: {
         Authorization: "Bearer " + auth.token,
       },
-    }).then((res) => {
-      // console.log("delete handle result:", res);
-      setShowDelete(false);
-      getCategoryList();
     })
-    .catch(err => {
-      setLoader(false);
-      setShowDelete(false);
-      alert("Xóa không thành công. Xóa những bài viết thuộc danh mục này trước.");
-    });
+      .then((res) => {
+        // console.log("delete handle result:", res);
+        setShowDelete(false);
+        getCategoryList();
+      })
+      .catch((err) => {
+        setLoader(false);
+        setShowDelete(false);
+        alert(
+          "Xóa không thành công. Xóa những bài viết thuộc danh mục này trước."
+        );
+      });
+  };
+
+  const preprocessInput = () => {
+    let inputValue = {};
+    let isValid = true;
+    const formInputUpdate = { ...formInput };
+    for (const key in formInput) {
+      if (formInput[key].minLength) {
+        if (
+          validateLength(
+            formInput[key].value,
+            formInput[key].minLength,
+            100
+          ) === "incorrect"
+        ) {
+          isValid = false;
+          formInputUpdate[key].isValid = false;
+        }
+      }
+      inputValue[key] = formInput[key].value;
+    }
+
+    if (!isValid) {
+      setFormInput(formInputUpdate);
+      return false;
+    }
+    return inputValue;
   };
 
   const saveHandle = () => {
-    if(validateLength(titleCreate, 1, 100) === 'incorrect'){
+    const data = preprocessInput();
+    if (!data) {
       return;
     }
     setLoader(true);
     axios({
       method: "post",
-      url: baseUrl + "auth/categories",
+      url: baseUrl + "auth/category",
       headers: {
         Authorization: "Bearer " + auth.token,
       },
-      data: {
-        title: titleCreate,
-      },
+      data: data,
     })
       .then(() => {
         setShowCreate(false);
@@ -157,54 +228,74 @@ const Category = (props) => {
       });
   };
 
-  const onChangeTitle = (value) => {
-    if (validateLength(value, 1, 100) === "incorrect") {
-      setValid({
-        message: "Tên danh mục không được để rỗng",
-        valid: false,
-      });
-    } else {
-      setValid({
-        message: "Tên danh mục không được để rỗng",
-        valid: true,
-      });
-    }
-    setTitleCreate(value);
+  const onChangeInput = (v) => {
+    const name = v.target.name;
+    const value = v.target.value;
+    const formInputUpdate = { ...formInput };
+    formInputUpdate[name].value = value;
+    formInputUpdate[name].isValid = true;
+    setFormInput(formInputUpdate);
   };
 
   const changePage = (page) => {
     setFilterList({
-      ...filterList, page
-    })
-  }
+      ...filterList,
+      page,
+    });
+  };
 
   return (
     <div>
       <div className="container-fluid pt-3 pb-5">
-        <div className="wrap-action mb-3">
-          <Button
-            className="mr-2"
-            onClick={() => {
-              setShowCreate(true);
-              setTitleCreate("");
-              setValid({
-                message: "Tên danh mục không được để rỗng",
-                valid: true,
-              });
-            }}
-          >
-            <IconPlus width={15} height={15} color={'#fff'} />
-          </Button>
-          <Button onClick={() => getCategoryList()}>
-            <IconRefresh width={15} height={15} color={'#fff'} />
-          </Button>
+        <div className="wrap-action mb-3 d-flex justify-content-between">
+          <div>
+            <Button
+              className="mr-2"
+              onClick={() => {
+                setShowCreate(true);
+                resetFormInput();
+              }}
+            >
+              <IconPlus width={15} height={15} color={"#fff"} />
+            </Button>
+            <Button
+              onClick={() => {
+                setFilterList({
+                  page: 1,
+                  limit: 10,
+                  title: "",
+                });
+                getCategoryList();
+              }}
+            >
+              <IconRefresh width={15} height={15} color={"#fff"} />
+            </Button>
+          </div>
+
+          <Form inline className="searchCp">
+            <FormControl
+              type="text"
+              placeholder=""
+              className="mr-sm-2"
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              value={searchKeyword}
+            />
+            <Button
+              onClick={() =>
+                setFilterList({ ...filterList, title: searchKeyword })
+              }
+            >
+              <IconSearch width={15} height={15} color={"#fff"} />
+            </Button>
+          </Form>
         </div>
 
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>#</th>
-              <th>Tiêu đề</th>
+              <th>Tiêu đề tiếng việt</th>
+              <th>Tiêu đề tiếng anh</th>
               <th>Ngày tạo</th>
               <th>Thao tác</th>
             </tr>
@@ -216,16 +307,17 @@ const Category = (props) => {
                 return (
                   <tr key={i}>
                     <td>{beginIndex + i}</td>
-                    <td>{e.title}</td>
+                    <td>{e.name_vn}</td>
+                    <td>{e.name_en}</td>
                     <td>{e.created_at}</td>
                     <td>
                       <Button
                         onClick={() => {
                           openEdit(e);
-                          setValid({
-                            message: "Tên danh mục không được để rỗng",
-                            valid: true,
-                          });
+                          // setValid({
+                          //   message: "Tên danh mục không được để rỗng",
+                          //   valid: true,
+                          // });
                         }}
                         className="mr-2"
                       >
@@ -253,9 +345,12 @@ const Category = (props) => {
           </tbody>
         </Table>
         <div className="pagination mt-4 d-flex justify-content-center">
-          {
-            category ? <Pagination pagination={category.pages} callFetchList={changePage} /> : null
-          }
+          {category ? (
+            <Pagination
+              pagination={category.pages}
+              callFetchList={changePage}
+            />
+          ) : null}
         </div>
       </div>
 
@@ -272,20 +367,36 @@ const Category = (props) => {
         <Modal.Body>
           <Form>
             <Form.Group controlId="formBasicTitle">
-              <Form.Label>Tên danh mục</Form.Label>
+              <Form.Label>Tên danh mục tiếng việt</Form.Label>
               <Form.Control
-                className={valid.valid ? null : "form-control is-invalid"}
-                type="title"
-                placeholder="Nhập tên danh mục"
-                value={infoCategory.title}
-                onChange={(v) => {
-                  setInfoCategory({ ...infoCategory, title: v.target.value });
-                  onChangeTitle(v.target.value);
-                }}
+                className={
+                  formInput.name_vn.isValid ? null : "form-control is-invalid"
+                }
+                name="name_vn"
+                placeholder="Nhập tên danh mục tiếng việt"
+                value={formInput.name_vn.value}
+                onChange={onChangeInput}
               />
-              {!valid.valid ? (
+              {!formInput.name_vn.valid ? (
                 <Form.Control.Feedback type="invalid">
-                  {valid.message}
+                  {formInput.name_vn.validMessage}
+                </Form.Control.Feedback>
+              ) : null}
+            </Form.Group>
+            <Form.Group controlId="formBasicTitle">
+              <Form.Label>Tên danh mục tiểng anh</Form.Label>
+              <Form.Control
+                className={
+                  formInput.name_en.isValid ? null : "form-control is-invalid"
+                }
+                name="name_en"
+                placeholder="Nhập tên danh mục tiếng anh"
+                value={formInput.name_en.value}
+                onChange={onChangeInput}
+              />
+              {!formInput.name_en.isValid ? (
+                <Form.Control.Feedback type="invalid">
+                  {formInput.name_en.validMessage}
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
@@ -314,17 +425,36 @@ const Category = (props) => {
         <Modal.Body>
           <Form>
             <Form.Group controlId="formBasicTitle">
-              <Form.Label>Tên danh mục</Form.Label>
+              <Form.Label>Tên danh mục tiếng việt</Form.Label>
               <Form.Control
-                className={valid.valid ? null : "form-control is-invalid"}
-                type="title"
-                placeholder="Nhập tên danh mục"
-                value={titleCreate}
-                onChange={(v) => onChangeTitle(v.target.value)}
+                className={
+                  formInput.name_vn.isValid ? null : "form-control is-invalid"
+                }
+                name="name_vn"
+                placeholder="Nhập tên danh mục tiếng việt"
+                value={formInput.name_vn.value}
+                onChange={onChangeInput}
               />
-              {!valid.valid ? (
+              {!formInput.name_vn.valid ? (
                 <Form.Control.Feedback type="invalid">
-                  {valid.message}
+                  {formInput.name_vn.validMessage}
+                </Form.Control.Feedback>
+              ) : null}
+            </Form.Group>
+            <Form.Group controlId="formBasicTitle">
+              <Form.Label>Tên danh mục tiểng anh</Form.Label>
+              <Form.Control
+                className={
+                  formInput.name_en.isValid ? null : "form-control is-invalid"
+                }
+                name="name_en"
+                placeholder="Nhập tên danh mục tiếng anh"
+                value={formInput.name_en.value}
+                onChange={onChangeInput}
+              />
+              {!formInput.name_en.isValid ? (
+                <Form.Control.Feedback type="invalid">
+                  {formInput.name_en.validMessage}
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
