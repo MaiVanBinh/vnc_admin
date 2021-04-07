@@ -34,8 +34,8 @@ const SideBarAdmin = (props) => {
   return (
     <div className="main-menu-container">
       <div className="logo-admin">
-        <a href="http://hi1.xyz/scmsswww/" target="_blank">
-          <img src={Logo} alt="" />
+        <a href="/" target="_blank" style={{textDecoration: 'none'}}>
+          <h3>VNCREATURES</h3>
         </a>
       </div>
       <div

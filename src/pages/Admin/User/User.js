@@ -107,6 +107,7 @@ const User = (props) => {
                     alert('Có lỗi xảy ra, vui lòng thử lại sau!');
                 }
                 setLoader(false);
+                setShowDelete(false);
             })
             .catch(function() {
                 alert('Có lỗi xảy ra, vui lòng thử lại sau!');
@@ -205,7 +206,7 @@ const User = (props) => {
                             <td>{e.created_at}</td>
                             <td>
                                 <Button className='mr-2' onClick={() => openEdit(e)}>Sửa</Button>
-                                <Button onClick={() => openDelete(e)} className='btn-danger'>Xóa</Button>
+                                {e.role !== '1' ? <Button onClick={() => openDelete(e)} className='btn-danger'>Xóa</Button> : null}
                             </td>
                         </tr>
                     })
