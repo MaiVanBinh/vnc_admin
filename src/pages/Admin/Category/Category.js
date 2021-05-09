@@ -22,6 +22,7 @@ const mapStateToProps = (state) => {
     category: state.category,
   };
 };
+
 const mapDispatchToProps = (dispatch) => {
   return {
     setCategory: (payload) =>
@@ -62,6 +63,10 @@ const Category = (props) => {
       validMessage: "Don't allow empty string",
       minLength: 1,
     },
+    list: {
+      value: "1",
+      isValid: true,
+    },
   });
 
   const resetFormInput = () => {
@@ -77,6 +82,11 @@ const Category = (props) => {
         isValid: true,
         validMessage: "Don't allow empty string",
         minLength: 1,
+      },
+
+      list: {
+        value: "1",
+        isValid: true,
       },
     });
   };
@@ -140,18 +150,19 @@ const Category = (props) => {
     if (!data) {
       return;
     }
-    setLoader(true);
-    axios({
-      method: "put",
-      url: baseUrl + "auth/category/" + infoCategory.id,
-      data,
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-    }).then(() => {
-      setShowEdit(false);
-      getCategoryList();
-    });
+    console.log(data);
+    // setLoader(true);
+    // axios({
+    //   method: "put",
+    //   url: baseUrl + "auth/category/" + infoCategory.id,
+    //   data,
+    //   headers: {
+    //     Authorization: "Bearer " + auth.token,
+    //   },
+    // }).then(() => {
+    //   setShowEdit(false);
+    //   getCategoryList();
+    // });
   };
 
   const deleteHandle = () => {
@@ -181,6 +192,7 @@ const Category = (props) => {
     let inputValue = {};
     let isValid = true;
     const formInputUpdate = { ...formInput };
+    console.log(formInput)
     for (const key in formInput) {
       if (formInput[key].minLength) {
         if (
@@ -296,6 +308,7 @@ const Category = (props) => {
               <th>#</th>
               <th>Tiêu đề tiếng việt</th>
               <th>Tiêu đề tiếng anh</th>
+              <th>Danh sách</th>
               <th>Ngày tạo</th>
               <th>Thao tác</th>
             </tr>
@@ -309,15 +322,12 @@ const Category = (props) => {
                     <td>{beginIndex + i}</td>
                     <td>{e.name_vn}</td>
                     <td>{e.name_en}</td>
+                    <th>{e.is_list}</th>
                     <td>{e.created_at}</td>
                     <td>
                       <Button
                         onClick={() => {
                           openEdit(e);
-                          // setValid({
-                          //   message: "Tên danh mục không được để rỗng",
-                          //   valid: true,
-                          // });
                         }}
                         className="mr-2"
                       >
@@ -399,6 +409,19 @@ const Category = (props) => {
                   {formInput.name_en.validMessage}
                 </Form.Control.Feedback>
               ) : null}
+            </Form.Group>
+            <Form.Group controlId="formSpecies">
+              <Form.Label>Danh sách</Form.Label>
+              <Form.Control
+                name="list"
+                as="select"
+                onChange={onChangeInput}
+                value={formInput.list.value}
+                defaultValue={formInput.list.value}
+              >
+                <option value="0">0</option>
+                <option value="1">1</option>
+              </Form.Control>
             </Form.Group>
           </Form>
         </Modal.Body>

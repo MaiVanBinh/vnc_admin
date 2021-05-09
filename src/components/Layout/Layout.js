@@ -10,7 +10,7 @@ import * as actionTypes from "./../../store/actions/actionTypes";
 const Layout = () => {
   const [page, setPage] = useState(0); // 0: danh-muc, 1: bai-viet
   const history = useHistory();
-    const [sideBarActive, setSidebarActive] = useState(false);
+    const [sideBarActive, setSidebarActive] = useState(true);
   const auth = useSelector((state) => state.auth);
   const loader = useSelector((state) => state.loader);
   const dispatch = useDispatch();
