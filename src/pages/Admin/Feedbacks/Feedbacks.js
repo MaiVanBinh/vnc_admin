@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Category.css";
+// import "./Feedbacks.css";
 import { connect } from "react-redux";
 import { Modal, Button, Table, Form, FormControl } from "react-bootstrap";
 import axios from "axios";
@@ -19,15 +19,15 @@ import {
 const mapStateToProps = (state) => {
   return {
     auth: state.auth,
-    category: state.category,
+    feedbacks: state.feedbacks,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setCategory: (payload) =>
+    setFeedbacks: (payload) =>
       dispatch({
-        type: actionTypes.SET_CATEGORY_LIST,
+        type: actionTypes.SET_LIST_FEEDBACK,
         payload,
       }),
     setLoader: (payload) =>
@@ -38,12 +38,12 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const Category = (props) => {
-  const { auth, category, setCategory, setLoader } = props;
+const Feedbacks = (props) => {
+  const { auth, feedbacks, setFeedbacks, setLoader } = props;
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [infoCategory, setInfoCategory] = useState({
+  const [infoFeedbacks, setInfoFeedbacks] = useState({
     id: null,
     title: "",
     created_at: "",
@@ -98,14 +98,14 @@ const Category = (props) => {
   });
 
   useEffect(() => {
-    getCategoryList();
+    getFeedbacksList();
   }, [filterList]);
 
-  const getCategoryList = () => {
+  const getFeedbacksList = () => {
     setLoader(true);
     axios({
       method: "get",
-      url: baseUrl + "category",
+      url: baseUrl + "feedbacks",
       params: filterList,
     }).then((res) => {
       const { begin, end } = getIndexListPage(
@@ -115,7 +115,7 @@ const Category = (props) => {
       );
       res.data.data.pages.begin = begin;
       res.data.data.pages.end = end;
-      setCategory(res.data.data);
+      setFeedbacks(res.data.data);
       setLoader(false);
     });
   };
@@ -127,7 +127,7 @@ const Category = (props) => {
         updateFormInput[key].value = item[key];
       }
     }
-    setInfoCategory({
+    setInfoFeedbacks({
       id: item.id,
       title: item.name_vn,
       created_at: item.created_at,
@@ -137,7 +137,7 @@ const Category = (props) => {
   };
 
   const openDelete = (item) => {
-    setInfoCategory({
+    setInfoFeedbacks({
       id: item.id,
       title: item.name_vn,
       created_at: item.created_at,
@@ -154,14 +154,14 @@ const Category = (props) => {
     // setLoader(true);
     // axios({
     //   method: "put",
-    //   url: baseUrl + "auth/category/" + infoCategory.id,
+    //   url: baseUrl + "auth/Feedbacks/" + infoFeedbacks.id,
     //   data,
     //   headers: {
     //     Authorization: "Bearer " + auth.token,
     //   },
     // }).then(() => {
     //   setShowEdit(false);
-    //   getCategoryList();
+    //   getFeedbacksList();
     // });
   };
 
@@ -169,7 +169,7 @@ const Category = (props) => {
     setLoader(true);
     axios({
       method: "delete",
-      url: baseUrl + "auth/category/" + infoCategory.id,
+      url: baseUrl + "auth/Feedbacks/" + infoFeedbacks.id,
       headers: {
         Authorization: "Bearer " + auth.token,
       },
@@ -177,7 +177,7 @@ const Category = (props) => {
       .then((res) => {
         // console.log("delete handle result:", res);
         setShowDelete(false);
-        getCategoryList();
+        getFeedbacksList();
       })
       .catch((err) => {
         setLoader(false);
@@ -224,7 +224,7 @@ const Category = (props) => {
     setLoader(true);
     axios({
       method: "post",
-      url: baseUrl + "auth/category",
+      url: baseUrl + "auth/Feedbacks",
       headers: {
         Authorization: "Bearer " + auth.token,
       },
@@ -232,7 +232,7 @@ const Category = (props) => {
     })
       .then(() => {
         setShowCreate(false);
-        getCategoryList();
+        getFeedbacksList();
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -263,10 +263,10 @@ const Category = (props) => {
           <div>
             <Button
               className="mr-2"
-              // onClick={() => {
-              //   setShowCreate(true);
-              //   resetFormInput();
-              // }}
+              onClick={() => {
+                setShowCreate(true);
+                resetFormInput();
+              }}
             >
               <IconPlus width={15} height={15} color={"#fff"} />
             </Button>
@@ -277,7 +277,7 @@ const Category = (props) => {
                   limit: 10,
                   title: "",
                 });
-                getCategoryList();
+                getFeedbacksList();
               }}
             >
               <IconRefresh width={15} height={15} color={"#fff"} />
@@ -306,40 +306,23 @@ const Category = (props) => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Tiêu đề tiếng việt</th>
-              <th>Tiêu đề tiếng anh</th>
-              <th>Danh sách</th>
+              <th>email</th>
+              <th>Star</th>
+              <th>Message</th>
               <th>Ngày tạo</th>
-              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
-            {category && category.category.length > 0 ? (
-              category.category.map((e, i) => {
-                let beginIndex = category.pages.begin;
+            {feedbacks && feedbacks.feedbacks.length > 0 ? (
+              feedbacks.feedbacks.map((e, i) => {
+                let beginIndex = feedbacks.pages.begin;
                 return (
                   <tr key={i}>
                     <td>{beginIndex + i}</td>
-                    <td>{e.name_vn}</td>
-                    <td>{e.name_en}</td>
-                    <th>{e.is_list}</th>
+                    <td>{e.email}</td>
+                    <td>{e.star}</td>
+                    <th>{e.message}</th>
                     <td>{e.created_at}</td>
-                    <td>
-                      <Button
-                        // onClick={() => {
-                        //   openEdit(e);
-                        // }}
-                        className="mr-2"
-                      >
-                        Sửa
-                      </Button>
-                      <Button
-                        // onClick={() => openDelete(e)}
-                        className="btn-danger"
-                      >
-                        Xóa
-                      </Button>
-                    </td>
                   </tr>
                 );
               })
@@ -355,9 +338,9 @@ const Category = (props) => {
           </tbody>
         </Table>
         <div className="pagination mt-4 d-flex justify-content-center">
-          {category ? (
+          {feedbacks ? (
             <Pagination
-              pagination={category.pages}
+              pagination={feedbacks.pages}
               callFetchList={changePage}
             />
           ) : null}
@@ -504,7 +487,7 @@ const Category = (props) => {
           <Modal.Title>Xóa danh mục</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {'Bạn có chắc muốn xóa "' + infoCategory.title + '" ?'}
+          {'Bạn có chắc muốn xóa "' + infoFeedbacks.title + '" ?'}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDelete(false)}>
@@ -519,4 +502,4 @@ const Category = (props) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Category);
+export default connect(mapStateToProps, mapDispatchToProps)(Feedbacks);

@@ -424,10 +424,10 @@ const Post = (props) => {
           <div>
             <Button
               className="mr-2"
-              onClick={() => {
-                setShowCreate(true);
-                setImages([]);
-              }}
+              // onClick={() => {
+              //   setShowCreate(true);
+              //   setImages([]);
+              // }}
             >
               <IconPlus width={15} height={15} color={"#fff"} />
             </Button>
@@ -452,7 +452,7 @@ const Post = (props) => {
             </Button>
           </div>
           <Form inline className="searchCp">
-            <FormControl type="text" placeholder="" className="mr-sm-2" onChange={e => setSearchKeyword(e.target.value)} value={searchKeyword} />
+            <FormControl type="text" placeholder="" className="mr-sm-2" onChange={e => setSearchKeyword(e.target.value.toLowerCase())} value={searchKeyword} />
             <Button onClick={() => setFilterList({...filterList, title: searchKeyword})}>
               <IconSearch width={15} height={15} color={"#fff"} />
             </Button>
@@ -493,24 +493,24 @@ const Post = (props) => {
                     <td>{e.created_at}</td>
                     <td>
                       <Button
-                        onClick={() => {
-                          setShowEdit(true);
-                          setInfoPost({
-                            ...e,
-                            is_publish: e.is_publish === "0" ? false : true,
-                          });
-                          setImages(e.image);
-                          setOldImages(e.image);
-                        }}
+                        // onClick={() => {
+                        //   setShowEdit(true);
+                        //   setInfoPost({
+                        //     ...e,
+                        //     is_publish: e.is_publish === "0" ? false : true,
+                        //   });
+                        //   setImages(e.image);
+                        //   setOldImages(e.image);
+                        // }}
                         className="mr-2 mb-2"
                       >
                         Sửa
                       </Button>
                       <Button
-                        onClick={() => {
-                          setShowDelete(true);
-                          setCurrItem(e);
-                        }}
+                        // onClick={() => {
+                        //   setShowDelete(true);
+                        //   setCurrItem(e);
+                        // }}
                         className="btn-danger mr-2 mb-2"
                       >
                         Xóa
@@ -889,11 +889,11 @@ const Post = (props) => {
             <div className="p-2 font-weight-bold">Danh mục:</div>
             <div className="p-2 flex-sm-grow-1">
               {currItem
-                ? "(" + currItem.category + ") " + currItem.categoryTitle
+                ? "(" + currItem.category + ") " + currItem.categorytitle
                 : ""}
             </div>
           </div>
-          {/* <div>
+          <div>
             <div className="p-2 font-weight-bold">Ảnh:</div>
             <div className="p-2 d-flex flex-wrap">
               {currItem && currItem.images && currItem.images.length > 0
@@ -913,7 +913,7 @@ const Post = (props) => {
                 ))
                 : null}
             </div>
-          </div> */}
+          </div>
           <div className="d-flex">
             <div className="p-2 font-weight-bold">Chế độ:</div>
             <div className="p-2 flex-sm-grow-1">

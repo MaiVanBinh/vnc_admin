@@ -387,10 +387,10 @@ const Footprint = (props) => {
         <div>
           <Button
             className="btn-primary mr-2"
-            onClick={() => {
-              resetFormInput();
-              setShowCreate(true);
-            }}
+            // onClick={() => {
+            //   resetFormInput();
+            //   setShowCreate(true);
+            // }}
           >
             <IconPlus width={15} height={15} color={"#fff"} />
           </Button>
@@ -466,13 +466,13 @@ const Footprint = (props) => {
                         </div> */}
                         <div
                           className="icon d-flex align-items-center"
-                          onClick={() => openEditModal(e)}
+                          // onClick={() => openEditModal(e)}
                         >
                           <IconEdit color={"#333333"} width={15} height={15} />
                         </div>
                         <div
                           className="icon d-flex align-items-center"
-                          onClick={() => openDeleteModal(e)}
+                          // onClick={() => openDeleteModal(e)}
                         >
                           <IconGarbage2
                             color={"#333333"}

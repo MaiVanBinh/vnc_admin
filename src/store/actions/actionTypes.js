@@ -67,3 +67,5 @@ export const SET_LIST_FOOTPRINTS = 'SET_LIST_FOOTPRINTS';
 
 // TimberSample
  export const SET_TIMBER_SAMPLE = 'SET_TIMBER_SAMPLE';
+
+ export const SET_LIST_FEEDBACK = 'SET_LIST_FEEDBACK';

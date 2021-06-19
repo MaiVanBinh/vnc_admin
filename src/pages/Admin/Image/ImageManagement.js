@@ -231,7 +231,7 @@ const ImageManagement = (props) => {
       <div className="wrap-action mb-3">
         <Button
           className="btn-primary mr-2"
-          onClick={() => setShowUpload(true)}
+          // onClick={() => setShowUpload(true)}
         >
           <IconPlus width={15} height={15} color={"#fff"} />
         </Button>
@@ -274,7 +274,7 @@ const ImageManagement = (props) => {
                       <td>
                         {/* <Button className='mr-2'>Copy URL</Button> */}
                         <Button
-                          onClick={() => openDelete(e)}
+                          // onClick={() => openDelete(e)}
                           className="btn-danger"
                         >
                           Xóa

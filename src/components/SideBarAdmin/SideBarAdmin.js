@@ -3,7 +3,7 @@ import "./SideBarAdmin.css";
 import Logo from "../../assets/banner.png";
 import { useHistory } from "react-router";
 import { connect } from "react-redux";
-import { IconWood, IconFootPrint } from "../../store/utilities/SVG";
+import { IconWood, IconFootPrint, IconFeedbacks } from "../../store/utilities/SVG";
 
 const mapStateToProps = (state) => {
   return {
@@ -28,6 +28,7 @@ const SideBarAdmin = (props) => {
     else if (pageRoute === "/quan-li-sinh-vat") setPage(6);
     else if (pageRoute === "/dau-chan") setPage(8);
     else if (pageRoute === "/mau-go") setPage(7);
+    else if (pageRoute === "/feedbacks") setPage(9);
     else setPage(0);
   };
 
@@ -182,6 +183,15 @@ const SideBarAdmin = (props) => {
           <IconFootPrint width="23px" height="23px" />
         </span>
         <span>Dấu chân</span>
+      </div>
+      <div
+        className={page === 9 ? "menu-item active" : "menu-item"}
+        onClick={() => changePage("/feedbacks")}
+      >
+        <span className="icon">
+          <IconFeedbacks width="23px" height="23px" />
+        </span>
+        <span>Feedbacks</span>
       </div>
     </div>
   );

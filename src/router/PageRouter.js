@@ -1,6 +1,12 @@
 import React, { lazy, Suspense } from "react";
-import { Switch, Route, Redirect, useRouteMatch, useLocation } from "react-router-dom";
-import SadminLayout from './../components/Layout/LayoutSadmin';
+import {
+  Switch,
+  Route,
+  Redirect,
+  useRouteMatch,
+  useLocation,
+} from "react-router-dom";
+import SadminLayout from "./../components/Layout/LayoutSadmin";
 
 import Loader from "../components/UI/Loader/Loader";
 import { useSelector } from "react-redux";
@@ -9,7 +15,7 @@ const publicRoutes = [
   {
     path: "dau-chan",
     exact: true,
-    component: lazy(() => import('./../pages/Admin/Footprint/Footprint'))
+    component: lazy(() => import("./../pages/Admin/Footprint/Footprint")),
   },
   {
     path: "danh-muc",
@@ -34,31 +40,38 @@ const publicRoutes = [
   {
     path: "phan-loai-dong-vat",
     exact: true,
-    component: lazy(() => import('./../pages/Admin/CreaturesCategories/CreaturesCategories'))
+    component: lazy(() =>
+      import("./../pages/Admin/CreaturesCategories/CreaturesCategories")
+    ),
   },
   {
     path: "quan-li-sinh-vat",
     exact: true,
-    component: lazy(() => import('./../pages/Admin/Creatures/Creatures'))
+    component: lazy(() => import("./../pages/Admin/Creatures/Creatures")),
   },
   {
     path: "mau-go",
     exact: true,
-    component: lazy(() => import('./../pages/Admin/TimberSample/TimberSample'))
-  }
+    component: lazy(() => import("./../pages/Admin/TimberSample/TimberSample")),
+  },
+  {
+    path: "feedbacks",
+    exact: true,
+    component: lazy(() => import("./../pages/Admin/Feedbacks/Feedbacks")),
+  },
 ];
 
 function PrivateRoute({ children, ...rest }) {
   let location = useLocation();
-  const isLoggedIn = useSelector(state => state.auth.token);
+  const isLoggedIn = useSelector((state) => state.auth.token);
   if (isLoggedIn) return <Route {...rest}>{children}</Route>;
   return (
-      <Redirect
-          to={{
-              pathname: '/danh-muc',
-              state: { from: location },
-          }}
-      />
+    <Redirect
+      to={{
+        pathname: "/danh-muc",
+        state: { from: location },
+      }}
+    />
   );
 }
 
@@ -68,7 +81,11 @@ function PageRouter() {
     <Suspense fallback={<Loader />}>
       <Switch>
         {publicRoutes.map((route, index) => (
-          <Route key={index} path={`${url}` + `${route.path}`} exact={route.exact}>
+          <Route
+            key={index}
+            path={`${url}` + `${route.path}`}
+            exact={route.exact}
+          >
             <route.component />
           </Route>
         ))}

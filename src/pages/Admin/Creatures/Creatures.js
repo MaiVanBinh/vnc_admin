@@ -488,11 +488,11 @@ const Creatures = (props) => {
           <div>
             <Button
               className="mr-2"
-              onClick={() => {
-                setShowCreate(true);
-                resetFormInput();
-                setImages([]);
-              }}
+              // onClick={() => {
+              //   setShowCreate(true);
+              //   resetFormInput();
+              //   setImages([]);
+              // }}
             >
               <IconPlus width={15} height={15} color={"#fff"} />
             </Button>
@@ -567,13 +567,13 @@ const Creatures = (props) => {
                         </div>
                         <div
                           className="icon d-flex align-items-center"
-                          onClick={() => openEditModal(e.id)}
+                          // onClick={() => openEditModal(e.id)}
                         >
                           <IconEdit color={"#333333"} width={15} height={15} />
                         </div>
                         <div
                           className="icon d-flex align-items-center"
-                          onClick={() => openDeleteModal(e)}
+                          // onClick={() => openDeleteModal(e)}
                         >
                           <IconGarbage2
                             color={"#333333"}
