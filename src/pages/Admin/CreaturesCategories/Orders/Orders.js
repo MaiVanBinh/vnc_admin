@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Table, Form, Modal, FormControl } from "react-bootstrap";
 import axios from "axios";
@@ -63,10 +63,6 @@ const Orders = (props) => {
     limit: 10,
   });
 
-  useEffect(() => {
-    getOrdersList();
-  }, [filterList]);
-
   const resetFormInput = () => {
     setFormInput({
       name_vn: {
@@ -87,7 +83,7 @@ const Orders = (props) => {
     });
   };
 
-  const getOrdersList = () => {
+  const getOrdersList = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -104,7 +100,15 @@ const Orders = (props) => {
       setListOrders(res.data.data);
       setLoader(false);
     });
-  };
+  }, [setLoader, setListOrders, filterList]);
+
+  useEffect(() => {
+    getOrdersList();
+  }, [filterList, getOrdersList]);
+
+ 
+
+  
 
   const changePage = (page) => {
     setFilterList({

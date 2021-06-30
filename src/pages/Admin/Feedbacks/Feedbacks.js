@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 // import "./Feedbacks.css";
 import { connect } from "react-redux";
 import { Modal, Button, Table, Form, FormControl } from "react-bootstrap";
@@ -42,12 +42,12 @@ const Feedbacks = (props) => {
   const { auth, feedbacks, setFeedbacks, setLoader } = props;
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
-  const [infoFeedbacks, setInfoFeedbacks] = useState({
-    id: null,
-    title: "",
-    created_at: "",
-  });
+  // const [showDelete, setShowDelete] = useState(false);
+  // const [infoFeedbacks, setInfoFeedbacks] = useState({
+  //   id: null,
+  //   title: "",
+  //   created_at: "",
+  // });
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [formInput, setFormInput] = useState({
@@ -96,12 +96,7 @@ const Feedbacks = (props) => {
     limit: 10,
     title: "",
   });
-
-  useEffect(() => {
-    getFeedbacksList();
-  }, [filterList]);
-
-  const getFeedbacksList = () => {
+  const getFeedbacksList = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -118,32 +113,38 @@ const Feedbacks = (props) => {
       setFeedbacks(res.data.data);
       setLoader(false);
     });
-  };
+  }, [setLoader, setFeedbacks,filterList]);
 
-  const openEdit = (item) => {
-    const updateFormInput = { ...formInput };
-    for (let key in updateFormInput) {
-      if (key !== "id") {
-        updateFormInput[key].value = item[key];
-      }
-    }
-    setInfoFeedbacks({
-      id: item.id,
-      title: item.name_vn,
-      created_at: item.created_at,
-    });
+  useEffect(() => {
+    getFeedbacksList();
+  }, [filterList, getFeedbacksList]);
 
-    setShowEdit(true);
-  };
+  
 
-  const openDelete = (item) => {
-    setInfoFeedbacks({
-      id: item.id,
-      title: item.name_vn,
-      created_at: item.created_at,
-    });
-    setShowDelete(true);
-  };
+  // const openEdit = (item) => {
+  //   const updateFormInput = { ...formInput };
+  //   for (let key in updateFormInput) {
+  //     if (key !== "id") {
+  //       updateFormInput[key].value = item[key];
+  //     }
+  //   }
+  //   setInfoFeedbacks({
+  //     id: item.id,
+  //     title: item.name_vn,
+  //     created_at: item.created_at,
+  //   });
+
+  //   setShowEdit(true);
+  // };
+
+  // const openDelete = (item) => {
+  //   setInfoFeedbacks({
+  //     id: item.id,
+  //     title: item.name_vn,
+  //     created_at: item.created_at,
+  //   });
+  //   setShowDelete(true);
+  // };
 
   const editHandle = () => {
     const data = preprocessInput();
@@ -165,28 +166,28 @@ const Feedbacks = (props) => {
     // });
   };
 
-  const deleteHandle = () => {
-    setLoader(true);
-    axios({
-      method: "delete",
-      url: baseUrl + "auth/Feedbacks/" + infoFeedbacks.id,
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-    })
-      .then((res) => {
-        // console.log("delete handle result:", res);
-        setShowDelete(false);
-        getFeedbacksList();
-      })
-      .catch((err) => {
-        setLoader(false);
-        setShowDelete(false);
-        alert(
-          "Xóa không thành công. Xóa những bài viết thuộc danh mục này trước."
-        );
-      });
-  };
+  // const deleteHandle = () => {
+  //   setLoader(true);
+  //   axios({
+  //     method: "delete",
+  //     url: baseUrl + "auth/Feedbacks/" + infoFeedbacks.id,
+  //     headers: {
+  //       Authorization: "Bearer " + auth.token,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       // console.log("delete handle result:", res);
+  //       setShowDelete(false);
+  //       getFeedbacksList();
+  //     })
+  //     .catch((err) => {
+  //       setLoader(false);
+  //       setShowDelete(false);
+  //       alert(
+  //         "Xóa không thành công. Xóa những bài viết thuộc danh mục này trước."
+  //       );
+  //     });
+  // };
 
   const preprocessInput = () => {
     let inputValue = {};
@@ -477,7 +478,7 @@ const Feedbacks = (props) => {
       </Modal>
 
       {/* delete */}
-      <Modal
+      {/* <Modal
         show={showDelete}
         onHide={() => setShowDelete(false)}
         backdrop="static"
@@ -497,7 +498,7 @@ const Feedbacks = (props) => {
             Có
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

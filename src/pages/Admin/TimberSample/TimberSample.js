@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./TimberSample.css";
 import { connect } from "react-redux";
 import {
@@ -22,7 +22,7 @@ import {
 import {
   IconPlus,
   IconRefresh,
-  IconView,
+  // IconView,
   IconEdit,
   IconGarbage2,
   IconSearch,
@@ -70,9 +70,9 @@ const TimberSample = (props) => {
   const [showEdit, setShowEdit] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const [creature, setCreatures] = useState({
+  const setCreatures = useState({
     id: 0,
-  });
+  })[1];
   const [imageSearch, setImageSearch] = useState({
     name: "",
   });
@@ -119,9 +119,31 @@ const TimberSample = (props) => {
     limit: 10,
   });
 
+  const getTimberSample = useCallback(() => {
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "woods",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterList,
+    }).then((res) => {
+      const { begin, end } = getIndexListPage(
+        filterList.page,
+        filterList.limit,
+        res.data.data.total
+      );
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
+      setTimberSample(res.data.data);
+      setLoader(false);
+    });
+  }, [auth.token, filterList, setLoader, setTimberSample]);
+
   useEffect(() => {
     getTimberSample();
-  }, [filterList]);
+  }, [filterList, getTimberSample]);
 
   const resetFormInput = () => {
     setFormInput({
@@ -157,7 +179,7 @@ const TimberSample = (props) => {
       },
     });
   };
-  const getListImages = () => {
+  const getListImages = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -178,11 +200,11 @@ const TimberSample = (props) => {
       setListImages(res.data.data);
       setLoader(false);
     });
-  };
+  }, [auth.token, filterImageList, setListImages, setLoader]);
 
   useEffect(() => {
     getListImages();
-  }, [filterImageList]);
+  }, [filterImageList, getListImages]);
 
   const changePageImageList = (page) => {
     setFilterImageList({
@@ -191,27 +213,7 @@ const TimberSample = (props) => {
     });
   };
 
-  const getTimberSample = () => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "woods",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-      params: filterList,
-    }).then((res) => {
-      const { begin, end } = getIndexListPage(
-        filterList.page,
-        filterList.limit,
-        res.data.data.total
-      );
-      res.data.data.pages.begin = begin;
-      res.data.data.pages.end = end;
-      setTimberSample(res.data.data);
-      setLoader(false);
-    });
-  };
+  
 
   const openDeleteModal = (item) => {
     setShowDelete(true);
@@ -391,10 +393,10 @@ const TimberSample = (props) => {
         <div>
           <Button
             className="btn-primary mr-2"
-            // onClick={() => {
-            //   resetFormInput();
-            //   setShowCreate(true);
-            // }}
+            onClick={() => {
+              resetFormInput();
+              setShowCreate(true);
+            }}
           >
             <IconPlus width={15} height={15} color={"#fff"} />
           </Button>
@@ -467,13 +469,13 @@ const TimberSample = (props) => {
                       <div className="action-group d-flex justify-content-center">
                         <div
                           className="icon d-flex align-items-center"
-                          // onClick={() => openEditModal(e)}
+                          onClick={() => openEditModal(e)}
                         >
                           <IconEdit color={"#333333"} width={15} height={15} />
                         </div>
                         <div
                           className="icon d-flex align-items-center"
-                          // onClick={() => openDeleteModal(e)}
+                          onClick={() => openDeleteModal(e)}
                         >
                           <IconGarbage2
                             color={"#333333"}

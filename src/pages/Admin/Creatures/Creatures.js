@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./Creatures.css";
 import { connect } from "react-redux";
 import {
@@ -30,16 +30,16 @@ import {
 } from "./../../../store/utilities/SVG";
 import Filter from "./Filter/Filter";
 
-const findElementNotIn = (arr1, arr2) => {
-  const newArr = [];
-  const length = arr1.length;
-  for (let i = 0; i < length; i++) {
-    if (arr2.findIndex((item) => item === arr1[i]) < 0) {
-      newArr.push(arr1[i]);
-    }
-  }
-  return newArr;
-};
+// const findElementNotIn = (arr1, arr2) => {
+//   const newArr = [];
+//   const length = arr1.length;
+//   for (let i = 0; i < length; i++) {
+//     if (arr2.findIndex((item) => item === arr1[i]) < 0) {
+//       newArr.push(arr1[i]);
+//     }
+//   }
+//   return newArr;
+// };
 
 const mapStateToProps = (state) => {
   return {
@@ -93,6 +93,7 @@ const Creatures = (props) => {
     setLoader,
     setListImages,
     listImages,
+    setCreaturesCategories
   } = props;
   const [showPreview, setShowPreview] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -222,13 +223,8 @@ const Creatures = (props) => {
 
   const [showImage, setShowImage] = useState(false);
 
-  const [infoCreatures, setInfoCreatures] = useState(null);
-
-  useEffect(() => {
-    getCreaturesList();
-  }, [filterList]);
-
-  const getCreaturesList = () => {
+  const infoCreatures = useState(null)[0];
+  const getCreaturesList = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -245,17 +241,39 @@ const Creatures = (props) => {
       setCreatures(res.data.data);
       setLoader(false);
     });
-  };
+  }, [setCreatures, setLoader, filterList]);
+
+  useEffect(() => {
+    getCreaturesList();
+  }, [filterList, getCreaturesList]);
+
+  const getCreaturesCategories = useCallback(() => {
+    
+    axios({
+      method: "get",
+      url: baseUrl + "filterData",
+    }).then((res) => {
+      setCreaturesCategories(res.data.data);
+      setLoader(false);
+    });
+  }, [setLoader, setCreaturesCategories]);
+
+  const getListAuthor = useCallback(() => {
+    axios({
+      method: "get",
+      url: baseUrl + "author?all",
+    }).then((res) => {
+      setListAuthor(res.data.data);
+      setLoader(false);
+    });
+  }, [setLoader, setListAuthor]);
 
   useEffect(() => {
     getCreaturesCategories();
     getListAuthor();
-  }, []);
+  }, [getCreaturesCategories, getListAuthor]);
 
-  useEffect(() => {
-    getListImages();
-  }, [filterImageList]);
-  const getListImages = () => {
+  const getListImages = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -276,7 +294,13 @@ const Creatures = (props) => {
       setListImages(res.data.data);
       setLoader(false);
     });
-  };
+  }, [setLoader, setListImages, auth.token, filterImageList]);
+
+  useEffect(() => {
+    getListImages();
+  }, [filterImageList, getListImages]);
+
+  
 
   const changePageImageList = (page) => {
     setFilterImageList({
@@ -304,26 +328,7 @@ const Creatures = (props) => {
     return false;
   };
 
-  const getCreaturesCategories = () => {
-    const { setCreaturesCategories, setLoader } = props;
-    axios({
-      method: "get",
-      url: baseUrl + "filterData",
-    }).then((res) => {
-      setCreaturesCategories(res.data.data);
-      setLoader(false);
-    });
-  };
-
-  const getListAuthor = () => {
-    axios({
-      method: "get",
-      url: baseUrl + "author?all",
-    }).then((res) => {
-      setListAuthor(res.data.data);
-      setLoader(false);
-    });
-  };
+  
 
   const openViewModal = (id) => {
     setLoader(true);
@@ -488,11 +493,11 @@ const Creatures = (props) => {
           <div>
             <Button
               className="mr-2"
-              // onClick={() => {
-              //   setShowCreate(true);
-              //   resetFormInput();
-              //   setImages([]);
-              // }}
+              onClick={() => {
+                setShowCreate(true);
+                resetFormInput();
+                setImages([]);
+              }}
             >
               <IconPlus width={15} height={15} color={"#fff"} />
             </Button>
@@ -553,6 +558,7 @@ const Creatures = (props) => {
                       <img
                         src={e.avatar}
                         style={{ height: "75px", width: "100px" }}
+                        alt=""
                       />
                     </td>
                     <td>{e.created_by}</td>
@@ -567,13 +573,13 @@ const Creatures = (props) => {
                         </div>
                         <div
                           className="icon d-flex align-items-center"
-                          // onClick={() => openEditModal(e.id)}
+                          onClick={() => openEditModal(e.id)}
                         >
                           <IconEdit color={"#333333"} width={15} height={15} />
                         </div>
                         <div
                           className="icon d-flex align-items-center"
-                          // onClick={() => openDeleteModal(e)}
+                          onClick={() => openDeleteModal(e)}
                         >
                           <IconGarbage2
                             color={"#333333"}

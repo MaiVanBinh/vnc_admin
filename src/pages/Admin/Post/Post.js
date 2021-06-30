@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./Post.css";
-import * as actions from "../../../store/actions/index";
 import { connect } from "react-redux";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
@@ -20,8 +19,13 @@ import {
   getIndexListPage,
 } from "../../../store/utilities/common";
 import { apiKeyEditor } from "./../../../constant";
-import { IconPlus, IconRefresh, IconSearch, IconFilter } from "./../../../store/utilities/SVG";
-import Filter from './Filter/Filter';
+import {
+  IconPlus,
+  IconRefresh,
+  IconSearch,
+  IconFilter,
+} from "./../../../store/utilities/SVG";
+import Filter from "./Filter/Filter";
 
 const mapStateToProps = (state) => {
   return {
@@ -63,20 +67,20 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const imageArrayToString = (images) => {
-  const imagesUrl = images.map((e) => e.url);
-  return imagesUrl.join("\n");
-};
+// const imageArrayToString = (images) => {
+//   const imagesUrl = images.map((e) => e.url);
+//   return imagesUrl.join("\n");
+// };
 
-const intersection2Array = (newArray, oldArray) => {
-  let result = [];
-  for (let i = 0; i < oldArray.length; i++) {
-    if (newArray.findIndex((e) => e.id === oldArray[i].id) < 0) {
-      result.push(oldArray[i]);
-    }
-  }
-  return result;
-};
+// const intersection2Array = (newArray, oldArray) => {
+//   let result = [];
+//   for (let i = 0; i < oldArray.length; i++) {
+//     if (newArray.findIndex((e) => e.id === oldArray[i].id) < 0) {
+//       result.push(oldArray[i]);
+//     }
+//   }
+//   return result;
+// };
 
 const Post = (props) => {
   const {
@@ -102,7 +106,7 @@ const Post = (props) => {
     callback: null,
   });
   const [images, setImages] = useState([]);
-  const [oldImages, setOldImages] = useState([]);
+  // const [oldImages, setOldImages] = useState([]);
   const [imageSearch, setImageSearch] = useState({
     name: "",
   });
@@ -146,7 +150,7 @@ const Post = (props) => {
     limit: 10,
     is_publish: null,
   });
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [filterImageList, setFilterImageList] = useState({
     name: "",
     page: 1,
@@ -154,18 +158,76 @@ const Post = (props) => {
   });
 
   useEffect(() => {
-    getCategoryList();
-  }, []);
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "category",
+      params: {
+        page: 1,
+        limit: 1000,
+      },
+    }).then((res) => {
+      setCategory(res.data.data);
+      setLoader(false);
+    });
+  }, [setLoader, setCategory]);
+  const getPostList = useCallback(
+    (page) => {
+      setLoader(true);
+      axios({
+        method: "get",
+        url: baseUrl + "auth/posts",
+        headers: {
+          Authorization: "Bearer " + auth.token,
+        },
+        params: filterList,
+      }).then((res) => {
+        setLoader(false);
 
+        const { begin, end } = getIndexListPage(
+          filterList.page,
+          filterList.limit,
+          res.data.data.total
+        );
+        res.data.data.pages.begin = begin;
+        res.data.data.pages.end = end;
+
+        setPosts(res.data.data);
+      });
+    },
+    [auth.token, filterList, setLoader, setPosts]
+  );
   useEffect(() => {
-    console.log(filterList);
     getPostList();
-  }, [filterList]);
+  }, [getPostList]);
+
+  const getListImages = useCallback(() => {
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "auth/assets",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterImageList,
+    }).then((res) => {
+      const { begin, end } = getIndexListPage(
+        filterImageList.page,
+        filterImageList.limit,
+        res.data.data.total
+      );
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
+
+      setListImages(res.data.data);
+      setLoader(false);
+    });
+  }, [auth.token, filterImageList, setListImages, setLoader]);
 
   useEffect(() => {
     // watcher
     getListImages();
-  }, [filterImageList]);
+  }, [filterImageList, getListImages]);
 
   useEffect(() => {
     if (category) {
@@ -196,33 +258,9 @@ const Post = (props) => {
     }
   }, [category]);
 
-  const getPostList = (page) => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "auth/posts",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-      params: filterList,
-    }).then((res) => {
-      setLoader(false);
-
-      const { begin, end } = getIndexListPage(
-        filterList.page,
-        filterList.limit,
-        res.data.data.total
-      );
-      res.data.data.pages.begin = begin;
-      res.data.data.pages.end = end;
-
-      setPosts(res.data.data);
-    });
-  };
-
   const editHandle = () => {
-    const imagesRemove = intersection2Array(images, oldImages).map((e) => e.id);
-    const imageAdd = images.map((e) => e.id);
+    // const imagesRemove = intersection2Array(images, oldImages).map((e) => e.id);
+    // const imageAdd = images.map((e) => e.id);
     // const is_publish = infoPost.is_publish === "true" ? true : false;
     // if (
     //   !checkValid(infoPost, "title") ||
@@ -302,21 +340,6 @@ const Post = (props) => {
     }
   };
 
-  const getCategoryList = () => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "category",
-      params: {
-        page: 1,
-        limit: 1000,
-      },
-    }).then((res) => {
-      setCategory(res.data.data);
-      setLoader(false);
-    });
-  };
-
   const checkValid = (infoPost, attr) => {
     if (attr === "title") {
       if (validateLength(infoPost.title, 4) === "incorrect") {
@@ -367,28 +390,7 @@ const Post = (props) => {
       });
   };
 
-  const getListImages = () => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "auth/assets",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-      params: filterImageList,
-    }).then((res) => {
-      const { begin, end } = getIndexListPage(
-        filterImageList.page,
-        filterImageList.limit,
-        res.data.data.total
-      );
-      res.data.data.pages.begin = begin;
-      res.data.data.pages.end = end;
-
-      setListImages(res.data.data);
-      setLoader(false);
-    });
-  };
+  
 
   const imagesHandler = (item) => {
     const newImages = [...images, item.id];
@@ -415,8 +417,8 @@ const Post = (props) => {
   };
 
   const onSearchHandler = (filter) => {
-    setFilterList({...filterList, ...filter})
-  } 
+    setFilterList({ ...filterList, ...filter });
+  };
   return (
     <div>
       <div className="container-fluid pt-3 pb-5">
@@ -434,26 +436,33 @@ const Post = (props) => {
             <Button
               className="mr-2"
               onClick={() => {
-                setSearchKeyword('');
+                setSearchKeyword("");
                 setFilterList({
                   // reset filter
                   page: 1,
-                  limit: 10
+                  limit: 10,
                 });
               }}
             >
               <IconRefresh width={15} height={15} color={"#fff"} />
             </Button>
-            <Button
-              className="mr-2"
-              onClick={() => setShowFilter(true)}
-            >
+            <Button className="mr-2" onClick={() => setShowFilter(true)}>
               <IconFilter width={15} height={15} color={"#fff"} />
             </Button>
           </div>
           <Form inline className="searchCp">
-            <FormControl type="text" placeholder="" className="mr-sm-2" onChange={e => setSearchKeyword(e.target.value.toLowerCase())} value={searchKeyword} />
-            <Button onClick={() => setFilterList({...filterList, title: searchKeyword})}>
+            <FormControl
+              type="text"
+              placeholder=""
+              className="mr-sm-2"
+              onChange={(e) => setSearchKeyword(e.target.value.toLowerCase())}
+              value={searchKeyword}
+            />
+            <Button
+              onClick={() =>
+                setFilterList({ ...filterList, title: searchKeyword })
+              }
+            >
               <IconSearch width={15} height={15} color={"#fff"} />
             </Button>
           </Form>
@@ -517,8 +526,7 @@ const Post = (props) => {
                       </Button>
                       <Button
                         onClick={() => previewPost(e.id)}
-                        className="btn-danger"
-                        className="mr-2 mb-2"
+                        className="btn-danger mr-2 mb-2"
                       >
                         Xem
                       </Button>
@@ -898,19 +906,19 @@ const Post = (props) => {
             <div className="p-2 d-flex flex-wrap">
               {currItem && currItem.images && currItem.images.length > 0
                 ? currItem.images.map((e) => (
-                  <div className="d-flex flex-wrap p-2">
-                    <img
-                      src={e.url}
-                      alt="err"
-                      width="200px"
-                      height="200px"
-                      style={{
-                        border: "1px solid #000",
-                        borderRadius: "5px",
-                      }}
-                    />
-                  </div>
-                ))
+                    <div className="d-flex flex-wrap p-2">
+                      <img
+                        src={e.url}
+                        alt="err"
+                        width="200px"
+                        height="200px"
+                        style={{
+                          border: "1px solid #000",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    </div>
+                  ))
                 : null}
             </div>
           </div>
@@ -1076,7 +1084,11 @@ const Post = (props) => {
           </Button> */}
         </Modal.Footer>
       </Modal>
-      <Filter show={showFilter} closeHandler={() => setShowFilter(false)} search={onSearchHandler}/>
+      <Filter
+        show={showFilter}
+        closeHandler={() => setShowFilter(false)}
+        search={onSearchHandler}
+      />
     </div>
   );
 };

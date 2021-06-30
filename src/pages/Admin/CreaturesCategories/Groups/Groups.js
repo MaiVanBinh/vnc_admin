@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Table, Form, Modal, FormControl } from "react-bootstrap";
 import axios from "axios";
@@ -90,11 +90,7 @@ const Groups = (props) => {
     });
   };
 
-  useEffect(() => {
-    getGroupsList();
-  }, [filterList]);
-
-  const getGroupsList = () => {
+  const getGroupsList = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -111,7 +107,13 @@ const Groups = (props) => {
       setListGroups(res.data.data);
       setLoader(false);
     });
-  };
+  }, [filterList, setListGroups, setLoader] );
+  
+  useEffect(() => {
+    getGroupsList();
+  }, [filterList, getGroupsList]);
+
+  
 
   const onChangeInput = (v) => {
     let isValid = false;

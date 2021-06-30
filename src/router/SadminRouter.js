@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 
 import Loader from "../components/UI/Loader/Loader";
 
@@ -17,7 +17,7 @@ function SadminRouter() {
     <Suspense fallback={<Loader />}>
       <Switch>
         {publicRoutes.map((route, index) => (
-          <Route key={index} path={`${url}` + `${route.path}`} exact={route.exact}>
+          <Route key={index} path={`${url}${route.path}`} exact={route.exact}>
             <route.component />
           </Route>
         ))}

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { connect } from "react-redux";
 import "./ImageManagement.css";
-import { Modal, Button, Table, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Table, Row } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
@@ -39,30 +39,113 @@ const ImageManagement = (props) => {
   const dropArea = useRef(null);
   const inputFile = useRef(null);
 
-  const [uploadProgress, setUploadProgress] = useState({
+  const setUploadProgress = useState({
     count: 0,
     totalCount: 0,
     received: 0,
     total: 100,
-  });
+  })[1];
 
   const [showUpload, setShowUpload] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [infoImage, setInfoImage] = useState({
+  const infoImage = useState({
     id: null,
     name: "",
     url: "",
     created_at: "",
-  });
+  })[0];
 
   const [filterList, setFilterList] = useState({
     page: 1,
     limit: 10,
   });
 
+  const getListImages = useCallback(() => {
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "auth/assets",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterList,
+    }).then((res) => {
+      const { begin, end } = getIndexListPage(
+        filterList.page,
+        filterList.limit,
+        res.data.data.total
+      );
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
+      setListImages(res.data.data);
+      setLoader(false);
+    });
+  }, [auth.token, filterList, setListImages, setLoader]);
+
   useEffect(() => {
     getListImages();
-  }, [filterList]);
+  }, [filterList, getListImages]);
+  const sendFileUpload = useCallback(
+    (imgArr, callback, total) => {
+      let listFiles = Array.from(imgArr);
+      let data = new FormData();
+      data.append("image", listFiles[0]);
+      if (listFiles[0].size > maxSizeUpload) {
+        alert("Dung lượng ảnh dưới 5mb!");
+        setLoader(false);
+        return;
+      }
+      let xhr = new window.XMLHttpRequest();
+      xhr.open("POST", baseUrl + "auth/assets", true);
+      xhr.setRequestHeader("Authorization", "Bearer " + auth.token);
+      xhr.responseType = "json";
+      xhr.onload = function () {
+        if (xhr.response.statusCode === 200) {
+          if (callback && listFiles.length === 1) {
+            count = 0;
+            setUploadProgress({
+              count: 0,
+              totalCount: 0,
+              received: 0,
+              total: 100,
+            }); // reset
+            callback(xhr.response.data);
+          } else {
+            listFiles.shift();
+            count++;
+            sendFileUpload(listFiles, callback, total);
+          }
+        } else {
+          setLoader(false);
+        }
+      };
+      xhr.upload.addEventListener(
+        "progress",
+        function (e) {
+          if (e.lengthComputable) {
+            setUploadProgress({
+              count,
+              totalCount: total,
+              received: e.loaded,
+              total: e.total,
+            });
+          }
+        },
+        false
+      );
+      xhr.send(data);
+    },
+    [auth.token, setLoader, setUploadProgress]
+  );
+  const afterUpload = useCallback(
+    (json) => {
+      // setLoader(false);
+      // console.log(json);
+      getListImages();
+      setShowUpload(false);
+    },
+    [getListImages]
+  );
 
   useEffect(() => {
     const getFile = () => {
@@ -78,11 +161,9 @@ const ImageManagement = (props) => {
       }
     };
     inputFile.current && inputFile.current.addEventListener("change", getFile);
-
-    return () =>
-      inputFile.current &&
-      inputFile.current.removeEventListener("change", getFile);
-  }, [showUpload]);
+    const ic = inputFile.current;
+    return () => ic && ic.removeEventListener("change", getFile);
+  }, [showUpload, afterUpload, sendFileUpload, setLoader]);
 
   const uploadHandle = (e) => {
     e.stopPropagation();
@@ -115,89 +196,11 @@ const ImageManagement = (props) => {
     e.preventDefault();
     inputFile.current.click();
   };
-  const afterUpload = (json) => {
-    // setLoader(false);
-    // console.log(json);
-    getListImages();
-    setShowUpload(false);
-  };
 
-  const sendFileUpload = (imgArr, callback, total) => {
-    let listFiles = Array.from(imgArr);
-    let data = new FormData();
-    data.append("image", listFiles[0]);
-    if (listFiles[0].size > maxSizeUpload) {
-      alert("Dung lượng ảnh dưới 5mb!");
-      setLoader(false);
-      return;
-    }
-    let xhr = new window.XMLHttpRequest();
-    xhr.open("POST", baseUrl + "auth/assets", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + auth.token);
-    xhr.responseType = "json";
-    xhr.onload = function () {
-      if (xhr.response.statusCode === 200) {
-        if (callback && listFiles.length === 1) {
-          count = 0;
-          setUploadProgress({
-            count: 0,
-            totalCount: 0,
-            received: 0,
-            total: 100,
-          }); // reset
-          callback(xhr.response.data);
-        } else {
-          listFiles.shift();
-          count++;
-          sendFileUpload(listFiles, callback, total);
-        }
-      } else {
-        setLoader(false);
-      }
-    };
-    xhr.upload.addEventListener(
-      "progress",
-      function (e) {
-        if (e.lengthComputable) {
-          setUploadProgress({
-            count,
-            totalCount: total,
-            received: e.loaded,
-            total: e.total,
-          });
-        }
-      },
-      false
-    );
-    xhr.send(data);
-  };
-
-  const getListImages = () => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "auth/assets",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-      params: filterList,
-    }).then((res) => {
-      const { begin, end } = getIndexListPage(
-        filterList.page,
-        filterList.limit,
-        res.data.data.total
-      );
-      res.data.data.pages.begin = begin;
-      res.data.data.pages.end = end;
-      setListImages(res.data.data);
-      setLoader(false);
-    });
-  };
-
-  const openDelete = (item) => {
-    setShowDelete(true);
-    setInfoImage(item);
-  };
+  // const openDelete = (item) => {
+  //   setShowDelete(true);
+  //   setInfoImage(item);
+  // };
 
   const deleteHandle = () => {
     setLoader(true);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./Category.css";
 import { connect } from "react-redux";
 import { Modal, Button, Table, Form, FormControl } from "react-bootstrap";
@@ -69,39 +69,34 @@ const Category = (props) => {
     },
   });
 
-  const resetFormInput = () => {
-    setFormInput({
-      name_vn: {
-        value: null,
-        isValid: true,
-        validMessage: "Don't allow empty string",
-        minLength: 1,
-      },
-      name_en: {
-        value: null,
-        isValid: true,
-        validMessage: "Don't allow empty string",
-        minLength: 1,
-      },
+  // const resetFormInput = () => {
+  //   setFormInput({
+  //     name_vn: {
+  //       value: null,
+  //       isValid: true,
+  //       validMessage: "Don't allow empty string",
+  //       minLength: 1,
+  //     },
+  //     name_en: {
+  //       value: null,
+  //       isValid: true,
+  //       validMessage: "Don't allow empty string",
+  //       minLength: 1,
+  //     },
 
-      list: {
-        value: "1",
-        isValid: true,
-      },
-    });
-  };
+  //     list: {
+  //       value: "1",
+  //       isValid: true,
+  //     },
+  //   });
+  // };
 
   const [filterList, setFilterList] = useState({
     page: 1,
     limit: 10,
     title: "",
   });
-
-  useEffect(() => {
-    getCategoryList();
-  }, [filterList]);
-
-  const getCategoryList = () => {
+  const getCategoryList = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -118,7 +113,13 @@ const Category = (props) => {
       setCategory(res.data.data);
       setLoader(false);
     });
-  };
+  }, [setCategory, setLoader, filterList ]);
+  
+  useEffect(() => {
+    getCategoryList();
+  }, [filterList, getCategoryList]);
+
+  
 
   const openEdit = (item) => {
     const updateFormInput = { ...formInput };
@@ -326,15 +327,15 @@ const Category = (props) => {
                     <td>{e.created_at}</td>
                     <td>
                       <Button
-                        // onClick={() => {
-                        //   openEdit(e);
-                        // }}
+                        onClick={() => {
+                          openEdit(e);
+                        }}
                         className="mr-2"
                       >
                         Sửa
                       </Button>
                       <Button
-                        // onClick={() => openDelete(e)}
+                        onClick={() => openDelete(e)}
                         className="btn-danger"
                       >
                         Xóa

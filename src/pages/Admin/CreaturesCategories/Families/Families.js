@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
 import { Button, Table, Form, Modal, FormControl } from "react-bootstrap";
 import axios from "axios";
@@ -40,6 +40,10 @@ const Orders = (props) => {
   const [showDelete, setShowDelete] = useState(false);
   const [currentFamily, setCurrentFamily] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterList, setFilterList] = useState({
+    page: 1,
+    limit: 10,
+  });
   const [formInput, setFormInput] = useState({
     name_vn: {
       value: null,
@@ -57,15 +61,30 @@ const Orders = (props) => {
       validMessage: "Don't allow empty string",
     },
   });
+  const getFamiliesList = useCallback(() => {
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "families",
+      params: filterList,
+    }).then((res) => {
+      const { begin, end } = getIndexListPage(
+        filterList.page,
+        filterList.limit,
+        res.data.data.total
+      );
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
+      setListFamilies(res.data.data);
+      setLoader(false);
+    });
+  }, [filterList, setListFamilies, setLoader]);
 
-  const [filterList, setFilterList] = useState({
-    page: 1,
-    limit: 10,
-  });
+  
 
   useEffect(() => {
     getFamiliesList();
-  }, [filterList]);
+  }, [filterList, getFamiliesList]);
 
   const resetFormInput = () => {
     setFormInput({
@@ -87,24 +106,7 @@ const Orders = (props) => {
     });
   };
 
-  const getFamiliesList = () => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "families",
-      params: filterList,
-    }).then((res) => {
-      const { begin, end } = getIndexListPage(
-        filterList.page,
-        filterList.limit,
-        res.data.data.total
-      );
-      res.data.data.pages.begin = begin;
-      res.data.data.pages.end = end;
-      setListFamilies(res.data.data);
-      setLoader(false);
-    });
-  };
+  
 
   const changePage = (page) => {
     setFilterList({

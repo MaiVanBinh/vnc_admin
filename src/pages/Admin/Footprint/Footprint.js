@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./Footprint.css";
 import { connect } from "react-redux";
 import {
@@ -68,7 +68,7 @@ const Footprint = (props) => {
   const [showImage, setShowImage] = useState(false);
   const [currentFootprint, setCurrentFootprint] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [creature, setCreatures] = useState({
     id: 0,
   });
@@ -117,10 +117,30 @@ const Footprint = (props) => {
     page: 1,
     limit: 10,
   });
-
+  const getFootprint = useCallback(() => {
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "footprint",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterList,
+    }).then((res) => {
+      const { begin, end } = getIndexListPage(
+        filterList.page,
+        filterList.limit,
+        res.data.data.total
+      );
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
+      setFootprints(res.data.data);
+      setLoader(false);
+    });
+  }, [auth.token, filterList, setFootprints, setLoader]);
   useEffect(() => {
     getFootprint();
-  }, [filterList]);
+  }, [filterList, getFootprint]);
 
   const resetFormInput = () => {
     setFormInput({
@@ -156,7 +176,7 @@ const Footprint = (props) => {
       },
     });
   };
-  const getListImages = () => {
+  const getListImages = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -177,11 +197,11 @@ const Footprint = (props) => {
       setListImages(res.data.data);
       setLoader(false);
     });
-  };
+  }, [setListImages, setLoader, auth.token, filterImageList]);
 
   useEffect(() => {
     getListImages();
-  }, [filterImageList]);
+  }, [filterImageList, getListImages]);
 
   const changePageImageList = (page) => {
     setFilterImageList({
@@ -190,27 +210,7 @@ const Footprint = (props) => {
     });
   };
 
-  const getFootprint = () => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "footprint",
-      headers: {
-        Authorization: "Bearer " + auth.token,
-      },
-      params: filterList,
-    }).then((res) => {
-      const { begin, end } = getIndexListPage(
-        filterList.page,
-        filterList.limit,
-        res.data.data.total
-      );
-      res.data.data.pages.begin = begin;
-      res.data.data.pages.end = end;
-      setFootprints(res.data.data);
-      setLoader(false);
-    });
-  };
+  
 
   const openDeleteModal = (item) => {
     setShowDelete(true);
@@ -387,10 +387,10 @@ const Footprint = (props) => {
         <div>
           <Button
             className="btn-primary mr-2"
-            // onClick={() => {
-            //   resetFormInput();
-            //   setShowCreate(true);
-            // }}
+            onClick={() => {
+              resetFormInput();
+              setShowCreate(true);
+            }}
           >
             <IconPlus width={15} height={15} color={"#fff"} />
           </Button>
@@ -458,21 +458,21 @@ const Footprint = (props) => {
                     <td>{e.created_at}</td>
                     <td>
                       <div className="action-group d-flex justify-content-center">
-                        {/* <div
-                          className="icon d-flex align-items-center"
-                          onClick={() => openViewModal(e.id)}
-                        >
-                          <IconView color={"#333333"} width={15} height={15} />
-                        </div> */}
                         <div
                           className="icon d-flex align-items-center"
-                          // onClick={() => openEditModal(e)}
+                          // onClick={() => openViewModal(e.id)}
+                        >
+                          <IconView color={"#333333"} width={15} height={15} />
+                        </div>
+                        <div
+                          className="icon d-flex align-items-center"
+                          onClick={() => openEditModal(e)}
                         >
                           <IconEdit color={"#333333"} width={15} height={15} />
                         </div>
                         <div
                           className="icon d-flex align-items-center"
-                          // onClick={() => openDeleteModal(e)}
+                          onClick={() => openDeleteModal(e)}
                         >
                           <IconGarbage2
                             color={"#333333"}

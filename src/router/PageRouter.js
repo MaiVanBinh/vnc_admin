@@ -83,7 +83,7 @@ function PageRouter() {
         {publicRoutes.map((route, index) => (
           <Route
             key={index}
-            path={`${url}` + `${route.path}`}
+            path={`${url}${route.path}`}
             exact={route.exact}
           >
             <route.component />

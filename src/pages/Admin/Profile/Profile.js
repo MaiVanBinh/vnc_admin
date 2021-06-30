@@ -48,7 +48,7 @@ const Profile = (props) => {
         if (auth.user && auth.user.role === '1') { // sadmin doesn't need to modify profile
             history.push('/danh-muc');
         }
-    }, [])
+    }, [history, auth.user])
 
     const logoutHandle = () => {
         localStorage.removeItem("autobi-auth");

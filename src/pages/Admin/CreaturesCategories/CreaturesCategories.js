@@ -7,7 +7,7 @@ import * as actionTypes from "./../../../store/actions/actionTypes";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import Orders from "./Orders/Orders";
-import Families from './Families/Families';
+import Families from "./Families/Families";
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -26,13 +26,8 @@ const mapDispatchToProps = (dispatch) => {
 
 const CreaturesCategories = (props) => {
   const [key, setKey] = useState("species");
-
+  const { setCreaturesCategories, setLoader } = props;
   useEffect(() => {
-    getCreaturesCategories();
-  }, []);
-
-  const getCreaturesCategories = () => {
-    const { setCreaturesCategories, setLoader } = props;
     axios({
       method: "get",
       url: baseUrl + "filterData",
@@ -40,9 +35,7 @@ const CreaturesCategories = (props) => {
       setCreaturesCategories(res.data.data);
       setLoader(false);
     });
-  };
-
-  
+  }, [setCreaturesCategories, setLoader]);
 
   return (
     <div>
@@ -76,4 +69,4 @@ const CreaturesCategories = (props) => {
   );
 };
 
-export default connect(null ,mapDispatchToProps)(CreaturesCategories);
+export default connect(null, mapDispatchToProps)(CreaturesCategories);

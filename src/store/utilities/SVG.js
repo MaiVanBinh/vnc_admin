@@ -272,9 +272,7 @@ export const IconWood = (props) => {
 export const IconFootPrint = (props) => {
   return (
     <svg
-      height={512}
       viewBox="0 0 512 512"
-      width={512}
       xmlns="http://www.w3.org/2000/svg"
       width={props.width}
       height={props.height}
