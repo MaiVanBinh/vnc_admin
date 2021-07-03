@@ -43,7 +43,7 @@ const Filter = (props) => {
               }
             >
               <option value={null}>Tất cả</option>
-              <option value={"true"}>Pulic</option>
+              <option value={"true"}>Publish</option>
               <option value={"false"}>Private</option>
             </Form.Control>
           </Form.Group>

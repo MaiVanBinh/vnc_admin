@@ -1,6 +1,6 @@
 // const APP_ROOT = 'https://api.vncreatures.net/';
-const APP_ROOT = 'https://vncreatures.net/vnback/';
-export const baseUrl = 'https://vncreatures.net/vnback/';
+const APP_ROOT = 'http://localhost:8080/vnback/';
+export const baseUrl = 'http://localhost:8080/vnback/';
 const apiName = {
     creatures: 'creatures',
     groups: 'groups',

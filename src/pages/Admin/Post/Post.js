@@ -24,8 +24,14 @@ import {
   IconRefresh,
   IconSearch,
   IconFilter,
+  IconCheck,
+  IconMultiply,
+  IconView,
+  IconEdit,
+  IconGarbage2,
 } from "./../../../store/utilities/SVG";
 import Filter from "./Filter/Filter";
+import { colors } from "../../../store/utilities/contants";
 
 const mapStateToProps = (state) => {
   return {
@@ -67,20 +73,20 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-// const imageArrayToString = (images) => {
-//   const imagesUrl = images.map((e) => e.url);
-//   return imagesUrl.join("\n");
-// };
+const imageArrayToString = (images) => {
+  const imagesUrl = images.map((e) => e.url);
+  return imagesUrl.join("\n");
+};
 
-// const intersection2Array = (newArray, oldArray) => {
-//   let result = [];
-//   for (let i = 0; i < oldArray.length; i++) {
-//     if (newArray.findIndex((e) => e.id === oldArray[i].id) < 0) {
-//       result.push(oldArray[i]);
-//     }
-//   }
-//   return result;
-// };
+const intersection2Array = (newArray, oldArray) => {
+  let result = [];
+  for (let i = 0; i < oldArray.length; i++) {
+    if (newArray.findIndex((e) => e.id === oldArray[i].id) < 0) {
+      result.push(oldArray[i]);
+    }
+  }
+  return result;
+};
 
 const Post = (props) => {
   const {
@@ -106,7 +112,7 @@ const Post = (props) => {
     callback: null,
   });
   const [images, setImages] = useState([]);
-  // const [oldImages, setOldImages] = useState([]);
+  const [oldImages, setOldImages] = useState([]);
   const [imageSearch, setImageSearch] = useState({
     name: "",
   });
@@ -127,6 +133,7 @@ const Post = (props) => {
     content: "",
     images: "",
     category: null,
+    language: 'vn',
     description: "",
     is_publish: false,
   });
@@ -148,7 +155,7 @@ const Post = (props) => {
     // posts
     page: 1,
     limit: 10,
-    is_publish: null,
+    is_publish: 'all',
   });
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterImageList, setFilterImageList] = useState({
@@ -171,8 +178,11 @@ const Post = (props) => {
       setLoader(false);
     });
   }, [setLoader, setCategory]);
+  
   const getPostList = useCallback(
     (page) => {
+      if (filterList.is_publish === "Tất cả") filterList.is_publish = 'all';
+      console.log(filterList)
       setLoader(true);
       axios({
         method: "get",
@@ -259,37 +269,36 @@ const Post = (props) => {
   }, [category]);
 
   const editHandle = () => {
-    // const imagesRemove = intersection2Array(images, oldImages).map((e) => e.id);
-    // const imageAdd = images.map((e) => e.id);
-    // const is_publish = infoPost.is_publish === "true" ? true : false;
-    // if (
-    //   !checkValid(infoPost, "title") ||
-    //   !checkValid(infoPost, "description")
-    // ) {
-    // } else {
-    //   setLoader(true);
-    //   axios({
-    //     method: "put",
-    //     url: baseUrl + "auth/posts/" + infoPost.id,
-    //     data: {
-    //       ...infoPost,
-    //       imageAdd,
-    //       imagesRemove,
-    //       is_publish,
-    //     },
-    //     headers: {
-    //       Authorization: "Bearer " + auth.token,
-    //     },
-    //   })
-    //     .then(() => {
-    //       setShowEdit(false);
-    //       getPostList();
-    //     })
-    //     .catch((err) => {
-    //       setShowEdit(false);
-    //       setLoader(false);
-    //     });
-    // }
+    const imagesRemove = intersection2Array(images, oldImages).map((e) => e.id);
+    const is_publish = infoPost.is_publish === "true" ? true : false;
+    if (
+      !checkValid(infoPost, "title") ||
+      !checkValid(infoPost, "description")
+    ) {
+    } else {
+      setLoader(true);
+      axios({
+        method: "put",
+        url: baseUrl + "auth/posts/" + infoPost.id,
+        data: {
+          ...infoPost,
+          imageAdd: [...images.map(e => e.id)],
+          imagesRemove,
+          is_publish,
+        },
+        headers: {
+          Authorization: "Bearer " + auth.token,
+        },
+      })
+        .then(() => {
+          setShowEdit(false);
+          getPostList();
+        })
+        .catch((err) => {
+          setShowEdit(false);
+          setLoader(false);
+        });
+    }
   };
 
   const deleteHandle = () => {
@@ -390,10 +399,8 @@ const Post = (props) => {
       });
   };
 
-  
-
   const imagesHandler = (item) => {
-    const newImages = [...images, item.id];
+    const newImages = [...images, item];
     setImages(newImages);
     showImage.callback(item.url, { title: item.name });
     setShowImage({
@@ -426,10 +433,10 @@ const Post = (props) => {
           <div>
             <Button
               className="mr-2"
-              // onClick={() => {
-              //   setShowCreate(true);
-              //   setImages([]);
-              // }}
+              onClick={() => {
+                setShowCreate(true);
+                setImages([]);
+              }}
             >
               <IconPlus width={15} height={15} color={"#fff"} />
             </Button>
@@ -479,13 +486,19 @@ const Post = (props) => {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>#</th>
+              <th className="d-flex justify-content-center align-item-center">
+                #
+              </th>
               <th>Tiêu đề</th>
               <th>Danh mục</th>
-              <th>Chế độ</th>
+              <th className="d-flex justify-content-center align-item-center">
+                Công khai
+              </th>
               <th>Ngôn ngữ</th>
               <th>Ngày tạo</th>
-              <th>Thao tác</th>
+              <th className="d-flex justify-content-center align-item-center">
+                Thao tác
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -494,42 +507,62 @@ const Post = (props) => {
                 let beginIndex = posts.pages.begin;
                 return (
                   <tr key={i}>
-                    <td>{beginIndex + i}</td>
+                    <td className="d-flex justify-content-center align-item-center">
+                      {beginIndex + i}
+                    </td>
                     <td>{e.title}</td>
                     <td>{e.categorytitle}</td>
-                    <td>{e.is_publish === "1" ? "public " : "private"}</td>
+                    <td className="d-flex justify-content-center align-item-center">
+                      {e.is_publish === "1" ? (
+                        <IconCheck
+                          width={15}
+                          height={15}
+                          color={colors.active}
+                        />
+                      ) : (
+                        <IconMultiply
+                          width={15}
+                          height={15}
+                          color={colors.dangerous}
+                        />
+                      )}
+                    </td>
                     <td>{e.language === "vn" ? "Việt" : "English"}</td>
                     <td>{e.created_at}</td>
-                    <td>
-                      <Button
-                        // onClick={() => {
-                        //   setShowEdit(true);
-                        //   setInfoPost({
-                        //     ...e,
-                        //     is_publish: e.is_publish === "0" ? false : true,
-                        //   });
-                        //   setImages(e.image);
-                        //   setOldImages(e.image);
-                        // }}
-                        className="mr-2 mb-2"
-                      >
-                        Sửa
-                      </Button>
-                      <Button
-                        // onClick={() => {
-                        //   setShowDelete(true);
-                        //   setCurrItem(e);
-                        // }}
-                        className="btn-danger mr-2 mb-2"
-                      >
-                        Xóa
-                      </Button>
-                      <Button
+                    <td className="d-flex justify-content-around align-item-center">
+                      <div
+                        className="icon d-flex align-items-center"
                         onClick={() => previewPost(e.id)}
-                        className="btn-danger mr-2 mb-2"
                       >
-                        Xem
-                      </Button>
+                        <IconView color={"#333333"} width={15} height={15} />
+                      </div>
+                      <div
+                        className="icon d-flex align-items-center"
+                        onClick={() => {
+                          setShowEdit(true);
+                          setInfoPost({
+                            ...e,
+                            is_publish: e.is_publish === "0" ? false : true,
+                          });
+                          setImages(e.image);
+                          setOldImages(e.image);
+                        }}
+                      >
+                        <IconEdit color={"#333333"} width={15} height={15} />
+                      </div>
+                      <div
+                        className="icon d-flex align-items-center"
+                        onClick={() => {
+                          setShowDelete(true);
+                          setCurrItem(e);
+                        }}
+                      >
+                        <IconGarbage2
+                          color={"#333333"}
+                          width={15}
+                          height={15}
+                        />
+                      </div>
                     </td>
                   </tr>
                 );
@@ -564,7 +597,7 @@ const Post = (props) => {
         enforceFocus={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Sửa danh mục</Modal.Title>
+          <Modal.Title>Sửa bài viết</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -642,6 +675,19 @@ const Post = (props) => {
               >
                 <option value={true}>Public</option>
                 <option value={false}>Private</option>
+              </Form.Control>
+            </Form.Group>
+            <Form.Group controlId="formBasicMode">
+              <Form.Label>Loại ngôn ngữ</Form.Label>
+              <Form.Control
+                as="select"
+                defaultValue={infoPost.language}
+                onChange={(v) =>
+                  setInfoPost({ ...infoPost, language: v.target.value })
+                }
+              >
+                <option value={'vn'}>Việt Nam</option>
+                <option value={'en'}>English</option>
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="formBasicContent">

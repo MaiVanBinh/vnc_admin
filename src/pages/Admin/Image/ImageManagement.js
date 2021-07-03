@@ -7,7 +7,14 @@ import { baseUrl } from "./../../../store/utilities/apiConfig";
 import * as actionTypes from "./../../../store/actions/actionTypes";
 import Pagination from "./../../../components/Panigation/Pagination";
 import { getIndexListPage } from "./../../../store/utilities/common";
-import { IconPlus, IconRefresh } from "./../../../store/utilities/SVG";
+import {
+  IconPlus,
+  IconRefresh,
+  IconGarbage2,
+  IconCheck,
+  IconMultiply
+} from "./../../../store/utilities/SVG";
+import { colors } from "../../../store/utilities/contants";
 
 const mapStateToProps = (state) => {
   return {
@@ -48,12 +55,12 @@ const ImageManagement = (props) => {
 
   const [showUpload, setShowUpload] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const infoImage = useState({
+  const [infoImage, setInfoImage] = useState({
     id: null,
     name: "",
     url: "",
     created_at: "",
-  })[0];
+  });
 
   const [filterList, setFilterList] = useState({
     page: 1,
@@ -197,10 +204,10 @@ const ImageManagement = (props) => {
     inputFile.current.click();
   };
 
-  // const openDelete = (item) => {
-  //   setShowDelete(true);
-  //   setInfoImage(item);
-  // };
+  const openDelete = (item) => {
+    setShowDelete(true);
+    setInfoImage(item);
+  };
 
   const deleteHandle = () => {
     setLoader(true);
@@ -234,7 +241,7 @@ const ImageManagement = (props) => {
       <div className="wrap-action mb-3">
         <Button
           className="btn-primary mr-2"
-          // onClick={() => setShowUpload(true)}
+          onClick={() => setShowUpload(true)}
         >
           <IconPlus width={15} height={15} color={"#fff"} />
         </Button>
@@ -250,6 +257,7 @@ const ImageManagement = (props) => {
               <th>Thumbnail</th>
               <th>Tên ảnh</th>
               <th>URL</th>
+              <th>Sử dụng</th>
               <th>Ngày tạo</th>
               <th>Thao tác</th>
             </tr>
@@ -273,15 +281,41 @@ const ImageManagement = (props) => {
                       </td>
                       <td className="name">{e.name}</td>
                       <td className="url">{e.url}</td>
+                      <th className="d-flex justify-content-center align-item-center">
+                        {e.in_use === "1" ? (
+                          <IconCheck
+                            width={15}
+                            height={15}
+                            color={colors.active}
+                          />
+                        ) : (
+                          <IconMultiply
+                            width={15}
+                            height={15}
+                            color={colors.dangerous}
+                          />
+                        )}
+                      </th>
                       <td>{e.created_at}</td>
                       <td>
-                        {/* <Button className='mr-2'>Copy URL</Button> */}
-                        <Button
-                          // onClick={() => openDelete(e)}
-                          className="btn-danger"
+                        <div className="action-group d-flex justify-content-around">
+                          {/* <div
+                          className="icon d-flex align-items-center"
+                          onClick={() => openEditModal(e)}
                         >
-                          Xóa
-                        </Button>
+                          <IconEdit color={"#333333"} width={15} height={15} />
+                        </div> */}
+                          <div
+                            className="icon d-flex align-items-center"
+                            onClick={() => openDelete(e)}
+                          >
+                            <IconGarbage2
+                              color={"#333333"}
+                              width={15}
+                              height={15}
+                            />
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   );

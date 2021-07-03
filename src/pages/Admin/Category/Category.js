@@ -14,7 +14,12 @@ import {
   IconPlus,
   IconRefresh,
   IconSearch,
+  IconGarbage2,
+  IconEdit,
+  IconCheck,
+  IconMultiply,
 } from "./../../../store/utilities/SVG";
+import { colors } from "../../../store/utilities/contants";
 
 const mapStateToProps = (state) => {
   return {
@@ -69,27 +74,27 @@ const Category = (props) => {
     },
   });
 
-  // const resetFormInput = () => {
-  //   setFormInput({
-  //     name_vn: {
-  //       value: null,
-  //       isValid: true,
-  //       validMessage: "Don't allow empty string",
-  //       minLength: 1,
-  //     },
-  //     name_en: {
-  //       value: null,
-  //       isValid: true,
-  //       validMessage: "Don't allow empty string",
-  //       minLength: 1,
-  //     },
+  const resetFormInput = () => {
+    setFormInput({
+      name_vn: {
+        value: null,
+        isValid: true,
+        validMessage: "Don't allow empty string",
+        minLength: 1,
+      },
+      name_en: {
+        value: null,
+        isValid: true,
+        validMessage: "Don't allow empty string",
+        minLength: 1,
+      },
 
-  //     list: {
-  //       value: "1",
-  //       isValid: true,
-  //     },
-  //   });
-  // };
+      list: {
+        value: "0",
+        isValid: true,
+      },
+    });
+  };
 
   const [filterList, setFilterList] = useState({
     page: 1,
@@ -113,21 +118,22 @@ const Category = (props) => {
       setCategory(res.data.data);
       setLoader(false);
     });
-  }, [setCategory, setLoader, filterList ]);
-  
+  }, [setCategory, setLoader, filterList]);
+
   useEffect(() => {
     getCategoryList();
   }, [filterList, getCategoryList]);
 
-  
-
-  const openEdit = (item) => {
+  const openEditModal = (item) => {
     const updateFormInput = { ...formInput };
     for (let key in updateFormInput) {
       if (key !== "id") {
         updateFormInput[key].value = item[key];
       }
     }
+    setFormInput(updateFormInput);
+    console.log(item);
+    console.log(updateFormInput);
     setInfoCategory({
       id: item.id,
       title: item.name_vn,
@@ -137,7 +143,7 @@ const Category = (props) => {
     setShowEdit(true);
   };
 
-  const openDelete = (item) => {
+  const openDeleteModal = (item) => {
     setInfoCategory({
       id: item.id,
       title: item.name_vn,
@@ -151,19 +157,18 @@ const Category = (props) => {
     if (!data) {
       return;
     }
-    console.log(data);
-    // setLoader(true);
-    // axios({
-    //   method: "put",
-    //   url: baseUrl + "auth/category/" + infoCategory.id,
-    //   data,
-    //   headers: {
-    //     Authorization: "Bearer " + auth.token,
-    //   },
-    // }).then(() => {
-    //   setShowEdit(false);
-    //   getCategoryList();
-    // });
+    setLoader(true);
+    axios({
+      method: "put",
+      url: baseUrl + "auth/category/" + infoCategory.id,
+      data,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+    }).then(() => {
+      setShowEdit(false);
+      getCategoryList();
+    });
   };
 
   const deleteHandle = () => {
@@ -193,7 +198,7 @@ const Category = (props) => {
     let inputValue = {};
     let isValid = true;
     const formInputUpdate = { ...formInput };
-    console.log(formInput)
+    console.log(formInput);
     for (const key in formInput) {
       if (formInput[key].minLength) {
         if (
@@ -264,10 +269,10 @@ const Category = (props) => {
           <div>
             <Button
               className="mr-2"
-              // onClick={() => {
-              //   setShowCreate(true);
-              //   resetFormInput();
-              // }}
+              onClick={() => {
+                setShowCreate(true);
+                resetFormInput();
+              }}
             >
               <IconPlus width={15} height={15} color={"#fff"} />
             </Button>
@@ -285,7 +290,14 @@ const Category = (props) => {
             </Button>
           </div>
 
-          <Form inline className="searchCp">
+          <Form
+            inline
+            className="searchCp"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setFilterList({ ...filterList, title: searchKeyword });
+            }}
+          >
             <FormControl
               type="text"
               placeholder=""
@@ -306,12 +318,18 @@ const Category = (props) => {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>#</th>
+              <th className="d-flex justify-content-center align-item-center">
+                #
+              </th>
               <th>Tiêu đề tiếng việt</th>
               <th>Tiêu đề tiếng anh</th>
-              <th>Danh sách</th>
+              <th className="d-flex justify-content-center align-item-center">
+                Danh sách
+              </th>
               <th>Ngày tạo</th>
-              <th>Thao tác</th>
+              <th className="d-flex justify-content-center align-item-center">
+                Thao tác
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -320,26 +338,46 @@ const Category = (props) => {
                 let beginIndex = category.pages.begin;
                 return (
                   <tr key={i}>
-                    <td>{beginIndex + i}</td>
+                    <td className="d-flex justify-content-center align-item-center">
+                      {beginIndex + i}
+                    </td>
                     <td>{e.name_vn}</td>
                     <td>{e.name_en}</td>
-                    <th>{e.is_list}</th>
+                    <th className="d-flex justify-content-center align-item-center">
+                      {e.list === "1" ? (
+                        <IconCheck
+                          width={15}
+                          height={15}
+                          color={colors.active}
+                        />
+                      ) : (
+                        <IconMultiply
+                          width={15}
+                          height={15}
+                          color={colors.dangerous}
+                        />
+                      )}
+                    </th>
                     <td>{e.created_at}</td>
                     <td>
-                      <Button
-                        onClick={() => {
-                          openEdit(e);
-                        }}
-                        className="mr-2"
-                      >
-                        Sửa
-                      </Button>
-                      <Button
-                        onClick={() => openDelete(e)}
-                        className="btn-danger"
-                      >
-                        Xóa
-                      </Button>
+                      <div className="action-group d-flex justify-content-around">
+                        <div
+                          className="icon d-flex align-items-center"
+                          onClick={() => openEditModal(e)}
+                        >
+                          <IconEdit color={"#333333"} width={15} height={15} />
+                        </div>
+                        <div
+                          className="icon d-flex align-items-center"
+                          onClick={() => openDeleteModal(e)}
+                        >
+                          <IconGarbage2
+                            color={"#333333"}
+                            width={15}
+                            height={15}
+                          />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -481,6 +519,19 @@ const Category = (props) => {
                   {formInput.name_en.validMessage}
                 </Form.Control.Feedback>
               ) : null}
+            </Form.Group>
+            <Form.Group controlId="formSpecies">
+              <Form.Label>Danh sách</Form.Label>
+              <Form.Control
+                name="list"
+                as="select"
+                onChange={onChangeInput}
+                value={formInput.list.value}
+                defaultValue={formInput.list.value}
+              >
+                <option value="0">0</option>
+                <option value="1">1</option>
+              </Form.Control>
             </Form.Group>
           </Form>
         </Modal.Body>
