@@ -328,7 +328,6 @@ const Creatures = (props) => {
     return false;
   };
 
-  
 
   const openViewModal = (id) => {
     setLoader(true);

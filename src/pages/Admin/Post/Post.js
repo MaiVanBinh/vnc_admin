@@ -73,21 +73,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const imageArrayToString = (images) => {
-  const imagesUrl = images.map((e) => e.url);
-  return imagesUrl.join("\n");
-};
-
-const intersection2Array = (newArray, oldArray) => {
-  let result = [];
-  for (let i = 0; i < oldArray.length; i++) {
-    if (newArray.findIndex((e) => e.id === oldArray[i].id) < 0) {
-      result.push(oldArray[i]);
-    }
-  }
-  return result;
-};
-
 const Post = (props) => {
   const {
     auth,
@@ -111,6 +96,7 @@ const Post = (props) => {
     active: false,
     callback: null,
   });
+
   const [images, setImages] = useState([]);
   const [oldImages, setOldImages] = useState([]);
   const [imageSearch, setImageSearch] = useState({
@@ -125,6 +111,7 @@ const Post = (props) => {
     category: null,
     description: "",
     is_publish: false,
+    language: 'vn'
   });
 
   const [infoPost, setInfoPost] = useState({
@@ -133,7 +120,7 @@ const Post = (props) => {
     content: "",
     images: "",
     category: null,
-    language: 'vn',
+    language: "vn",
     description: "",
     is_publish: false,
   });
@@ -155,8 +142,9 @@ const Post = (props) => {
     // posts
     page: 1,
     limit: 10,
-    is_publish: 'all',
+    is_publish: "all",
   });
+  
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterImageList, setFilterImageList] = useState({
     name: "",
@@ -178,11 +166,11 @@ const Post = (props) => {
       setLoader(false);
     });
   }, [setLoader, setCategory]);
-  
+
   const getPostList = useCallback(
     (page) => {
-      if (filterList.is_publish === "Tất cả") filterList.is_publish = 'all';
-      console.log(filterList)
+      if (filterList.is_publish === "Tất cả") filterList.is_publish = "all";
+      console.log(filterList);
       setLoader(true);
       axios({
         method: "get",
@@ -207,6 +195,7 @@ const Post = (props) => {
     },
     [auth.token, filterList, setLoader, setPosts]
   );
+
   useEffect(() => {
     getPostList();
   }, [getPostList]);
@@ -252,6 +241,7 @@ const Post = (props) => {
             : null,
         description: "",
         is_publish: false,
+        language: 'vn'
       });
       setInitInfoPost({
         id: null,
@@ -264,25 +254,28 @@ const Post = (props) => {
             : null,
         description: "",
         is_publish: false,
+        language: 'vn'
       });
     }
   }, [category]);
 
   const editHandle = () => {
-    const imagesRemove = intersection2Array(images, oldImages).map((e) => e.id);
     const is_publish = infoPost.is_publish === "true" ? true : false;
     if (
       !checkValid(infoPost, "title") ||
       !checkValid(infoPost, "description")
     ) {
     } else {
+      const imagesRemove = oldImages
+        .filter((e) => !infoPost.content.includes(e.url))
+        .map((e) => e.id);
       setLoader(true);
       axios({
         method: "put",
         url: baseUrl + "auth/posts/" + infoPost.id,
         data: {
           ...infoPost,
-          imageAdd: [...images.map(e => e.id)],
+          imageAdd: [...images.map((e) => e.id)],
           imagesRemove,
           is_publish,
         },
@@ -316,7 +309,7 @@ const Post = (props) => {
   };
 
   const saveHandle = () => {
-    // const imagesId = images.map((e) => e.id);
+    const imageId = images.map((e) => e.id);
     const is_publish = infoPost.is_publish === "true" ? true : false;
     if (
       !checkValid(infoPost, "title") ||
@@ -332,7 +325,7 @@ const Post = (props) => {
         },
         data: {
           ...infoPost,
-          images: images,
+          images: imageId,
           is_publish,
         },
       })
@@ -686,8 +679,8 @@ const Post = (props) => {
                   setInfoPost({ ...infoPost, language: v.target.value })
                 }
               >
-                <option value={'vn'}>Việt Nam</option>
-                <option value={'en'}>English</option>
+                <option value={"vn"}>Việt Nam</option>
+                <option value={"en"}>English</option>
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="formBasicContent">
@@ -833,6 +826,19 @@ const Post = (props) => {
                 >
                   <option value={true}>Public</option>
                   <option value={false}>Private</option>
+                </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="formBasicMode">
+                <Form.Label>Loại ngôn ngữ</Form.Label>
+                <Form.Control
+                  as="select"
+                  defaultValue={infoPost.language}
+                  onChange={(v) =>
+                    setInfoPost({ ...infoPost, language: v.target.value })
+                  }
+                >
+                  <option value={"vn"}>Việt Nam</option>
+                  <option value={"en"}>English</option>
                 </Form.Control>
               </Form.Group>
               <Form.Group controlId="formBasicContent">

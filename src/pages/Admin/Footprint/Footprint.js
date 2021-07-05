@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./Footprint.css";
 import { connect } from "react-redux";
 import {
@@ -69,9 +69,14 @@ const Footprint = (props) => {
   const [currentFootprint, setCurrentFootprint] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchKeywordCreature, setSearchKeywordCreature] = useState("");
+  const [hintCreatures, setHintCreature] = useState(null);
   const [creature, setCreatures] = useState({
     id: 0,
   });
+  const inputEl = useRef(null);
+  const autocomplete = useRef(null);
+
   const [imageSearch, setImageSearch] = useState({
     name: "",
   });
@@ -81,10 +86,9 @@ const Footprint = (props) => {
     limit: 10,
   });
   const [formInput, setFormInput] = useState({
-    creature: {
-      value: "",
+    id: {
+      value: null,
       isValid: true,
-      validMessage: "Don't allow empty string",
       minLength: 1,
     },
     name_en: {
@@ -113,6 +117,48 @@ const Footprint = (props) => {
     },
   });
 
+  useEffect(() => {
+    let timer1 = setTimeout(() => {
+      if (
+        inputEl.current &&
+        formInput.name_vn.value === inputEl.current.value &&
+        formInput.name_vn.value !== "" &&
+        !formInput.name_vn.id
+      ) {
+        axios({
+          method: "get",
+          url: baseUrl + "creatures",
+          params: {
+            all: true,
+            keyword: formInput.name_vn.value.trim(),
+          },
+        }).then((res) => {
+          if (res.data.data.creature.length === 1) {
+            setHintCreature(null);
+            setFormInput({
+              ...formInput,
+              id: {
+                ...formInput.id,
+                value: res.data.data.creature[0]["id"],
+              },
+              name_vn: {
+                ...formInput.name_vn,
+                value: res.data.data.creature[0]["name_vn"],
+              },
+              name_latin: {
+                ...formInput.name_latin,
+                value: res.data.data.creature[0].name_latin,
+              },
+            });
+          } else {
+            setHintCreature(res.data.data.creature);
+          }
+        });
+      }
+    }, 500);
+    return () => clearTimeout(timer1);
+  }, [formInput.name_vn.value]);
+
   const [filterList, setFilterList] = useState({
     page: 1,
     limit: 10,
@@ -138,14 +184,15 @@ const Footprint = (props) => {
       setLoader(false);
     });
   }, [auth.token, filterList, setFootprints, setLoader]);
+
   useEffect(() => {
     getFootprint();
   }, [filterList, getFootprint]);
 
   const resetFormInput = () => {
     setFormInput({
-      creature: {
-        value: "",
+      id: {
+        value: null,
         isValid: true,
         validMessage: "Don't allow empty string",
         minLength: 1,
@@ -176,6 +223,7 @@ const Footprint = (props) => {
       },
     });
   };
+
   const getListImages = useCallback(() => {
     setLoader(true);
     axios({
@@ -210,8 +258,6 @@ const Footprint = (props) => {
     });
   };
 
-  
-
   const openDeleteModal = (item) => {
     setShowDelete(true);
     setCurrentFootprint(item);
@@ -219,7 +265,7 @@ const Footprint = (props) => {
 
   const openEditModal = (item) => {
     const formInputUpdate = { ...formInput };
-    formInput.creature.value = item.creatures;
+    formInput.name_vn.value = item.creatures;
     formInputUpdate.name_en.value = item.name_en;
     formInputUpdate.name_vn.value = item.name_vn;
     formInputUpdate.name_latin.value = item.name_latin;
@@ -265,82 +311,24 @@ const Footprint = (props) => {
     });
   };
 
-  const searchFootprintById = () => {
-    setLoader(true);
-    axios({
-      method: "get",
-      url: baseUrl + "creatures/" + formInput.creature.value,
-    })
-      .then((res) => {
-        setFormInput({
-          creature: {
-            value: res.data.data.id,
-            isValid: true,
-            validMessage: "Don't allow empty string",
-            minLength: 1,
-          },
-          name_en: {
-            value: "",
-            isValid: true,
-            validMessage: "Don't allow empty string",
-            minLength: 1,
-          },
-          name_latin: {
-            value: res.data.data.name_latin,
-            isValid: true,
-            validMessage: "Don't allow empty string",
-            minLength: 1,
-          },
-          name_vn: {
-            value: res.data.data.name_vn,
-            isValid: true,
-            validMessage: "Don't allow empty string",
-            minLength: 1,
-          },
-          avatar: {
-            value: null,
-            isValid: true,
-            validMessage: "Don't allow empty string",
-            minLength: 1,
-          },
-        });
-        setLoader(false);
-      })
-      .catch((err) => {
-        setFormInput({
-          ...formInput,
-          id: {
-            value: null,
-            isValid: false,
-            validMessage: "Don't allow empty string",
-            minLength: 1,
-          },
-        });
-        setLoader(false);
-      });
-  };
-
   const preprocessInput = () => {
-    let inputValue = {};
-    for (const key in formInput) {
-      if (
-        formInput[key].isValid === false ||
-        formInput[key].value === null ||
-        formInput[key].value === ""
-      ) {
-        return false;
-      } else {
+    if (formInput.id && formInput.name_en.value && formInput.avatar.value) {
+      let inputValue = {};
+      for (const key in formInput) {
         inputValue[key] = formInput[key].value;
       }
+      return inputValue;
     }
-    return inputValue;
+    return false;
   };
 
   const saveHandle = () => {
     const data = preprocessInput();
+    console.log(data);
     if (!data) {
       return;
     }
+
     setLoader(true);
     axios({
       method: "post",
@@ -381,6 +369,7 @@ const Footprint = (props) => {
         setLoader(false);
       });
   };
+
   return (
     <div className="container-fluid pt-3 pb-5">
       <div className="wrap-action mb-3  d-flex justify-content-between">
@@ -511,63 +500,59 @@ const Footprint = (props) => {
         <Modal.Body>
           <Form>
             <Form.Group controlId="formBasicId">
-              <Form.Label>
-                Nhập id sinh vật:{" "}
-                {!formInput.creature.isValid ? (
-                  <span style={{ color: "lightcoral" }}>
-                    Sinh vật không tồn tại
-                  </span>
-                ) : null}
-              </Form.Label>
-              <Row>
-                <Col sm={7}>
-                  <Form.Control
-                    type="number"
-                    placeholder="Nhập id dấu chân"
-                    value={formInput.creature.value}
-                    onChange={(v) =>
-                      setFormInput({
-                        ...formInput,
-                        creature: {
-                          ...formInput["creature"],
-                          value: v.target.value.replace(/^0+/, ""),
-                        },
-                      })
-                    }
-                  />
-                </Col>
-                <Col sm={5}>
-                  <Button onClick={searchFootprintById}>
-                    <IconSearch width={15} height={15} color={"#fff"} />
-                  </Button>
-                </Col>
-              </Row>
-            </Form.Group>
-            <Form.Group controlId="formBasicNameVn">
-              <Form.Label>Tên tiếng việt:</Form.Label>
+              <Form.Label>Nhập tên sinh vật:</Form.Label>
               <Form.Control
-                // className={valid.valid ? null : "form-control is-invalid"}
                 type="text"
+                ref={inputEl}
+                placeholder="Nhập tên tiếng việt của sinh vật"
                 value={formInput.name_vn.value}
-                readOnly
+                onChange={(v) => {
+                  if (autocomplete.current)
+                    autocomplete.current.classList.add("active");
+                  setFormInput({
+                    ...formInput,
+                    name_vn: {
+                      ...formInput.name_vn,
+                      value: v.target.value.replace(/^\s/, ""),
+                    },
+                    id: {
+                      ...formInput.id,
+                      value: null,
+                    },
+                  });
+                }}
+                autoComplete="off"
               />
-              {!formInput.name_vn.isValid ? (
-                <Form.Control.Feedback type="invalid">
-                  {formInput.name_vn.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicNameLt">
-              <Form.Label>Tên latin:</Form.Label>
-              <Form.Control
-                type="text"
-                value={formInput.name_latin.value}
-                readOnly
-              />
-              {!formInput.name_latin.isValid ? (
-                <Form.Control.Feedback type="invalid">
-                  {formInput.name_latin.message}
-                </Form.Control.Feedback>
+              {hintCreatures && hintCreatures.length > 0 ? (
+                <ul className="autocomplete" ref={autocomplete}>
+                  {hintCreatures.map((e) => (
+                    <li
+                      onClick={() => {
+                        if (autocomplete.current)
+                          autocomplete.current.classList.remove("active");
+                        setFormInput({
+                          ...formInput,
+                          name_vn: {
+                            ...formInput.name_vn,
+                            value: e.name_vn,
+                          },
+                          id: {
+                            ...formInput.id,
+                            value: e.id,
+                          },
+                          name_latin: {
+                            ...formInput.name_latin,
+                            value: e.name_latin,
+                          },
+                        });
+                      }}
+                    >
+                      {e.name_vn}
+                    </li>
+                  ))}
+                </ul>
+              ) : !formInput.id.value ? (
+                <p>Không có kết quả nào</p>
               ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicNameEn">
@@ -642,57 +627,16 @@ const Footprint = (props) => {
         <Modal.Body>
           <Form>
             <Form.Group controlId="formBasicId">
-              <Form.Label>
-                Nhập id sinh vật:{" "}
-                {!formInput.creature.isValid ? (
-                  <span style={{ color: "lightcoral" }}>
-                    Sinh vật không tồn tại
-                  </span>
-                ) : null}
-              </Form.Label>
-              <Row>
-                <Col sm={7}>
-                  <Form.Control
-                    type="number"
-                    placeholder="Nhập id dấu chân"
-                    value={creature.id}
-                    onChange={(v) =>
-                      setCreatures({
-                        id: v.target.value.replace(/^0+/, ""),
-                      })
-                    }
-                  />
-                </Col>
-                <Col sm={5}>
-                  <Button onClick={searchFootprintById}>
-                    <IconSearch width={15} height={15} color={"#fff"} />
-                  </Button>
-                </Col>
-              </Row>
-            </Form.Group>
-            <Form.Group controlId="formBasicNameVn">
-              <Form.Label>Tên tiếng việt:</Form.Label>
+              <Form.Label>Nhập tên sinh vật:</Form.Label>
               <Form.Control
-                // className={valid.valid ? null : "form-control is-invalid"}
                 type="text"
-                value={creature.name_vn}
-                readOnly
+                ref={inputEl}
+                value={formInput.name_vn.value}
+                readOnly 
+                autoComplete="off"
               />
-              {!formInput.name_vn.isValid ? (
-                <Form.Control.Feedback type="invalid">
-                  {formInput.name_vn.message}
-                </Form.Control.Feedback>
-              ) : null}
             </Form.Group>
-            <Form.Group controlId="formBasicNameLt">
-              <Form.Label>Tên latin:</Form.Label>
-              <Form.Control type="text" value={creature.name_latin} readOnly />
-              {!formInput.name_latin.isValid ? (
-                <Form.Control.Feedback type="invalid">
-                  {formInput.name_latin.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
+
             <Form.Group controlId="formBasicNameEn">
               <Form.Label>Tên tiếng anh:</Form.Label>
               <Form.Control

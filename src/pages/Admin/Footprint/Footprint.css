@@ -8,3 +8,26 @@
 .action-group .icon:hover {
     background-color: #8a8787;
 }
+.autocomplete {
+    display: none;
+    background: #fff;
+    position: absolute;
+    overflow: auto;
+    max-height: 300px;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 20px;
+}
+
+.autocomplete.active {
+    display: block;
+}
+.autocomplete li {
+    padding: 10px;
+    cursor: pointer;
+}
+.autocomplete li:hover {
+    background-color: #f2f2f2;
+}
