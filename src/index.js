@@ -21,6 +21,7 @@ import creaturesReducer from './store/reducer/creatures';
 import footprintReducer from './store/reducer/footprint';
 import timberSampleReducer from './store/reducer/timberSample';
 import feedbacksRedecer from './store/reducer/feedbacks';
+import questionReducer from './store/reducer/questions';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -39,7 +40,8 @@ const rootReducer = combineReducers({
   creatures: creaturesReducer,
   footprints: footprintReducer,
   timberSample: timberSampleReducer,
-  feedbacks: feedbacksRedecer
+  feedbacks: feedbacksRedecer,
+  questions: questionReducer
 });
 
 const store = createStore(

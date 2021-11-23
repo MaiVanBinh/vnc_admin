@@ -1,0 +1,6 @@
+.modal-dialog{
+    max-width: 1300px!important;
+}
+.show-image-modal{
+    z-index: 2000!important;
+}

@@ -2,7 +2,7 @@ import React from "react";
 import "./SideBarAdmin.css";
 import { useHistory } from "react-router";
 import { connect } from "react-redux";
-import { IconWood, IconFootPrint, IconFeedbacks } from "../../store/utilities/SVG";
+import { IconWood, IconFootPrint, IconFeedbacks, IconQuestion } from "../../store/utilities/SVG";
 
 const mapStateToProps = (state) => {
   return {
@@ -28,6 +28,7 @@ const SideBarAdmin = (props) => {
     else if (pageRoute === "/dau-chan") setPage(8);
     else if (pageRoute === "/mau-go") setPage(7);
     else if (pageRoute === "/feedbacks") setPage(9);
+    else if (pageRoute === "/questions") setPage(10);
     else setPage(0);
   };
 
@@ -185,6 +186,15 @@ const SideBarAdmin = (props) => {
           <IconFeedbacks width="23px" height="23px" />
         </span>
         <span>Feedbacks</span>
+      </div>
+      <div
+        className={page === 10 ? "menu-item active" : "menu-item"}
+        onClick={() => changePage("/questions")}
+      >
+        <span className="icon">
+          <IconQuestion width="23px" height="23px" />
+        </span>
+        <span>Câu hỏi</span>
       </div>
     </div>
   );

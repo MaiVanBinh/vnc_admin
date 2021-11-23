@@ -12,7 +12,8 @@ const apiName = {
     author: 'author',
     latinDic: 'latin-dic',
     orders: 'orders',
-    families: 'families'
+    families: 'families',
+    questions: 'question'
 }
 
 /**
