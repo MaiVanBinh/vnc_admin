@@ -13,7 +13,8 @@ const apiName = {
     latinDic: 'latin-dic',
     orders: 'orders',
     families: 'families',
-    questions: 'question'
+    questions: 'question',
+    answers: 'answer'
 }
 
 /**

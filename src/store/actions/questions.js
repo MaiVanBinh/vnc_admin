@@ -99,7 +99,7 @@ export const createQuestion = (payload, token) => {
     dispatch(changeQuestionStart());
     const header = headerAuthConfig(token);
     axios
-      .QUESTION(
+      .post(
         `${baseUrl}auth/question`,
         {...payload},
         header

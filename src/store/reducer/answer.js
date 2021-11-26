@@ -2,7 +2,7 @@ import * as actionsType from "../actions/actionTypes";
 
 const initState = null;
 
-const createQuestionSuccess = (state, action) => {
+const createAnswerSuccess = (state, action) => {
   state.push(action.payload);
   return state;
 }
@@ -21,11 +21,11 @@ const reducer = (state = initState, action) => {
     //   return fetchPostDetailSuccess(state, action);
     // case actionsType.POST_END_FORM: return updateObject(state, {formSubmit: false})
     // case actionsType.CHANGE_POST_SUCCESS: return changePostSuccess(state, action);
-    case actionsType.CREATE_QUESTION: return createQuestionSuccess(state, action);
+    case actionsType.CREATE_ANSWER: return createAnswerSuccess(state, action);
     // case actionsType.DELETE_POST_SUCCESS: return deletePostSuccess(state, action);
     // case actionsType.CHANGE_POST_START: return state;
     // case actionsType.CHANGE_POST_ERROR: return state; 
-    case actionsType.SET_QUESTIONS_LIST:
+    case actionsType.SET_ANSWERS_LIST:
       return action.payload
     default:
       return state;
