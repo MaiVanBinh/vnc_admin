@@ -53,32 +53,17 @@ const mapDispatchToProps = (dispatch) => {
         type: actionTypes.SET_LIST_IMAGES,
         payload,
       }),
-    setQuestions: (payload) =>
-      dispatch({
-        type: actionTypes.SET_QUESTIONS_LIST,
-        payload,
-      }),
-    setAnswers: (payload) =>
-      dispatch({
-        type: actionTypes.SET_ANSWERS_LIST,
-        payload,
-      }),
   };
 };
 
 const Question = (props) => {
   const {
     auth,
-    questions,
-    answers,
     setLoader,
-    setQuestions,
-    setAnswers,
     setListImages,
     listImages,
   } = props;
 
-  // const [showFilter, setShowFilter] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -100,6 +85,9 @@ const Question = (props) => {
     is_publish: false,
     language: 'vn'
   });
+
+  const [answers, setAnswers] = useState(null)
+  const [questions, setQuestions] = useState(null)
 
   const [infoPost, setInfoPost] = useState({
     id: null,
@@ -128,7 +116,11 @@ const Question = (props) => {
   const [filterList, setFilterList] = useState({
     page: 1,
     limit: 10,
-    // is_publish: "all",
+  });
+
+  const [filterAnswerList, setFilterAnswerList] = useState({
+    page: 1,
+    limit: 50,
   });
   
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -138,46 +130,17 @@ const Question = (props) => {
     limit: 10,
   });
 
-  const getQuestionList = useCallback(
-    (page) => {
-      setLoader(true);
-      axios({
-        method: "get",
-        url: baseUrl + "question",
-        headers: {
-          Authorization: "Bearer " + auth.token,
-        },
-        params: filterList,
-      }).then((res) => {
-        setLoader(false);
-
-        const { begin, end } = getIndexListPage(
-          filterList.page,
-          filterList.limit,
-          res.data.data.total
-        );
-
-        res.data.data.pages.begin = begin;
-        res.data.data.pages.end = end;
-        
-        console.dir(res.data.data)
-        setQuestions(res.data.data);
-      });
-    },
-    [auth.token, filterList, setLoader, setQuestions]
-  );
-
-  const getAnswerByQuestionId = async (questionId) => {
-    // setLoader(true);
+  const getQuestionList = async () => {
+    setLoader(true);
     const res = await axios({
       method: "get",
-      url: baseUrl + "answer/" + questionId,
+      url: baseUrl + "question",
       headers: {
         Authorization: "Bearer " + auth.token,
       },
-      // params: filterList,
+      params: filterList,
     })
-    // setLoader(false);
+    setLoader(false);
 
     const { begin, end } = getIndexListPage(
       filterList.page,
@@ -185,16 +148,58 @@ const Question = (props) => {
       res.data.data.total
     );
 
-    // res.data.data.pages.begin = begin;
-    // res.data.data.pages.end = end;
-    
-    console.dir(res.data.data)
-    setAnswers(res.data.data);
+    res.data.data.pages.begin = begin;
+    res.data.data.pages.end = end;
+
+    await res.data.data.questions.forEach(async question => {
+      const newAnswer = await fetchTotalAnswer(question.id)
+      question.ans = newAnswer
+    })
+
+    setQuestions(res.data.data);
+  }
+
+  const getAnswerByQuestionId = async (questionId) => {
+    const res = await axios({
+      method: "get",
+      url: baseUrl + "answer/" + questionId,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterAnswerList,
+    })
+
+    const { begin, end } = getIndexListPage(
+      filterAnswerList.page,
+      filterAnswerList.limit,
+      res.data.data.total
+    );
+
+    res.data.data.pages.begin = begin;
+    res.data.data.pages.end = end;
+  
+    setAnswers(res.data.data)
+    return res.data.data
+  }
+
+  const fetchTotalAnswer = async (questionId) => {
+    const filterList = {
+      is_publish: 0
+    }
+    const res = await axios({
+      method: "get",
+      url: baseUrl + "answer/total/" + questionId,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterList,
+    })
+    return res.data.data[0].total
   }
 
   useEffect(() => {
     getQuestionList();
-  }, [getQuestionList]);
+  }, [auth.token, filterList, setLoader, setQuestions]);
 
   // const getListImages = useCallback(() => {
   //   setLoader(true);
@@ -219,19 +224,57 @@ const Question = (props) => {
   //   });
   // }, [auth.token, filterImageList, setListImages, setLoader]);
 
-  const deleteHandle = () => {
-    setLoader(true);
-    axios({
-      method: "delete",
-      url: baseUrl + "auth/posts/" + currItem.id,
+  const censorshipQuestion = async (questionId) => {
+    const res = await axios({
+      method: 'put',
+      url: `http://localhost:8080/vnback/auth/question/censorship/${questionId}`,
       headers: {
         Authorization: "Bearer " + auth.token,
-      },
-    }).then((res) => {
-      setShowDelete(false);
-    });
-  };
+        'Content-Type': 'application/json'
+      }
+    })
+    await getQuestionList(questionId)
+  }
 
+  const deleteQuestion = async () => {
+    const res = await axios({
+      method: 'DELETE',
+      url: `http://localhost:8080/vnback/auth/question/${currItem.id}`,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+        'Content-Type': 'application/json'
+      }
+    })
+    await getQuestionList(currItem.id)
+    setShowDelete(false);
+  }
+
+
+  const updateAnswer = async (questionId, answerId) => {
+    const res = await axios({
+      method: 'put',
+      url: `http://localhost:8080/vnback/auth/answer/${answerId}`,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+        'Content-Type': 'application/json'
+      }
+    })
+    const newAnswer = await getAnswerByQuestionId(questionId)
+    setAnswers(newAnswer)
+  }
+
+  const deleteAnswer = async (questionId, answerId) => {
+    const res = await axios({
+      method: 'DELETE',
+      url: `http://localhost:8080/vnback/auth/answer/${answerId}`,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+        'Content-Type': 'application/json'
+      }
+    })
+    const newAnswer = await getAnswerByQuestionId(questionId)
+    setAnswers(newAnswer)
+  }
 
   const checkValid = (infoPost, attr) => {
     if (attr === "title") {
@@ -265,28 +308,31 @@ const Question = (props) => {
   };
 
   const previewQuestion = async (id) => {
-    await getAnswerByQuestionId(id)
+    const answer = await getAnswerByQuestionId(id)
+    setAnswers(answer)
     setLoader(true);
-    axios({
+    const res = await axios({
       method: "get",
       url: baseUrl + "auth/question/" + id,
       headers: {
         Authorization: "Bearer " + auth.token,
       },
     })
-      .then((res) => {
-        setCurrItem(res.data.data[0]);
-        setLoader(false);
-        setShowPreview(true);
-      })
-      .catch((err) => {
-        setLoader(false);
-      });
+    setCurrItem(res.data.data[0])
+    setLoader(false)
+    setShowPreview(true)
   };
 
   const changePage = (page) => {
     setFilterList({
       ...filterList,
+      page,
+    });
+  };
+
+  const changeAnswerPage = (page) => {
+    setFilterAnswerList({
+      ...filterAnswerList,
       page,
     });
   };
@@ -312,7 +358,6 @@ const Question = (props) => {
               onClick={() => {
                 setSearchKeyword("");
                 setFilterList({
-                  // reset filter
                   page: 1,
                   limit: 10,
                 });
@@ -340,14 +385,6 @@ const Question = (props) => {
               <IconSearch width={15} height={15} color={"#fff"} />
             </Button>
           </Form>
-          {/* <Button
-              className="mr-2"
-              onClick={() => {
-                setShowFilter(true);
-              }}
-            >
-              Filter
-            </Button> */}
         </div>
 
         <Table striped bordered hover>
@@ -357,7 +394,6 @@ const Question = (props) => {
                 #
               </th>
               <th>Tiêu đề</th>
-              {/* <th>Danh mục</th> */}
               <th>
                 Công khai
               </th>
@@ -395,7 +431,7 @@ const Question = (props) => {
                         />
                       )}
                     </td>
-                    <td>aaa</td>
+                    <td>{e.ans}</td>
                     <td>{e.created_at}</td>
                     <td className="d-flex justify-content-around align-item-center">
                       <div
@@ -406,6 +442,7 @@ const Question = (props) => {
                       </div>
                       <div
                         className="icon d-flex align-items-center"
+                        onClick={() => censorshipQuestion(e.id)}
                         // onClick={() => {
                         //   setShowEdit(true);
                         //   setInfoPost({
@@ -420,10 +457,10 @@ const Question = (props) => {
                       </div>
                       <div
                         className="icon d-flex align-items-center"
-                        // onClick={() => {
-                        //   setShowDelete(true);
-                        //   setCurrItem(e);
-                        // }}
+                        onClick={() => {
+                          setShowDelete(true);
+                          setCurrItem(e);
+                        }}
                       >
                         <IconGarbage2
                           color={"#333333"}
@@ -758,7 +795,7 @@ const Question = (props) => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Xóa bài viết</Modal.Title>
+          <Modal.Title>Xóa câu hỏi</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currItem ? 'Bạn có chắc muốn xóa "' + currItem.title + '" ?' : null}
@@ -767,7 +804,7 @@ const Question = (props) => {
           <Button variant="secondary" onClick={() => setShowDelete(false)}>
             Hủy
           </Button>
-          <Button variant="danger" onClick={deleteHandle}>
+          <Button variant="danger" onClick={deleteQuestion}>
             Có
           </Button>
         </Modal.Footer>
@@ -827,6 +864,49 @@ const Question = (props) => {
                 __html: currItem ? currItem.description : "",
               }}
             ></div>
+          </div>
+          <div className="answer-total">
+            {answers && answers.answers ? (
+              answers.answers.map((ans, i) => {
+                return (
+                  <div className="answer">
+                    <div key={i} className="answer-description"
+                    dangerouslySetInnerHTML={{
+                      __html: ans ? ans.description : "",
+                    }}>
+                    </div>
+                    <div className="date-time">
+                      Ngày đăng: <span className="date">{ans.created_at}</span>
+                    </div>
+                    { ans.is_publish == 0 ? (
+                      <div>
+                        <Button variant="success" className="agree" onClick={() => updateAnswer(ans.question_id, ans.id)}>
+                          Duyệt
+                        </Button>
+                        <Button variant="danger" className="delete" onClick={() => deleteAnswer(ans.question_id, ans.id)}>
+                          Xóa
+                        </Button>
+                      </div>
+                      ) : (
+                        <div>
+                          <Button variant="danger" className="delete" onClick={() => deleteAnswer(ans.question_id, ans.id)}>
+                            Xóa
+                          </Button>
+                          <div class="done">
+                            <span>Đã duyệt</span>
+                          </div>
+                        </div>
+
+                        )}
+                  </div>
+                );
+              })
+            ) : null}
+            <div className="pagination mt-4 d-flex justify-content-center">
+              {answers ? (
+                <Pagination pagination={answers.pages} callFetchList={changeAnswerPage} />
+              ) : null}
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>

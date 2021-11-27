@@ -4,3 +4,44 @@
 .show-image-modal{
     z-index: 2000!important;
 }
+.answer-total {
+    margin-top: 60px;
+}
+.answer {
+    margin-bottom: 30px;
+    border: solid #ddd 1px;
+    border-radius: 10px;
+    min-height: 80px;
+    padding: 10px;
+    position: relative;
+    z-index: 1;
+}
+.answer-description {
+    margin-bottom: 20px;
+}
+.agree {
+    margin-right: 40px;
+    font-size: 10px;
+}
+.delete {
+    font-size: 10px;
+}
+.done {
+    background-color: #28A745;
+    font-size: 10px;
+    color: #fff;
+    width: 60px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.date-time {
+    margin-bottom: 10px;
+}
+.date {
+    font-weight: bold;
+}
