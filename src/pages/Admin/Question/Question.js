@@ -15,7 +15,6 @@ import {
 import { Editor } from "@tinymce/tinymce-react";
 import Pagination from "../../../components/Panigation/Pagination";
 import {
-  validateLength,
   getIndexListPage,
 } from "../../../store/utilities/common";
 import { apiKeyEditor } from "../../../constant";
@@ -70,20 +69,21 @@ const Question = (props) => {
   const [showPreview, setShowPreview] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
+  const [imageSearch, setImageSearch] = useState({
+    name: "",
+  });
+
+  const [images, setImages] = useState([]);
   const [showImage, setShowImage] = useState({
     active: false,
     callback: null,
   });
 
-  const [initInfoPost, setInitInfoPost] = useState({
+  const [initInfoQuestion, setInitInfoQuestion] = useState({
     id: null,
     title: "",
-    content: "",
-    images: "",
-    category: null,
     description: "",
-    is_publish: false,
-    language: 'vn'
+    is_publish: 1,
   });
 
   const [answers, setAnswers] = useState(null)
@@ -92,26 +92,11 @@ const Question = (props) => {
   const [filterMode, setFilterMode] = useState(-1)
   const [questions, setQuestions] = useState(null)
 
-  const [infoPost, setInfoPost] = useState({
+  const [infoQuestion, setInfoQuestion] = useState({
     id: null,
     title: "",
-    content: "",
-    images: "",
-    category: null,
-    language: "vn",
     description: "",
-    is_publish: false,
-  });
-
-  const [validAttr, setValidAttr] = useState({
-    title: {
-      value: false,
-      message: ">= 4 ký tự",
-    },
-    description: {
-      value: false,
-      message: ">= 4 ký tự",
-    },
+    is_publish: 1,
   });
 
   const [currItem, setCurrItem] = useState(null);
@@ -200,10 +185,6 @@ const Question = (props) => {
     return res.data.data[0].total
   }
 
-  useEffect(() => {
-    getQuestionList();
-  }, [auth.token, filterList, setLoader, setQuestions]);
-
   const getListImages = useCallback(() => {
     setLoader(true);
     axios({
@@ -226,6 +207,25 @@ const Question = (props) => {
       setLoader(false);
     });
   }, [auth.token, filterImageList, setListImages, setLoader]);
+
+  const imagesHandler = (item) => {
+    const newImages = [...images, item];
+    setImages(newImages);
+    showImage.callback(item.url, { title: item.name });
+    setShowImage({
+      active: false,
+      callback: null,
+    });
+  };
+
+  useEffect(() => {
+    getQuestionList();
+  }, [auth.token, filterList, setLoader, setQuestions]);
+
+  useEffect(() => {
+    getListImages();
+  }, [filterImageList, getListImages]);
+
 
   const censorshipQuestion = async (questionId) => {
     const res = await axios({
@@ -340,6 +340,39 @@ const Question = (props) => {
   const closeShowPreview = () => {
     setShowPreview(false)
   }
+
+  const changePageImageList = (page) => {
+    setFilterImageList({
+      ...filterImageList,
+      page,
+    });
+  };
+
+  const createQuestion = () => {
+    const is_publish = infoQuestion.is_publish == "1" ? 1 : 0;
+    setLoader(true);
+    axios({
+      method: "post",
+      url: baseUrl + "question",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      data: {
+        ...infoQuestion,
+        is_publish: is_publish
+      },
+    })
+    .then((res) => {
+      setShowCreate(false);
+      getQuestionList();
+      setLoader(false);
+      setInfoQuestion(initInfoQuestion);
+    })
+    .catch((err) => {
+      setLoader(false);
+    });
+  }
+
   return (
     <div>
       <div className="container-fluid pt-3 pb-5">
@@ -443,15 +476,6 @@ const Question = (props) => {
                       <div
                         className="icon d-flex align-items-center"
                         onClick={() => censorshipQuestion(e.id)}
-                        // onClick={() => {
-                        //   setShowEdit(true);
-                        //   setInfoPost({
-                        //     ...e,
-                        //     is_publish: e.is_publish === "0" ? false : true,
-                        //   });
-                        //   setImages(e.image);
-                        //   setOldImages(e.image);
-                        // }}
                       >
                         <IconEdit color={"#333333"} width={15} height={15} />
                       </div>
@@ -491,166 +515,11 @@ const Question = (props) => {
         </div>
       </div>
 
-      {/* edit */}
-      {/* <Modal
-        show={showEdit}
-        onHide={() => {
-          setShowEdit(false);
-          setInfoPost(initInfoPost);
-        }}
-        backdrop="static"
-        keyboard={false}
-        enforceFocus={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Sửa bài viết</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formBasicTitle">
-              <Form.Label>Tên tiêu đề</Form.Label>
-              <Form.Control
-                className={
-                  validAttr.title.value ? "form-control is-invalid" : null
-                }
-                type="title"
-                placeholder="Nhập tên danh mục"
-                value={infoPost.title}
-                onChange={(v) => {
-                  checkValid({ ...infoPost, title: v.target.value }, "title");
-                  setInfoPost({ ...infoPost, title: v.target.value });
-                }}
-              />
-              {validAttr.title.value ? (
-                <Form.Control.Feedback type="invalid">
-                  {validAttr.title.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicTitleDescription">
-              <Form.Label>Miêu tả</Form.Label>
-              <Form.Control
-                className={
-                  validAttr.description.value ? "form-control is-invalid" : null
-                }
-                as="textarea"
-                rows={3}
-                type="title"
-                placeholder="Nhập miêu tả"
-                value={infoPost.description}
-                onChange={(v) => {
-                  checkValid(
-                    { ...infoPost, description: v.target.value },
-                    "description"
-                  );
-                  setInfoPost({ ...infoPost, description: v.target.value });
-                }}
-              />
-              {validAttr.description.value ? (
-                <Form.Control.Feedback type="invalid">
-                  {validAttr.description.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicCategory">
-              <Form.Label>Danh mục</Form.Label>
-              {category ? (
-                <Form.Control
-                  as="select"
-                  onChange={(v) =>
-                    setInfoPost({ ...infoPost, category: v.target.value })
-                  }
-                  defaultValue={infoPost.category}
-                >
-                  {category.category.map((e, i) => (
-                    <option key={i} value={e.id}>
-                      {e.name_vn}
-                    </option>
-                  ))}
-                </Form.Control>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicMode">
-              <Form.Label>Chế độ</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={infoPost.is_publish}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, is_publish: v.target.value })
-                }
-              >
-                <option value={true}>Public</option>
-                <option value={false}>Private</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="formBasicMode">
-              <Form.Label>Loại ngôn ngữ</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={infoPost.language}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, language: v.target.value })
-                }
-              >
-                <option value={"vn"}>Việt Nam</option>
-                <option value={"en"}>English</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="formBasicContent">
-              <Form.Label>Nội dung</Form.Label>
-              <Editor
-                apiKey={apiKeyEditor}
-                init={{
-                  body_id: "my_edit",
-                  height: 800,
-                  width: "100%",
-                  menubar: true,
-                  automatic_uploads: true,
-                  file_picker_types: "image",
-                  file_picker_callback: (callback) => {
-                    setShowImage({
-                      active: true,
-                      callback,
-                    });
-                  },
-                  plugins: [
-                    "advlist autolink lists link image charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen",
-                    "insertdatetime media table paste code help wordcount",
-                  ],
-                  toolbar1:
-                    "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
-                  toolbar2: "forecolor backcolor emoticons",
-                }}
-                value={infoPost.content}
-                onEditorChange={(value) => {
-                  setInfoPost({ ...infoPost, content: value });
-                }}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setShowEdit(false);
-              setInfoPost(initInfoPost);
-            }}
-          >
-            Đóng
-          </Button>
-          <Button variant="primary" onClick={editHandle}>
-            Lưu
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
-
       {/* create */}
       <Modal
         show={showCreate}
         onHide={() => {
-          setInfoPost(initInfoPost);
+          setInfoQuestion(initInfoQuestion);
           setShowCreate(false);
         }}
         backdrop="static"
@@ -665,41 +534,31 @@ const Question = (props) => {
             <Form.Group controlId="formBasicTitle">
               <Form.Label>Tên tiêu đề</Form.Label>
               <Form.Control
-                className={
-                  validAttr.title.value ? "form-control is-invalid" : null
-                }
                 type="title"
                 placeholder="Nhập tên danh mục"
-                value={infoPost.title}
+                value={infoQuestion.title}
                 onChange={(v) => {
-                  setInfoPost({ ...infoPost, title: v.target.value });
+                  setInfoQuestion({ ...infoQuestion, title: v.target.value });
                 }}
               />
-              {validAttr.title.value ? (
-                <Form.Control.Feedback type="invalid">
-                  {validAttr.title.message}
-                </Form.Control.Feedback>
-              ) : null}
             </Form.Group>
             <Form.Group controlId="formBasicMode">
               <Form.Label>Chế độ</Form.Label>
               <Form.Control
                 as="select"
-                defaultValue={false}
+                defaultValue={1}
                 onChange={(v) =>
-                  setInfoPost({ ...infoPost, is_publish: v.target.value })
+                  setInfoQuestion({ ...infoQuestion, is_publish: v.target.value })
                 }
               >
-                <option value={true}>Public</option>
-                <option value={false}>Private</option>
+                <option value={1}>Public</option>
+                <option value={0}>Private</option>
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="formBasicContent">
               <Form.Label>Nội dung</Form.Label>
               <Editor
-                //   onEditorChange={onDescriptionChangeHandler}
                 apiKey={apiKeyEditor}
-                //   initialValue={creature.description.replaceAll("<br />", "")}
                 images_upda
                 init={{
                   height: 800,
@@ -722,9 +581,9 @@ const Question = (props) => {
                     });
                   },
                 }}
-                value={infoPost.content}
+                value={infoQuestion.description}
                 onEditorChange={(value) =>
-                  setInfoPost({ ...infoPost, content: value })
+                  setInfoQuestion({ ...infoQuestion, description: value })
                 }
               />
             </Form.Group>
@@ -734,13 +593,13 @@ const Question = (props) => {
           <Button
             variant="secondary"
             onClick={() => {
-              setInfoPost(initInfoPost);
+              setInfoQuestion(initInfoQuestion);
               setShowCreate(false);
             }}
           >
             Đóng
           </Button>
-          <Button variant="primary">
+          <Button variant="primary" onClick={createQuestion}>
             Lưu
           </Button>
         </Modal.Footer>
@@ -896,7 +755,107 @@ const Question = (props) => {
         </Modal.Footer>
       </Modal>
 
-      
+      <Modal
+        show={showImage.active}
+        onHide={() =>
+          setShowImage({
+            active: false,
+            callback: null,
+          })
+        }
+        backdrop="static"
+        keyboard={false}
+        className="show-image-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Chọn ảnh</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text id="basic-addon1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                </svg>
+              </InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              placeholder="Tên"
+              aria-label="name"
+              id="image-name"
+              aria-describedby="basic-addon1"
+              value={imageSearch.name}
+              onChange={(v) => {
+                const name = v.target.value;
+                setImageSearch((prev) => ({ ...prev, name: name }));
+              }}
+              onKeyPress={(e) => {
+                if (e.charCode === 13) {
+                  setFilterImageList({
+                    ...filterImageList,
+                    name: imageSearch.name,
+                  });
+                }
+              }}
+            />
+          </InputGroup>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Thumbnail</th>
+                <th>Tên ảnh</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listImages &&
+                listImages.images.map((e, i) => {
+                  let beginIndex = listImages.pages.begin;
+                  return (
+                    <tr
+                      key={i}
+                      onClick={() => imagesHandler(e)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>{beginIndex + i}</td>
+                      <td>
+                        <img
+                          src={e.url}
+                          alt="error"
+                          style={{ width: "100px" }}
+                        />
+                      </td>
+                      <td>{e.name}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </Table>
+          <div className="pagination mt-4 d-flex justify-content-center">
+            {listImages ? (
+              <Pagination
+                pagination={listImages.pages}
+                callFetchList={changePageImageList}
+              />
+            ) : null}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowImage({ active: false, callback: null })}
+          >
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Filter
         show={showFilter}
