@@ -87,6 +87,9 @@ const Question = (props) => {
   });
 
   const [answers, setAnswers] = useState(null)
+  const [displayAnswers, setDisplayAnswers] = useState(null)
+  const [totalAnswers, setTotalAnswers] = useState(0)
+  const [filterMode, setFilterMode] = useState(-1)
   const [questions, setQuestions] = useState(null)
 
   const [infoPost, setInfoPost] = useState({
@@ -201,33 +204,33 @@ const Question = (props) => {
     getQuestionList();
   }, [auth.token, filterList, setLoader, setQuestions]);
 
-  // const getListImages = useCallback(() => {
-  //   setLoader(true);
-  //   axios({
-  //     method: "get",
-  //     url: baseUrl + "auth/assets",
-  //     headers: {
-  //       Authorization: "Bearer " + auth.token,
-  //     },
-  //     params: filterImageList,
-  //   }).then((res) => {
-  //     const { begin, end } = getIndexListPage(
-  //       filterImageList.page,
-  //       filterImageList.limit,
-  //       res.data.data.total
-  //     );
-  //     res.data.data.pages.begin = begin;
-  //     res.data.data.pages.end = end;
+  const getListImages = useCallback(() => {
+    setLoader(true);
+    axios({
+      method: "get",
+      url: baseUrl + "auth/assets",
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterImageList,
+    }).then((res) => {
+      const { begin, end } = getIndexListPage(
+        filterImageList.page,
+        filterImageList.limit,
+        res.data.data.total
+      );
+      res.data.data.pages.begin = begin;
+      res.data.data.pages.end = end;
 
-  //     setListImages(res.data.data);
-  //     setLoader(false);
-  //   });
-  // }, [auth.token, filterImageList, setListImages, setLoader]);
+      setListImages(res.data.data);
+      setLoader(false);
+    });
+  }, [auth.token, filterImageList, setListImages, setLoader]);
 
   const censorshipQuestion = async (questionId) => {
     const res = await axios({
       method: 'put',
-      url: `http://localhost:8080/vnback/auth/question/censorship/${questionId}`,
+      url: baseUrl + `auth/question/censorship/${questionId}`,
       headers: {
         Authorization: "Bearer " + auth.token,
         'Content-Type': 'application/json'
@@ -239,7 +242,7 @@ const Question = (props) => {
   const deleteQuestion = async () => {
     const res = await axios({
       method: 'DELETE',
-      url: `http://localhost:8080/vnback/auth/question/${currItem.id}`,
+      url: baseUrl + `auth/question/${currItem.id}`,
       headers: {
         Authorization: "Bearer " + auth.token,
         'Content-Type': 'application/json'
@@ -249,11 +252,10 @@ const Question = (props) => {
     setShowDelete(false);
   }
 
-
   const updateAnswer = async (questionId, answerId) => {
     const res = await axios({
       method: 'put',
-      url: `http://localhost:8080/vnback/auth/answer/${answerId}`,
+      url: baseUrl + `auth/answer/${answerId}`,
       headers: {
         Authorization: "Bearer " + auth.token,
         'Content-Type': 'application/json'
@@ -266,7 +268,7 @@ const Question = (props) => {
   const deleteAnswer = async (questionId, answerId) => {
     const res = await axios({
       method: 'DELETE',
-      url: `http://localhost:8080/vnback/auth/answer/${answerId}`,
+      url: baseUrl + `auth/answer/${answerId}`,
       headers: {
         Authorization: "Bearer " + auth.token,
         'Content-Type': 'application/json'
@@ -276,40 +278,15 @@ const Question = (props) => {
     setAnswers(newAnswer)
   }
 
-  const checkValid = (infoPost, attr) => {
-    if (attr === "title") {
-      if (validateLength(infoPost.title, 4) === "incorrect") {
-        setValidAttr((prev) => {
-          return { ...prev, title: { ...prev.title, value: true } };
-        });
-        return false;
-      } else {
-        setValidAttr((prev) => {
-          return { ...prev, title: { ...prev.title, value: false } };
-        });
-      }
-    }
-    if (attr === "description") {
-      if (validateLength(infoPost.description, 4) === "incorrect") {
-        setValidAttr((prev) => {
-          return { ...prev, description: { ...prev.description, value: true } };
-        });
-        return false;
-      } else {
-        setValidAttr((prev) => {
-          return {
-            ...prev,
-            description: { ...prev.description, value: false },
-          };
-        });
-      }
-    }
-    return true;
-  };
+  useEffect(() => {
+    setFilterKindAnswer(filterMode, answers)
+  }, [setFilterMode, setAnswers, answers])
 
   const previewQuestion = async (id) => {
     const answer = await getAnswerByQuestionId(id)
     setAnswers(answer)
+    setDisplayAnswers(answer)
+    setTotalAnswers(answer.answers.length)
     setLoader(true);
     const res = await axios({
       method: "get",
@@ -340,6 +317,29 @@ const Question = (props) => {
   const onSearchHandler = (filter) => {
     setFilterList({ ...filterList, ...filter });
   };
+
+  const setFilterKindAnswer = (value, answers) => {
+    if(answers) {
+      setFilterMode(value)
+      if(value == -1) {
+        setDisplayAnswers(answers)
+        setTotalAnswers(answers.answers.length)
+      } else {
+        const filter = answers.answers.filter(ans => ans.is_publish == value)
+        const total = filter.length
+        const newAnswer = {
+          pages: answers.pages,
+          answers: filter
+        }
+        setTotalAnswers(total)
+        setDisplayAnswers(newAnswer)
+      }
+    }
+  }
+
+  const closeShowPreview = () => {
+    setShowPreview(false)
+  }
   return (
     <div>
       <div className="container-fluid pt-3 pb-5">
@@ -672,40 +672,12 @@ const Question = (props) => {
                 placeholder="Nhập tên danh mục"
                 value={infoPost.title}
                 onChange={(v) => {
-                  checkValid({ ...infoPost, title: v.target.value }, "title");
                   setInfoPost({ ...infoPost, title: v.target.value });
                 }}
               />
               {validAttr.title.value ? (
                 <Form.Control.Feedback type="invalid">
                   {validAttr.title.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicTitleDescription">
-              <Form.Label>Miêu tả</Form.Label>
-              <Form.Control
-                className={
-                  validAttr.description.value
-                    ? "form-control is-invalid"
-                    : null
-                }
-                as="textarea"
-                rows={3}
-                type="title"
-                placeholder="Nhập miêu tả"
-                value={infoPost.description}
-                onChange={(v) => {
-                  checkValid(
-                    { ...infoPost, description: v.target.value },
-                    "description"
-                  );
-                  setInfoPost({ ...infoPost, description: v.target.value });
-                }}
-              />
-              {validAttr.description.value ? (
-                <Form.Control.Feedback type="invalid">
-                  {validAttr.description.message}
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
@@ -720,19 +692,6 @@ const Question = (props) => {
               >
                 <option value={true}>Public</option>
                 <option value={false}>Private</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="formBasicMode">
-              <Form.Label>Loại ngôn ngữ</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={infoPost.language}
-                onChange={(v) =>
-                  setInfoPost({ ...infoPost, language: v.target.value })
-                }
-              >
-                <option value={"vn"}>Việt Nam</option>
-                <option value={"en"}>English</option>
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="formBasicContent">
@@ -813,7 +772,8 @@ const Question = (props) => {
       {/* show preview */}
       <Modal
         show={showPreview}
-        onHide={() => setShowPreview(false)}
+        // onHide={() => setShowPreview(false)}
+        onHide={() => closeShowPreview}
         size="lg"
         backdrop="static"
         keyboard={false}
@@ -866,11 +826,31 @@ const Question = (props) => {
             ></div>
           </div>
           <div className="answer-total">
-            {answers && answers.answers ? (
-              answers.answers.map((ans, i) => {
+            <div className="filter-answer">
+              <Form>
+                <Form.Group className="mode-form" controlId="formBasicMode">
+                  <Form.Label className="label-answer">Chế độ :</Form.Label>
+                  <Form.Control
+                    className="form-control-answer"
+                    as="select"
+                    defaultValue={filterMode}
+                    onChange={(v) =>
+                      setFilterKindAnswer(v.target.value, answers)
+                    }
+                  >
+                    <option value={-1}>Tất cả</option>
+                    <option value={1}>Public</option>
+                    <option value={0}>Private</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+              <span className="answer-number">Số lượng : {totalAnswers}</span>
+            </div>
+            {displayAnswers && displayAnswers.answers ? (
+              displayAnswers.answers.map((ans, i) => {
                 return (
-                  <div className="answer">
-                    <div key={i} className="answer-description"
+                  <div key={i} className="answer">
+                    <div className="answer-description"
                     dangerouslySetInnerHTML={{
                       __html: ans ? ans.description : "",
                     }}>
@@ -892,7 +872,7 @@ const Question = (props) => {
                           <Button variant="danger" className="delete" onClick={() => deleteAnswer(ans.question_id, ans.id)}>
                             Xóa
                           </Button>
-                          <div class="done">
+                          <div className="done">
                             <span>Đã duyệt</span>
                           </div>
                         </div>
@@ -903,8 +883,8 @@ const Question = (props) => {
               })
             ) : null}
             <div className="pagination mt-4 d-flex justify-content-center">
-              {answers ? (
-                <Pagination pagination={answers.pages} callFetchList={changeAnswerPage} />
+              {displayAnswers ? (
+                <Pagination pagination={displayAnswers.pages} callFetchList={changeAnswerPage} />
               ) : null}
             </div>
           </div>
@@ -915,6 +895,8 @@ const Question = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      
 
       <Filter
         show={showFilter}

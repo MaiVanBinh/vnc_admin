@@ -5,11 +5,13 @@
     z-index: 2000!important;
 }
 .answer-total {
+    border: solid 1px black;
     margin-top: 60px;
+    padding: 10px;
 }
 .answer {
     margin-bottom: 30px;
-    border: solid #ddd 1px;
+    border: solid #121212 1px;
     border-radius: 10px;
     min-height: 80px;
     padding: 10px;
@@ -44,4 +46,23 @@
 }
 .date {
     font-weight: bold;
+}
+.filter-answer {
+    margin-bottom: 20px;
+}
+.mode-form {
+    display: flex;
+    align-items: center;
+}
+.form-control-answer {
+    width: unset !important;
+}
+.label-answer {
+    margin-bottom: 0px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+.answer-number {
+    font-weight: bold;
+    margin-bottom: 10px;
 }
