@@ -22,14 +22,12 @@ import {
   IconPlus,
   IconRefresh,
   IconSearch,
-  IconFilter,
   IconCheck,
   IconMultiply,
   IconView,
   IconEdit,
   IconGarbage2,
 } from "../../../store/utilities/SVG";
-import Filter from "./Filter/Filter";
 import { colors } from "../../../store/utilities/contants";
 
 const mapStateToProps = (state) => {
@@ -63,11 +61,9 @@ const Question = (props) => {
     listImages,
   } = props;
 
-  const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
 
   const [imageSearch, setImageSearch] = useState({
     name: "",
@@ -314,10 +310,6 @@ const Question = (props) => {
     });
   };
 
-  const onSearchHandler = (filter) => {
-    setFilterList({ ...filterList, ...filter });
-  };
-
   const setFilterKindAnswer = (value, answers) => {
     if(answers) {
       setFilterMode(value)
@@ -397,9 +389,6 @@ const Question = (props) => {
               }}
             >
               <IconRefresh width={15} height={15} color={"#fff"} />
-            </Button>
-            <Button className="mr-2" onClick={() => setShowFilter(true)}>
-              <IconFilter width={15} height={15} color={"#fff"} />
             </Button>
           </div>
           <Form inline className="searchCp">
@@ -856,12 +845,6 @@ const Question = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <Filter
-        show={showFilter}
-        closeHandler={() => setShowFilter(false)}
-        search={onSearchHandler}
-      />
     </div>
   );
 };
