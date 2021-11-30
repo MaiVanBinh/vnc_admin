@@ -23,6 +23,7 @@ import timberSampleReducer from './store/reducer/timberSample';
 import feedbacksRedecer from './store/reducer/feedbacks';
 import questionReducer from './store/reducer/questions';
 import answerReducer from './store/reducer/answer';
+import eventReducer from './store/reducer/event';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -43,7 +44,8 @@ const rootReducer = combineReducers({
   timberSample: timberSampleReducer,
   feedbacks: feedbacksRedecer,
   questions: questionReducer,
-  answers: answerReducer
+  answers: answerReducer,
+  events: eventReducer
 });
 
 const store = createStore(

@@ -419,9 +419,9 @@ const Question = (props) => {
               <th>
                 Công khai
               </th>
-              <th className="d-flex justify-content-center align-item-center">
+              {/* <th className="d-flex justify-content-center align-item-center">
                 Comment mới
-              </th>
+              </th> */}
               <th>Ngày tạo</th>
               <th className="d-flex justify-content-center align-item-center">
                 Thao tác
@@ -453,7 +453,7 @@ const Question = (props) => {
                         />
                       )}
                     </td>
-                    <td>{e.ans}</td>
+                    {/* <td>{e.ans}</td> */}
                     <td>{e.created_at}</td>
                     <td className="d-flex justify-content-around align-item-center">
                       <div

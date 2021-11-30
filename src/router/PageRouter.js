@@ -64,6 +64,11 @@ const publicRoutes = [
     exact: true,
     component: lazy(() => import("./../pages/Admin/Question/Question")),
   },
+  {
+    path: "events",
+    exact: true,
+    component: lazy(() => import("./../pages/Admin/Event/Event")),
+  },
 ];
 
 function PrivateRoute({ children, ...rest }) {

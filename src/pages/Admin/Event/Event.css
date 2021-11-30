@@ -1,0 +1,23 @@
+.modal-dialog{
+    max-width: 1300px!important;
+}
+.show-image-modal{
+    z-index: 2000!important;
+}
+.select-time {
+    display: flex;
+    justify-content: space-between;
+}
+.start-time {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+.end-time {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+.start-label, .end-label {
+    margin-bottom: 0;
+}

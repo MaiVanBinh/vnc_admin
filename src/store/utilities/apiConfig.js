@@ -14,7 +14,8 @@ const apiName = {
     orders: 'orders',
     families: 'families',
     questions: 'question',
-    answers: 'answer'
+    answers: 'answer',
+    event: 'campaign-event'
 }
 
 /**

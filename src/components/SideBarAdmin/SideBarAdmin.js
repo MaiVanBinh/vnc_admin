@@ -29,6 +29,7 @@ const SideBarAdmin = (props) => {
     else if (pageRoute === "/mau-go") setPage(7);
     else if (pageRoute === "/feedbacks") setPage(9);
     else if (pageRoute === "/questions") setPage(10);
+    else if (pageRoute === "/event") setPage(11);
     else setPage(0);
   };
 
@@ -195,6 +196,15 @@ const SideBarAdmin = (props) => {
           <IconQuestion width="23px" height="23px" />
         </span>
         <span>Câu hỏi</span>
+      </div>
+      <div
+        className={page === 11 ? "menu-item active" : "menu-item"}
+        onClick={() => changePage("/events")}
+      >
+        <span className="icon">
+          <IconQuestion width="23px" height="23px" />
+        </span>
+        <span>Sự kiện</span>
       </div>
     </div>
   );
