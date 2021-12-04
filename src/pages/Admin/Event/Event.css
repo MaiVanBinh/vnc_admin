@@ -21,3 +21,24 @@
 .start-label, .end-label {
     margin-bottom: 0;
 }
+.users {
+    padding: 20px;
+    border: solid 1px black;
+}
+.user {
+    border: solid #ddd 1px;
+    height: 100px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+}
+.user-number {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+.user-info {
+    display: grid;
+}

@@ -75,12 +75,14 @@ const Event = (props) => {
     listImages,
   } = props;
 
+  const [registers, setRegisters] = useState(null)
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showEdit, setShowEdit] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+
 
   const [showImage, setShowImage] = useState({
     active: false,
@@ -138,6 +140,12 @@ const Event = (props) => {
     limit: 10,
     is_publish: "all",
   });
+
+  const [filterRegisterList, setFilterRegisterList] = useState({
+    page: 1,
+    limit: 50,
+  });
+  
   
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterImageList, setFilterImageList] = useState({
@@ -174,6 +182,29 @@ const Event = (props) => {
     },
     [auth.token, filterList, setLoader, setEvents]
   );
+
+  const getRegistersByEventId = async (eventId) => {
+    const res = await axios({
+      method: "get",
+      url: baseUrl + "auth/campaign-event/" + eventId,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      },
+      params: filterRegisterList,
+    })
+
+    const { begin, end } = getIndexListPage(
+      filterRegisterList.page,
+      filterRegisterList.limit,
+      res.data.data.total
+    );
+
+    res.data.data.pages.begin = begin;
+    res.data.data.pages.end = end;
+  
+    setRegisters(res.data.data)
+    return res.data.data
+  }
 
   useEffect(() => {
     getEventList();
@@ -313,7 +344,9 @@ const Event = (props) => {
     return true;
   };
 
-  const previewEvent = (id) => {
+  const previewEvent = async (id) => {
+    const registers = await getRegistersByEventId(id)
+    setRegisters(registers)
     setLoader(true);
     axios({
       method: "get",
@@ -921,6 +954,30 @@ const Event = (props) => {
                 __html: currItem ? currItem.content : "",
               }}
             ></div>
+          </div>
+          <div className='users'>
+            {registers && registers.registers ? (
+                registers.registers.map((user, i) => {
+                  return (
+                    <div key={i} className="user">
+                      <div className="user-number">
+                        {i + 1}
+                      </div>
+                      <div className="user-info">
+                        <span>Tên người tham gia : {user.fullname}</span>
+                        <span>Số điện thoại : {user.phone}</span>
+                        <span>Gmail : {user.gmail}</span>
+                        <span>Ngày sinh  : {user.dob}</span>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : null}
+            <div className="pagination mt-4 d-flex justify-content-center">
+              {registers ? (
+                <Pagination pagination={registers.pages} />
+              ) : null}
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
