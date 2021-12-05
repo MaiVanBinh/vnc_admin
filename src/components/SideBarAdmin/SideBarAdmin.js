@@ -2,7 +2,7 @@ import React from "react";
 import "./SideBarAdmin.css";
 import { useHistory } from "react-router";
 import { connect } from "react-redux";
-import { IconWood, IconFootPrint, IconFeedbacks, IconQuestion } from "../../store/utilities/SVG";
+import { IconWood, IconFootPrint, IconFeedbacks, IconQuestion, IconEvent } from "../../store/utilities/SVG";
 
 const mapStateToProps = (state) => {
   return {
@@ -202,7 +202,7 @@ const SideBarAdmin = (props) => {
         onClick={() => changePage("/events")}
       >
         <span className="icon">
-          <IconQuestion width="23px" height="23px" />
+          <IconEvent width="23px" height="23px" />
         </span>
         <span>Sự kiện</span>
       </div>
