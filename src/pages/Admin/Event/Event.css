@@ -27,10 +27,11 @@
 }
 .user {
     border: solid #ddd 1px;
-    height: 100px;
+    height: 140px;
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
+    position: relative;
 }
 .user-number {
     width: 40px;
@@ -41,4 +42,43 @@
 }
 .user-info {
     display: grid;
+}
+.agree {
+    margin-right: 40px;
+    font-size: 10px;
+}
+.delete {
+    font-size: 10px;
+}
+.done {
+    background-color: #28A745;
+    font-size: 10px;
+    color: #fff;
+    width: 60px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.filter-user {
+    margin-bottom: 20px;
+}
+.mode-form {
+    display: flex;
+    align-items: center;
+}
+.form-control-user {
+    width: unset !important;
+}
+.label-user {
+    margin-bottom: 0px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+.user-total {
+    font-weight: bold;
+    margin-bottom: 10px;
 }
