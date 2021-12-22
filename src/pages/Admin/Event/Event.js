@@ -103,6 +103,7 @@ const Event = (props) => {
     title: "",
     is_publish: false,
     language: "vn",
+    images: "",
     description: "",
     content: "",
     start_date: "",
@@ -114,6 +115,7 @@ const Event = (props) => {
   const [infoEvent, setInfoEvent] = useState({
     id: null,
     title: "",
+    images: "",
     is_publish: false,
     language: "vn",
     description: "",
@@ -423,8 +425,7 @@ const Event = (props) => {
   }
 
   const imagesHandler = (item) => {
-    const newImages = [...images, item];
-    setImages(newImages);
+    setImages(item);
     showImage.callback(item.url, { title: item.name });
     setShowImage({
       active: false,
