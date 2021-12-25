@@ -27,10 +27,12 @@ const SideBarAdmin = (props) => {
 
   const changePage = (pageRoute) => {
     history.push(pageRoute);
-    if (pageRoute === "/bai-viet") setPage(1);
-    else if (pageRoute === "/quan-li-anh") setPage(2);
-    else if (pageRoute === "/users" || pageRoute === "/tai-khoan") setPage(3);
+    if (pageRoute === "/dashboard") setPage(0);
+    else if (pageRoute === "/danh-muc") setPage(1);
+    else if (pageRoute === "/bai-viet") setPage(2);
+    else if (pageRoute === "/quan-li-anh") setPage(3);
     else if (pageRoute === "/phan-loai-dong-vat") setPage(4);
+    else if (pageRoute === "/users" || pageRoute === "/tai-khoan") setPage(5);
     else if (pageRoute === "/quan-li-sinh-vat") setPage(6);
     else if (pageRoute === "/dau-chan") setPage(8);
     else if (pageRoute === "/mau-go") setPage(7);
@@ -45,6 +47,12 @@ const SideBarAdmin = (props) => {
     <div className="main-menu-container">
       <div
         className={page === 0 ? "menu-item active" : "menu-item"}
+        onClick={() => changePage("/dashboard")}
+      >
+        <span>Bảng điều khiển</span>
+      </div>
+      <div
+        className={page === 1 ? "menu-item active" : "menu-item"}
         onClick={() => changePage("/danh-muc")}
       >
         <span className="icon">
@@ -63,7 +71,7 @@ const SideBarAdmin = (props) => {
         <span>Danh mục</span>
       </div>
       <div
-        className={page === 1 ? "menu-item active" : "menu-item"}
+        className={page === 2 ? "menu-item active" : "menu-item"}
         onClick={() => changePage("/bai-viet")}
       >
         <span className="icon">
@@ -81,7 +89,7 @@ const SideBarAdmin = (props) => {
         <span>Bài viết</span>
       </div>
       <div
-        className={page === 2 ? "menu-item active" : "menu-item"}
+        className={page === 3 ? "menu-item active" : "menu-item"}
         onClick={() => changePage("/quan-li-anh")}
       >
         <span className="icon">
@@ -117,7 +125,7 @@ const SideBarAdmin = (props) => {
       </div>
       {auth.user && auth.user.role === "1" ? ( // super admin
         <div
-          className={page === 3 ? "menu-item active" : "menu-item"}
+          className={page === 5 ? "menu-item active" : "menu-item"}
           onClick={() => changePage("/users")}
         >
           <span className="icon">
@@ -136,7 +144,7 @@ const SideBarAdmin = (props) => {
 
       {auth.user && auth.user.role === "0" ? ( // admin
         <div
-          className={page === 3 ? "menu-item active" : "menu-item"}
+          className={page === 5 ? "menu-item active" : "menu-item"}
           onClick={() => changePage("/tai-khoan")}
         >
           <span className="icon">

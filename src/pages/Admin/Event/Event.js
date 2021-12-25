@@ -82,6 +82,9 @@ const Event = (props) => {
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [totalRegisters, setTotalRegisters] = useState(0)
+  const [displayRegisters, setDisplayRegisters] = useState(null)
+  const [filterMode, setFilterMode] = useState(-1)
 
 
   const [showImage, setShowImage] = useState({
@@ -100,6 +103,7 @@ const Event = (props) => {
     title: "",
     is_publish: false,
     language: "vn",
+    images: "",
     description: "",
     content: "",
     start_date: "",
@@ -111,6 +115,7 @@ const Event = (props) => {
   const [infoEvent, setInfoEvent] = useState({
     id: null,
     title: "",
+    images: "",
     is_publish: false,
     language: "vn",
     description: "",
@@ -205,6 +210,11 @@ const Event = (props) => {
     setRegisters(res.data.data)
     return res.data.data
   }
+
+  useEffect(() => {
+    setFilterKindRegister(filterMode, registers)
+  }, [setFilterMode, setRegisters, registers])
+
 
   useEffect(() => {
     getEventList();
@@ -347,7 +357,9 @@ const Event = (props) => {
   const previewEvent = async (id) => {
     const registers = await getRegistersByEventId(id)
     setRegisters(registers)
+    setDisplayRegisters(registers)
     setLoader(true);
+    setTotalRegisters(registers.registers.length)
     axios({
       method: "get",
       url: baseUrl + "campaign-event/" + id,
@@ -365,9 +377,55 @@ const Event = (props) => {
       });
   };
 
+  const updateRegister = async (eventId, userId) => {
+    const res = await axios({
+      method: 'put',
+      url: baseUrl + `auth/participant/${userId}`,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+        'Content-Type': 'application/json'
+      }
+    })
+    const newRegisters = await getRegistersByEventId(eventId)
+    setRegisters(newRegisters)
+  }
+
+  const deleteRegister = async (eventId, userId) => {
+    const res = await axios({
+      method: 'DELETE',
+      url: baseUrl + `auth/participant/${userId}`,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+        'Content-Type': 'application/json'
+      }
+    })
+    const newRegisters = await getRegistersByEventId(eventId)
+    setRegisters(newRegisters)
+  }
+
+  const setFilterKindRegister = (value, registers) => {
+    console.dir(value)
+    if(registers) {
+      setFilterMode(value)
+      if(value == -1) {
+        setDisplayRegisters(registers)
+        setTotalRegisters(registers.registers.length)
+      } else {
+        const filter = registers.registers.filter(register => register.is_approved == value)
+        const total = filter.length
+        const newRegisters = {
+          pages: registers.pages,
+          registers: filter
+        }
+        setTotalRegisters(total)
+        setDisplayRegisters(newRegisters)
+        console.dir(newRegisters)
+      }
+    }
+  }
+
   const imagesHandler = (item) => {
-    const newImages = [...images, item];
-    setImages(newImages);
+    setImages(item);
     showImage.callback(item.url, { title: item.name });
     setShowImage({
       active: false,
@@ -956,8 +1014,28 @@ const Event = (props) => {
             ></div>
           </div>
           <div className='users'>
-            {registers && registers.registers ? (
-                registers.registers.map((user, i) => {
+            <div className="users-answer">
+              <Form>
+                <Form.Group className="mode-form" controlId="formBasicMode">
+                  <Form.Label className="label-user">Chế độ :</Form.Label>
+                  <Form.Control
+                    className="form-control-user"
+                    as="select"
+                    defaultValue={filterMode}
+                    onChange={(v) =>
+                      setFilterKindRegister(v.target.value, registers)
+                    }
+                  >
+                    <option value={-1}>Tất cả</option>
+                    <option value={1}>Public</option>
+                    <option value={0}>Private</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+              <span className="user-total">Số lượng : {totalRegisters}</span>
+            </div>
+            {displayRegisters && displayRegisters.registers ? (
+                displayRegisters.registers.map((user, i) => {
                   return (
                     <div key={i} className="user">
                       <div className="user-number">
@@ -968,6 +1046,25 @@ const Event = (props) => {
                         <span>Số điện thoại : {user.phone}</span>
                         <span>Gmail : {user.gmail}</span>
                         <span>Ngày sinh  : {user.dob}</span>
+                        { user.is_approved == 0 ? (
+                        <div>
+                          <Button variant="success" className="agree" onClick={() => updateRegister(user.event_id, user.id)}>
+                            Duyệt
+                          </Button>
+                          <Button variant="danger" className="delete" onClick={() => deleteRegister(user.event_id, user.id)}>
+                            Xóa
+                          </Button>
+                        </div>
+                        ) : (
+                          <div>
+                            <Button variant="danger" className="delete" onClick={() => deleteRegister(user.event_id, user.id)}>
+                              Xóa
+                            </Button>
+                            <div className="done">
+                              <span>Đã duyệt</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

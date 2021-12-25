@@ -72,7 +72,14 @@ const publicRoutes = [
   {
     path: "contributions",
     exact: true,
-    component: lazy(() => import("./../pages/Admin/Contributions/Contributions")),
+    component: lazy(() =>
+      import("./../pages/Admin/Contributions/Contributions")
+    ),
+  },
+  {
+    path: "dashboard",
+    exact: true,
+    component: lazy(() => import("./../pages/Admin/Dashboard/Dashboard")),
   },
 ];
 
@@ -83,7 +90,7 @@ function PrivateRoute({ children, ...rest }) {
   return (
     <Redirect
       to={{
-        pathname: "/danh-muc",
+        pathname: "/dashboard",
         state: { from: location },
       }}
     />
@@ -96,11 +103,7 @@ function PageRouter() {
     <Suspense fallback={<Loader />}>
       <Switch>
         {publicRoutes.map((route, index) => (
-          <Route
-            key={index}
-            path={`${url}${route.path}`}
-            exact={route.exact}
-          >
+          <Route key={index} path={`${url}${route.path}`} exact={route.exact}>
             <route.component />
           </Route>
         ))}

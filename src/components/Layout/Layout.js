@@ -18,7 +18,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (auth && auth.token !== null) {
-      history.push("/danh-muc");
+      history.push("/dashboard");
     }
   }, [history, auth]);
 
