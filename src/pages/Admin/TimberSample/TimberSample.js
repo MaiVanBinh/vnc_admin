@@ -454,7 +454,7 @@ const TimberSample = (props) => {
                     <td>{beginIndex + i}</td>
                     <td className="thumbnail">
                       <img
-                        src={e.avatar}
+                        src={e.img}
                         className="img-fluid"
                         alt="error"
                         style={{ width: "150px" }}

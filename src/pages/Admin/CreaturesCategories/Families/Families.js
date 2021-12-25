@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const Orders = (props) => {
-  const { auth, orders, families, setListFamilies, setLoader } = props;
+  const { auth, orders, families, setListFamilies, setLoader, resetFilterData} = props;
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -161,6 +161,7 @@ const Orders = (props) => {
       .then((res) => {
         setShowCreate(false);
         getFamiliesList();
+        resetFilterData();
       })
       .catch((err) => {
         setLoader(false);

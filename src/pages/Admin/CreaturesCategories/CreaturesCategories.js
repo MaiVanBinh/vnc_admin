@@ -27,6 +27,7 @@ const mapDispatchToProps = (dispatch) => {
 const CreaturesCategories = (props) => {
   const [key, setKey] = useState("species");
   const { setCreaturesCategories, setLoader } = props;
+  
   useEffect(() => {
     axios({
       method: "get",
@@ -37,6 +38,15 @@ const CreaturesCategories = (props) => {
     });
   }, [setCreaturesCategories, setLoader]);
 
+  const resetFilterData = () => {
+    axios({
+      method: "get",
+      url: baseUrl + "filterData",
+    }).then((res) => {
+      setCreaturesCategories(res.data.data);
+      setLoader(false);
+    });
+  }
   return (
     <div>
       <Tabs
@@ -46,22 +56,22 @@ const CreaturesCategories = (props) => {
       >
         <Tab eventKey="species" title="Loài">
           <div>
-            <Species />
+            <Species resetFilterData={resetFilterData} />
           </div>
         </Tab>
         <Tab eventKey="classes" title="Lớp">
           <div>
-            <Groups />
+            <Groups resetFilterData={resetFilterData} />
           </div>
         </Tab>
         <Tab eventKey="orders" title="Bộ">
           <div>
-            <Orders />
+            <Orders resetFilterData={resetFilterData} />
           </div>
         </Tab>
         <Tab eventKey="families" title="Họ">
           <div>
-            <Families />
+            <Families resetFilterData={resetFilterData} />
           </div>
         </Tab>
       </Tabs>

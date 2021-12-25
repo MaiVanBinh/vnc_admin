@@ -24,10 +24,12 @@ import feedbacksRedecer from './store/reducer/feedbacks';
 import questionReducer from './store/reducer/questions';
 import answerReducer from './store/reducer/answer';
 import eventReducer from './store/reducer/event';
+import contributionsReducer from './store/reducer/contributions';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
+  contributions: contributionsReducer,
   posts: postsReducer,
   category: categoryReducer,
   auth: authReducer,

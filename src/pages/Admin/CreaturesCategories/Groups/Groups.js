@@ -41,7 +41,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const Groups = (props) => {
-  const { auth, groups, species, setListGroups, setLoader } = props;
+  const { auth, groups, species, setListGroups, setLoader, resetFilterData} = props;
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -168,6 +168,7 @@ const Groups = (props) => {
       .then((res) => {
         setShowCreate(false);
         getGroupsList();
+        resetFilterData();
       })
       .catch((err) => {
         console.log(err.response.data);
