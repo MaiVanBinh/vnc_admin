@@ -69,6 +69,11 @@ const publicRoutes = [
     exact: true,
     component: lazy(() => import("./../pages/Admin/Event/Event")),
   },
+  {
+    path: "dashboard",
+    exact: true,
+    component: lazy(() => import("./../pages/Admin/Dashboard/Dashboard")),
+  },
 ];
 
 function PrivateRoute({ children, ...rest }) {
@@ -78,7 +83,7 @@ function PrivateRoute({ children, ...rest }) {
   return (
     <Redirect
       to={{
-        pathname: "/danh-muc",
+        pathname: "/dashboard",
         state: { from: location },
       }}
     />
