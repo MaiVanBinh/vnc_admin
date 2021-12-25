@@ -377,7 +377,7 @@ export const IconQuestion = (props) => {
     <svg 
       id="Layer_1" version="1.1"
       viewBox="0 0 50 50"
-      width="50px"
+      width="30px"
       >
         <circle cx="25" cy="25" fill="none" r="24" stroke="#000000"/>
         <rect fill="none" height="50" width="50"/>
