@@ -360,7 +360,7 @@ const Category = (props) => {
                     </th>
                     <td>{e.created_at}</td>
                     <td>
-                      <div className="action-group d-flex justify-content-around">
+                      <div className="action-group action-group d-flex justify-content-around">
                         <div
                           className="icon d-flex align-items-center"
                           onClick={() => openEditModal(e)}

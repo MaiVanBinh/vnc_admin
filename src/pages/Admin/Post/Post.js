@@ -522,7 +522,7 @@ const Post = (props) => {
                     </td>
                     <td>{e.language === "vn" ? "Việt" : "English"}</td>
                     <td>{e.created_at}</td>
-                    <td className="d-flex justify-content-around align-item-center">
+                    <td className="action-group d-flex justify-content-around align-item-center">
                       <div
                         className="icon d-flex align-items-center"
                         onClick={() => previewPost(e.id)}

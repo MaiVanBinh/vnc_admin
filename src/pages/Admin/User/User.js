@@ -9,7 +9,12 @@ import { Modal, Button, Table, Form } from "react-bootstrap";
 import axios from "axios";
 import { baseUrl } from "./../../../store/utilities/apiConfig";
 import Pagination from "./../../../components/Panigation/Pagination";
-import { IconRefresh } from "./../../../store/utilities/SVG";
+import {
+  IconRefresh,
+  IconView,
+  IconEdit,
+  IconGarbage2,
+} from "./../../../store/utilities/SVG";
 
 const mapStateToProps = (state) => {
   return {
@@ -49,7 +54,7 @@ const User = (props) => {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
-  const getListUsers =useCallback(() => {
+  const getListUsers = useCallback(() => {
     setLoader(true);
     axios({
       method: "get",
@@ -220,17 +225,26 @@ const User = (props) => {
                         : "unknow"}
                     </td>
                     <td>{e.created_at}</td>
-                    <td>
-                      <Button className="mr-2" onClick={() => openEdit(e)}>
-                        Sửa
-                      </Button>
+                    <td className="action-group d-flex justify-content-around align-item-center">
+                      <div
+                        className="icon d-flex align-items-center"
+                        onClick={() => openEdit(e)}
+                      >
+                        <IconEdit color={"#333333"} width={15} height={15} />
+                      </div>
+
                       {e.role !== "1" ? (
-                        <Button
-                          onClick={() => openDelete(e)}
-                          className="btn-danger"
-                        >
-                          Xóa
-                        </Button>
+                        <div
+                        className="icon d-flex align-items-center"
+                        onClick={() => openDelete(e)}
+                      >
+                        <IconGarbage2
+                          color={"#333333"}
+                          width={15}
+                          height={15}
+                        />
+                      </div>
+                 
                       ) : null}
                     </td>
                   </tr>

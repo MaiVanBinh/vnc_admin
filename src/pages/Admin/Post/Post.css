@@ -4,3 +4,13 @@
 .show-image-modal{
     z-index: 2000!important;
 }
+.action-group .icon {
+    padding: 5px;
+    margin-right: 5px;
+    transition: all 0.1s ease 0s;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.action-group .icon:hover {
+    background-color: #8a8787;
+}

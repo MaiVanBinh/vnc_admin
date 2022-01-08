@@ -551,7 +551,7 @@ const Event = (props) => {
                     <th>{e.start_date}</th>
                     <th>{e.end_date}</th>
                     <td>{e.created_at}</td>
-                    <td className="d-flex justify-content-around align-item-center">
+                    <td className="action-group d-flex justify-content-around align-item-center">
                       <div
                         className="icon d-flex align-items-center"
                         onClick={() => previewEvent(e.id)}

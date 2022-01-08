@@ -38,7 +38,7 @@ const SideBarAdmin = (props) => {
     else if (pageRoute === "/mau-go") setPage(7);
     else if (pageRoute === "/feedbacks") setPage(9);
     else if (pageRoute === "/questions") setPage(10);
-    else if (pageRoute === "/event") setPage(11);
+    else if (pageRoute === "/events") setPage(11);
     else if (pageRoute === "/contributions") setPage(12);
     else setPage(0);
   };
@@ -112,17 +112,24 @@ const SideBarAdmin = (props) => {
       >
         <span className="icon">
           <svg
-            height="23px"
-            viewBox="0 0 24 24"
-            width="23px"
+            aria-hidden="true"
+            data-prefix="fas"
+            data-icon="network-wired"
+            className="svg-inline--fa fa-network-wired fa-w-20"
             xmlns="http://www.w3.org/2000/svg"
-            {...props}
+            viewBox="0 0 640 512"
+            height="23px"
+            width="23px"
           >
-            <path d="M467 331h-15v-15c0-24.813-20.187-45-45-45H271v-30h45c8.284 0 15-6.716 15-15s-6.716-15-15-15h-15v-30h45c24.813 0 45-20.187 45-45V45c0-24.813-20.187-45-45-45H166c-24.813 0-45 20.187-45 45v91c0 24.813 20.187 45 45 45h45v30h-15c-8.284 0-15 6.716-15 15s6.716 15 15 15h45v30H105c-24.813 0-45 20.187-45 45v15H45c-24.813 0-45 20.187-45 45v30c0 24.813 20.187 45 45 45h15v31H45c-8.284 0-15 6.716-15 15s6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15H90v-31h15c24.813 0 45-20.187 45-45v-30c0-24.813-20.187-45-45-45H90v-15c0-8.271 6.729-15 15-15h136v30h-15c-24.813 0-45 20.187-45 45v30c0 24.813 20.187 45 45 45h15v31h-15c-8.284 0-15 6.716-15 15s6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-15v-31h15c24.813 0 45-20.187 45-45v-30c0-24.813-20.187-45-45-45h-15v-30h136c8.271 0 15 6.729 15 15v15h-15c-24.813 0-45 20.187-45 45v30c0 24.813 20.187 45 45 45h15v31h-15c-8.284 0-15 6.716-15 15s6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-15v-31h15c24.813 0 45-20.187 45-45v-30c0-24.813-20.187-45-45-45zm-362 30c8.271 0 15 6.729 15 15v30c0 8.271-6.729 15-15 15H45c-8.271 0-15-6.729-15-15v-30c0-8.271 6.729-15 15-15h60zm61-210c-8.271 0-15-6.729-15-15V45c0-8.271 6.729-15 15-15h180c8.271 0 15 6.729 15 15v91c0 8.271-6.729 15-15 15H166zm120 210c8.271 0 15 6.729 15 15v30c0 8.271-6.729 15-15 15h-60c-8.271 0-15-6.729-15-15v-30c0-8.271 6.729-15 15-15h60zm-45-150v-30h30v30h-30zm241 195c0 8.271-6.729 15-15 15h-60c-8.271 0-15-6.729-15-15v-30c0-8.271 6.729-15 15-15h60c8.271 0 15 6.729 15 15v30z" />
+            <path
+              fill="currentColor"
+              d="M640 264v-16c0-8.84-7.16-16-16-16H344v-40h72c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H224c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h72v40H16c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h104v40H64c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h304v40h-56c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h104c8.84 0 16-7.16 16-16zM256 128V64h128v64H256zm-64 320H96v-64h96v64zm352 0h-96v-64h96v64z"
+            />
           </svg>
         </span>
         <span>Phân loại động vật</span>
       </div>
+
       {auth.user && auth.user.role === "1" ? ( // super admin
         <div
           className={page === 5 ? "menu-item active" : "menu-item"}
@@ -195,7 +202,7 @@ const SideBarAdmin = (props) => {
         </span>
         <span>Dấu chân</span>
       </div>
-      <div
+      {/* <div
         className={page === 9 ? "menu-item active" : "menu-item"}
         onClick={() => changePage("/feedbacks")}
       >
@@ -203,7 +210,7 @@ const SideBarAdmin = (props) => {
           <IconFeedbacks width="23px" height="23px" />
         </span>
         <span>Feedbacks</span>
-      </div>
+      </div> */}
       <div
         className={page === 10 ? "menu-item active" : "menu-item"}
         onClick={() => changePage("/questions")}
