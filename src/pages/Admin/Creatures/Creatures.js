@@ -132,6 +132,11 @@ const Creatures = (props) => {
       isValid: true,
       validMessage: "Don't allow empty string",
     },
+    only_vietnam: {
+      value: 0,
+      isValid: true,
+      validMessage: "Don't allow empty string",
+    },
     species: {
       value: null,
       isValid: true,
@@ -180,6 +185,11 @@ const Creatures = (props) => {
       },
       redbook_level: {
         value: "",
+        isValid: true,
+        validMessage: "Don't allow empty string",
+      },
+      only_vietnam: {
+        value: 0,
         isValid: true,
         validMessage: "Don't allow empty string",
       },
@@ -642,6 +652,12 @@ const Creatures = (props) => {
               {currItem ? currItem.redbook_level : "Không thuộc sách đỏ"}
             </div>
           </div>
+          <div className="d-flex">
+            <div className="p-2 font-weight-bold">Đặc hữu ở Việt Nam:</div>
+            <div className="p-2 flex-sm-grow-1">
+              {currItem ? (currItem.only_vietnam == 1 ? "có" : "không") : "không"}
+            </div>
+          </div>
           <div>
             <div className="p-2 font-weight-bold">Ảnh:</div>
             <div className="p-2 d-flex flex-wrap">
@@ -922,6 +938,23 @@ const Creatures = (props) => {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
+            <Form.Group controlId="formOnlyVietNam">
+              <Form.Label>Đặc hữu ở Việt Nam</Form.Label>
+              <Form.Control
+                name="only_vietnam"
+                as="select"
+                onChange={onChangeInput}
+                value={parseInt(formInput.only_vietnam.value)}
+                defaultValue={0}
+              >
+                <option key={0} value={0}>
+                  Không
+                </option>
+                <option key={1} value={1}>
+                  Có
+                </option>
+              </Form.Control>
+            </Form.Group>
             <Form.Group controlId="formBasicContent">
               <Form.Label>Nội dung</Form.Label>
               <Editor
@@ -1148,6 +1181,23 @@ const Creatures = (props) => {
                   {formInput.name_latin.message}
                 </Form.Control.Feedback>
               ) : null}
+            </Form.Group>
+            <Form.Group controlId="formOnlyVietNam">
+              <Form.Label>Đặc hữu ở Việt Nam</Form.Label>
+              <Form.Control
+                name="only_vietnam"
+                as="select"
+                onChange={onChangeInput}
+                value={parseInt(formInput.only_vietnam.value)}
+                defaultValue={0}
+              >
+                <option key={0} value={0}>
+                  Không
+                </option>
+                <option key={1} value={1}>
+                  Có
+                </option>
+              </Form.Control>
             </Form.Group>
             <Form.Group controlId="formBasicContent">
               <Form.Label>Nội dung</Form.Label>
