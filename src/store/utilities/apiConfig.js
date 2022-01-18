@@ -1,7 +1,7 @@
 const APP_ROOT = 'http://mvbinz.xyz/';
 export const baseUrl = 'http://mvbinz.xyz/';
 // const APP_ROOT = 'http://localhost:8080/';
-// // const APP_ROOT = 'http://localhost:8080/';
+// const APP_ROOT = 'http://localhost:8080/';
 // export const baseUrl = 'http://localhost:8080/';
 const apiName = {
     creatures: 'creatures',

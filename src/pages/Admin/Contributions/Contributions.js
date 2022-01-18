@@ -29,7 +29,7 @@ import {
   IconGarbage2,
   IconSearch,
   IconCheck,
-  IconMultiply
+  IconMultiply,
 } from "./../../../store/utilities/SVG";
 const mapStateToProps = (state) => {
   return {
@@ -59,12 +59,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const Contributions = (props) => {
-  const {
-    auth,
-    setLoader,
-    setListContributions,
-    contributions,
-  } = props;
+  const { auth, setLoader, setListContributions, contributions } = props;
   const [showCreate, setShowCreate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showImage, setShowImage] = useState(false);
@@ -190,70 +185,58 @@ const Contributions = (props) => {
     getContributions();
   }, [filterList, getContributions]);
 
-//   const resetFormInput = () => {
-//     setFormInput({
-//       id: {
-//         value: null,
-//         isValid: true,
-//         validMessage: "Don't allow empty string",
-//         minLength: 1,
-//       },
-//       name_en: {
-//         value: "",
-//         isValid: true,
-//         validMessage: "Don't allow empty string",
-//         minLength: 1,
-//       },
-//       name_latin: {
-//         value: "",
-//         isValid: true,
-//         validMessage: "Don't allow empty string",
-//         minLength: 1,
-//       },
-//       name_vn: {
-//         value: "",
-//         isValid: true,
-//         validMessage: "Don't allow empty string",
-//         minLength: 1,
-//       },
-//       avatar: {
-//         value: "",
-//         isValid: true,
-//         validMessage: "Don't allow empty string",
-//         minLength: 1,
-//       },
-//     });
-//   };
+  //   const resetFormInput = () => {
+  //     setFormInput({
+  //       id: {
+  //         value: null,
+  //         isValid: true,
+  //         validMessage: "Don't allow empty string",
+  //         minLength: 1,
+  //       },
+  //       name_en: {
+  //         value: "",
+  //         isValid: true,
+  //         validMessage: "Don't allow empty string",
+  //         minLength: 1,
+  //       },
+  //       name_latin: {
+  //         value: "",
+  //         isValid: true,
+  //         validMessage: "Don't allow empty string",
+  //         minLength: 1,
+  //       },
+  //       name_vn: {
+  //         value: "",
+  //         isValid: true,
+  //         validMessage: "Don't allow empty string",
+  //         minLength: 1,
+  //       },
+  //       avatar: {
+  //         value: "",
+  //         isValid: true,
+  //         validMessage: "Don't allow empty string",
+  //         minLength: 1,
+  //       },
+  //     });
+  //   };
 
-//   const changePageImageList = (page) => {
-//     setFilterImageList({
-//       ...filterImageList,
-//       page,
-//     });
-//   };
+  //   const changePageImageList = (page) => {
+  //     setFilterImageList({
+  //       ...filterImageList,
+  //       page,
+  //     });
+  //   };
 
   const openDeleteModal = (item) => {
     setShowDelete(true);
     setCurrentFootprint(item);
   };
-
+  const [currContribution, setCurrentContriBution] = useState(null);
+  const [valid, setValid] = useState("0");
   const openEditModal = (item) => {
-    // const formInputUpdate = { ...formInput };
-    // formInput.name_vn.value = item.creatures;
-    // formInputUpdate.name_en.value = item.name_en;
-    // formInputUpdate.name_vn.value = item.name_vn;
-    // formInputUpdate.name_latin.value = item.name_latin;
-    // formInputUpdate.avatar.value = item.avatarId;
-    // formInputUpdate.avatar.url = item.avatar;
-    // setCreatures({
-    //   id: item.creatures,
-    //   name_en: item.name_en,
-    //   name_vn: item.name_vn,
-    //   name_latin: item.name_latin,
-    // });
-    // setFormInput(formInputUpdate);
-    // setCurrentFootprint(item);
-    // setShowEdit(true);
+    setCurrentContriBution(item);
+    console.log(item);
+    setShowEdit(true);
   };
 
   const deleteHandle = () => {
@@ -296,53 +279,78 @@ const Contributions = (props) => {
     return false;
   };
 
-//   const saveHandle = () => {
-//     const data = preprocessInput();
-//     console.log(data);
-//     if (!data) {
-//       return;
-//     }
+  const editHandle = () => {
+    console.log(currContribution);
+    console.log(valid);
+    if (currContribution) {
+      setLoader(true);
 
-//     setLoader(true);
-//     axios({
-//       method: "post",
-//       url: baseUrl + "auth/footprint",
-//       headers: {
-//         Authorization: "Bearer " + auth.token,
-//       },
-//       data: data,
-//     })
-//       .then((res) => {
-//         setShowCreate(false);
-//         getFootprint();
-//       })
-//       .catch((err) => {
-//         setLoader(false);
-//       });
-//   };
+      axios({
+        method: "put",
+        url: baseUrl + "auth/contribute/" + currContribution.id,
+        headers: {
+          Authorization: "Bearer " + auth.token,
+        },
+        data: { valid: valid },
+      })
+        .then((res) => {
+          setShowEdit(false);
+          setCurrentContriBution(null);
+          getContributions();
+        })
+        .catch((err) => {
+          setCurrentContriBution(null);
+          setLoader(false);
+        });
+    }
+  };
+  //   const saveHandle = () => {
+  //     const data = preprocessInput();
+  //     console.log(data);
+  //     if (!data) {
+  //       return;
+  //     }
 
-//   const updateHandler = () => {
-//     const data = preprocessInput();
-//     if (!data) {
-//       return;
-//     }
-//     setLoader(true);
-//     axios({
-//       method: "put",
-//       url: baseUrl + "auth/footprint/" + currentFootprint.id,
-//       headers: {
-//         Authorization: "Bearer " + auth.token,
-//       },
-//       data: data,
-//     })
-//       .then((res) => {
-//         setShowEdit(false);
-//         getFootprint();
-//       })
-//       .catch((err) => {
-//         setLoader(false);
-//       });
-//   };
+  //     setLoader(true);
+  //     axios({
+  //       method: "post",
+  //       url: baseUrl + "auth/footprint",
+  //       headers: {
+  //         Authorization: "Bearer " + auth.token,
+  //       },
+  //       data: data,
+  //     })
+  //       .then((res) => {
+  //         setShowCreate(false);
+  //         getFootprint();
+  //       })
+  //       .catch((err) => {
+  //         setLoader(false);
+  //       });
+  //   };
+
+  //   const updateHandler = () => {
+  //     const data = preprocessInput();
+  //     if (!data) {
+  //       return;
+  //     }
+  //     setLoader(true);
+  //     axios({
+  //       method: "put",
+  //       url: baseUrl + "auth/footprint/" + currentFootprint.id,
+  //       headers: {
+  //         Authorization: "Bearer " + auth.token,
+  //       },
+  //       data: data,
+  //     })
+  //       .then((res) => {
+  //         setShowEdit(false);
+  //         getFootprint();
+  //       })
+  //       .catch((err) => {
+  //         setLoader(false);
+  //       });
+  //   };
 
   return (
     <div className="container-fluid pt-3 pb-5">
@@ -351,16 +359,16 @@ const Contributions = (props) => {
           <Button
             className="btn-primary mr-2"
             onClick={() => {
-            //   resetFormInput();
-            //   setShowCreate(true);
+              //   resetFormInput();
+              //   setShowCreate(true);
             }}
           >
             <IconPlus width={15} height={15} color={"#fff"} />
           </Button>
           <Button
             onClick={() => {
-            //   getFootprint();
-            //   setFilterList({ ...filterList, name: null });
+              //   getFootprint();
+              //   setFilterList({ ...filterList, name: null });
             }}
           >
             <IconRefresh width={15} height={15} color={"#fff"} />
@@ -399,21 +407,30 @@ const Contributions = (props) => {
           </tr>
         </thead>
         <tbody className="list-images">
-          {contributions && contributions.contributes && contributions.contributes.length === 0 ? (
+          {contributions &&
+          contributions.contributes &&
+          contributions.contributes.length === 0 ? (
             <tr>
               <td colSpan="6" className="text-center">
                 Không có kết quả nào được tìm thấy
               </td>
             </tr>
           ) : null}
-          {contributions && contributions.contributes && contributions.contributes.length > 0
+          {contributions &&
+          contributions.contributes &&
+          contributions.contributes.length > 0
             ? contributions.contributes.map((e, i) => {
                 let beginIndex = contributions.pages.begin;
                 return (
                   <tr key={i}>
                     <td>{beginIndex + i}</td>
                     <td className="thumbnail">
-                      <img src={e.image} className="img-fluid" alt="error" style={{width: "100px", height: "70px"}}/>
+                      <img
+                        src={e.image}
+                        className="img-fluid"
+                        alt="error"
+                        style={{ width: "100px", height: "70px" }}
+                      />
                     </td>
                     <td className="name">{e.fullname}</td>
                     <td className="name">{e.info}</td>
@@ -476,135 +493,6 @@ const Contributions = (props) => {
           />
         ) : null}
       </div>
-
-      {/* create */}
-      <Modal
-        show={showCreate}
-        onHide={() => setShowCreate(false)}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Thêm dấu chân</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formBasicId">
-              <Form.Label>Nhập tên sinh vật:</Form.Label>
-              <Form.Control
-                type="text"
-                ref={inputEl}
-                placeholder="Nhập tên tiếng việt của sinh vật"
-                value={formInput.name_vn.value}
-                onChange={(v) => {
-                  if (autocomplete.current)
-                    autocomplete.current.classList.add("active");
-                  setFormInput({
-                    ...formInput,
-                    name_vn: {
-                      ...formInput.name_vn,
-                      value: v.target.value.replace(/^\s/, ""),
-                    },
-                    id: {
-                      ...formInput.id,
-                      value: null,
-                    },
-                  });
-                }}
-                autoComplete="off"
-              />
-              {hintCreatures && hintCreatures.length > 0 ? (
-                <ul className="autocomplete" ref={autocomplete}>
-                  {hintCreatures.map((e) => (
-                    <li
-                      onClick={() => {
-                        if (autocomplete.current)
-                          autocomplete.current.classList.remove("active");
-                        setFormInput({
-                          ...formInput,
-                          name_vn: {
-                            ...formInput.name_vn,
-                            value: e.name_vn,
-                          },
-                          id: {
-                            ...formInput.id,
-                            value: e.id,
-                          },
-                          name_latin: {
-                            ...formInput.name_latin,
-                            value: e.name_latin,
-                          },
-                        });
-                      }}
-                    >
-                      {e.name_vn}
-                    </li>
-                  ))}
-                </ul>
-              ) : !formInput.id.value ? (
-                <p>Không có kết quả nào</p>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicNameEn">
-              <Form.Label>Tên tiếng anh:</Form.Label>
-              <Form.Control
-                type="text"
-                value={formInput.name_en.value}
-                onChange={(e) =>
-                  setFormInput({
-                    ...formInput,
-                    name_en: {
-                      isValid:
-                        validateLength(e.target.value, 1, 100) !== "incorrect",
-                      validMessage: "Don't allow empty string",
-                      minLength: 1,
-                      value: e.target.value,
-                    },
-                  })
-                }
-                className={
-                  formInput.name_en.isValid ? null : "form-control is-invalid"
-                }
-              />
-              {!formInput.name_en.isValid ? (
-                <Form.Control.Feedback type="invalid">
-                  {formInput.name_en.validMessage}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicImage">
-              <Form.Label className="mr-3">Chọn ảnh:</Form.Label>
-              <Button
-                onClick={() => {
-                //   getListContributions();
-                //   setShowImage(true);
-                }}
-              >
-                <IconPlus width={15} height={15} color={"#fff"} />
-              </Button>
-              {formInput.avatar && formInput.avatar.url ? (
-                <div className="mt-3">
-                  <img
-                    src={formInput.avatar.url}
-                    alt="Not Found"
-                    style={{ width: "200px" }}
-                  />
-                </div>
-              ) : null}
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary">
-            Đóng
-          </Button>
-          <Button variant="primary">
-            Lưu
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* edit */}
       <Modal
         show={showEdit}
         onHide={() => setShowEdit(false)}
@@ -612,64 +500,22 @@ const Contributions = (props) => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Cập nhập tin của dấu chân</Modal.Title>
+          <Modal.Title>Xác nhận đóng góp là chính xác</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="formBasicId">
-              <Form.Label>Nhập tên sinh vật:</Form.Label>
+            <Form.Group controlId="formSpecies">
+              <Form.Label>Xác nhận đúng sai</Form.Label>
               <Form.Control
-                type="text"
-                ref={inputEl}
-                value={formInput.name_vn.value}
-                readOnly 
-                autoComplete="off"
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formBasicNameEn">
-              <Form.Label>Tên tiếng anh:</Form.Label>
-              <Form.Control
-                type="text"
-                value={formInput.name_en.value}
-                onChange={(e) =>
-                  setFormInput({
-                    ...formInput,
-                    name_en: {
-                      isValid:
-                        validateLength(e.target.value, 1, 100) !== "incorrect",
-                      validMessage: "Don't allow empty string",
-                      minLength: 1,
-                      value: e.target.value,
-                    },
-                  })
-                }
-              />
-              {!formInput.name_en.isValid ? (
-                <Form.Control.Feedback type="invalid">
-                  {formInput.name_en.message}
-                </Form.Control.Feedback>
-              ) : null}
-            </Form.Group>
-            <Form.Group controlId="formBasicImage">
-              <Form.Label className="mr-3">Chọn ảnh:</Form.Label>
-              <Button
-                onClick={() => {
-                //   getListContributions();
-                //   setShowImage(true);
-                }}
+                name="list"
+                as="select"
+                onChange={(e) => setValid(e.target.value)}
+                value={valid}
+                defaultValue={valid}
               >
-                <IconPlus width={15} height={15} color={"#fff"} />
-              </Button>
-              {formInput.avatar && formInput.avatar.url ? (
-                <div className="mt-3">
-                  <img
-                    src={formInput.avatar.url}
-                    alt="Not Found"
-                    style={{ width: "200px" }}
-                  />
-                </div>
-              ) : null}
+                <option value="0">Sai</option>
+                <option value="1">Đúng</option>
+              </Form.Control>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -677,7 +523,7 @@ const Contributions = (props) => {
           <Button variant="secondary" onClick={() => setShowEdit(false)}>
             Đóng
           </Button>
-          <Button variant="primary">
+          <Button variant="primary" onClick={editHandle}>
             Lưu
           </Button>
         </Modal.Footer>
@@ -707,8 +553,7 @@ const Contributions = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      </div>
+    </div>
   );
 };
 
